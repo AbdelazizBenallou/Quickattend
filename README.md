@@ -9,7 +9,8 @@
 Example:
 
 ```env
-DB_HOST=localhost
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_NAME=your_database
+POSTGRES_DB=database_name
+POSTGRES_USER=username
+POSTGRES_PASSWORD=database_password
+POSTGRES_PORT=port_number
+POSTGRES_HOST=localhost
