@@ -1,0 +1,296 @@
+    \documentclass[14pt,a4paper]{extarticle}
+
+    %-------------------------------------------------
+    % Encoding and Language
+    %-------------------------------------------------
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+     
+    \usepackage{draftwatermark}
+
+    \SetWatermarkText{Aziz Benallou}    
+    \SetWatermarkScale{1}       
+\SetWatermarkColor[gray]{0.9} 
+\SetWatermarkAngle{45}       
+
+    \usepackage{graphicx}
+    \usepackage{float}
+    \usepackage{caption}
+    \usepackage{setspace}
+    \usepackage{tocloft}
+    \usepackage{enumitem}
+
+   \usepackage{graphicx}
+
+    %-------------------------------------------------
+    % Page Layout
+    %-------------------------------------------------
+    \usepackage{geometry}
+    \geometry{
+    left=2.54cm,
+    right=2.54cm,
+    top=2.54cm,
+    bottom=2.54cm
+    }
+
+    %-------------------------------------------------
+    % Font (Readable for Scientific Research)
+    %-------------------------------------------------
+    \usepackage{mathptmx}   % Times New Roman-like
+    \usepackage{microtype}  % Improves text readability
+
+    %-------------------------------------------------
+    % Line and Paragraph Spacing
+    %-------------------------------------------------
+    \usepackage{setspace}
+    \setstretch{1.20}        % Line spacing (recommended)
+
+    \setlength{\parindent}{1cm} % Indentation
+    % Space between paragraphs
+
+    \usepackage{indentfirst}
+    \setlength{\parindent}{1cm}
+
+    %-------------------------------------------------
+    % Section Formatting
+    %-------------------------------------------------
+    \usepackage{titlesec}
+
+
+
+    % Section (Title size = 18pt, Bold)
+    \titleformat{\section}
+    {\normalfont\fontsize{18}{20}\bfseries}
+    {\thesection}{0.4em}{}
+
+    % Subsection
+    \titleformat{\subsection}
+    {\normalfont\fontsize{16}{18}\bfseries}
+    {\thesubsection}{0.4em}
+    {}
+
+    % Subsubsection
+    \titleformat{\subsubsection}
+    {\normalfont\fontsize{14}{16}\bfseries}
+    {\thesubsubsection}{0.4em}{}
+
+    %-------------------------------------------------
+    % Header with Line and Section Title
+    %-------------------------------------------------
+    \usepackage{fancyhdr}
+
+    \pagestyle{fancy}
+    \fancyhf{}
+
+    % Section title in header
+    \fancyhead[L]{\nouppercase{\leftmark}}
+
+    % Page number (optional)
+    \fancyhead[R]{\thepage}
+
+    % Header line
+    \renewcommand{\headrulewidth}{0.9pt}
+
+    % Footer (no line)
+    \renewcommand{\footrulewidth}{0pt}
+
+    % Spacing around titles
+    \titlespacing*{\section}{0pt}{1.2em}{0.8em}
+    \titlespacing*{\subsection}{0pt}{1em}{0.6em}
+    \titlespacing*{\subsubsection}{0pt}{0.8em}{0.5em}
+
+
+    \setlist[itemize]{itemsep=1.5pt, topsep=2pt}
+    \setlist[enumerate]{itemsep=1.5pt, topsep=2pt}
+
+    \setlength{\parindent}{1cm}
+    %-------------------------------------------------
+    % Header style
+    %-------------------------------------------------
+    \pagestyle{fancy}
+    \fancyhf{}
+    \lhead{backup System}
+    \rhead{Grandfather–Father–Son backup strategy}
+    \cfoot{\thepage}
+
+    %-------------------------------------------------
+    \begin{document}
+    \tableofcontents
+    \newpage
+
+    \section{Introduction}
+    We talk about backup System, we see a different backup strategy, and we talk about Grandfather–Father–Son backup strategy.
+    we use tools like rsync, tar, and cron to implement backup strategy.
+    and we dont forget linux distribution like ubuntu, debian, and centos.
+    in this tutorial, we se manual backup and automatic backup, and we talk about advantages and disadvantages of each strategy.
+    \newpage
+    \section{Backup Strategy}
+    \subsection{Manual Backup}
+    Because we are using tools like Docker, we have the container and volume.
+    we just run the command below to backup the volume.
+    just create a backups directory in the host machine, and run the command below to backup the volume.
+    \begin{verbatim}
+    docker exec postgres_db pg_dump -U <username> -d <database> \
+     > backup.sql
+    \end{verbatim}
+    \subsubsection{Restore}
+    \begin{verbatim}
+    cat backup.sql | docker exec -i postgres_db \
+    psql -U <username> -d <database>
+    \end{verbatim}
+
+    and thi is the simple way to backup and restore the database, but we need to do it manually, and we need to remember to do it regularly.
+    and dont forget to compress the backup file to save space, and encryption with gpg to secure the backup file.
+
+    \subsection{Automatic Backup}
+    \subsubsection{Host cron job (pro production)}
+    we can use a script to backup the database, and we can use cron to schedule the script to run regularly.
+    the file name is backup.sh, and the content is below.
+    you can specifie a time to run the backup, for example, every day at 2 am.
+
+    \begin{verbatim}
+    CONTAINER=container_name
+    DB_USER=username
+    DB_NAME=database_name
+    BACKUP_ROOT="$HOME/backups"
+
+    TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
+    BACKUP_DIR="$BACKUP_ROOT/$TIMESTAMP"
+
+    mkdir -p "$BACKUP_DIR"
+
+    /usr/bin/docker exec -i $CONTAINER \
+    pg_dump -U $DB_USER $DB_NAME \
+    | gzip > "$BACKUP_DIR/backup.sql.gz"
+
+    echo "Backup created: $BACKUP_DIR/backup.sql.gz"
+    \end{verbatim}
+    dont forget make the script executable with
+    \begin{verbatim}
+    chmod +x backup.sh
+    \end{verbatim}
+    now we can add cron job to run the script , because we have deffrents mode in cron we some jobs 
+    done every day or week or month in specified time, for example, we want to run the backup every day at 2 am, 
+    ather with dellay like every 2 hours or every 30 minutes.
+    for the simullation we test with dellay . \\
+    this called \textbf{Interval scheduling}
+
+    \subsubsection{Interval scheduling}
+    we open the cron file with the command below
+    \begin{verbatim}
+    crontab -e
+    \end{verbatim}
+    and add role to run the backup script every 3 minutes
+    \begin{verbatim}
+    */3 * * * * /full/path/to/backup.sh
+    \end{verbatim}
+
+    \subsubsection{Time-based scheduling}
+    we can use time-based scheduling to run the backup script at a specific time.
+    for example, we want to run the backup every day at 2 am.
+    we can add the following line to the cron file
+    \begin{verbatim}
+    0 2 * * * /full/path/to/backup.sh
+    \end{verbatim}
+
+    \subsubsection{Restore from compressed backup}
+    if we have a compressed backup file, we can restore it with the following command
+    \begin{verbatim}
+    gunzip -c backup.sql.gz | docker exec -i postgres_db \
+    psql -U <username> -d <database>
+    \end{verbatim}
+
+    but those are the simple way to backup and restore the database, waste of space and time . finally you found your self have 1 to 9999 backup files, and you need to manage them, and you need to delete the old backup files to save space, and you need to remember to do it regularly.
+   becuase of this problem we need to use backup strategy to manage the backup files.
+
+   \subsection{Backup Manager}
+   we use backup manager to manage files , daily backup, weekly backup, and monthly backup, and we can set the retention policy to delete old backup files, and we can set the schedule to run the backup script.
+   we create 3 directories in the host machine, daily, weekly, and monthly, and we set the retention policy to keep 7 daily backup files, 4 weekly backup files, and 12 monthly backup files.
+   \subsection{Grandfather–Father–Son backup strategy}
+    this strategy is a common backup strategy that uses three levels of backups: daily (son),
+weekly (father), and monthly (grandfather). The idea is to have a hierarchy of backups that allows for both short-term and long-term recovery options.
+    \begin{itemize}
+        \item Daily (Son): These are the most recent backups, typically created every day.
+        \item Weekly (Father): These are created less frequently, usually once a week, and are kept for a longer period than daily backups.
+        \item Monthly (Grandfather): These are the least frequent backups, created once a month
+and kept for the longest period, often several months or even years
+    \end{itemize}
+    \subsection{Types of this strategy}
+    \begin{itemize}
+        \item Seperated backup: we dont have relation between the backup files, we just create backup files and store them in the directories, and we set the retention policy to delete old backup files.
+        \item  Hierarchical time-based backup: backups are organized in a tiered structure (daily, weekly, monthly) and triggered by time schedules rather than direct dependency between backup files. Each backup remains independent while following a hierarchical retention policy.
+
+    \end{itemize}
+
+    \subsubsection{Single backup pipeline architecture}
+    the ather level of backup files weekly and monthly backup files are created from the daily backup files, and we set the retention policy to delete old backup files, and we can set the schedule to run the backup script.
+    for example, we can set the schedule to run the daily backup script every day at 2 am
+    we use and counter to count the number of daily backup files, 
+    and we set the retention policy to keep 4 weekly backup files, 
+    
+    and this code is backup script for the single backup pipeline architecture
+    \begin{verbatim}
+    #!/bin/bash
+
+CONTAINER=postgres_db_test
+DB_USER=admin
+DB_NAME=mydb
+BACKUP_ROOT="$HOME/backups"
+
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+
+DAILY_DIR="$BACKUP_ROOT/daily"
+WEEKLY_DIR="$BACKUP_ROOT/weekly"
+MONTHLY_DIR="$BACKUP_ROOT/monthly"
+
+COUNTER_FILE="$BACKUP_ROOT/counter.txt"
+
+mkdir -p "$DAILY_DIR" "$WEEKLY_DIR" "$MONTHLY_DIR"
+
+
+DAILY_FILE="$DAILY_DIR/$TIMESTAMP.sql.gz"
+
+/usr/bin/docker exec -i $CONTAINER \
+pg_dump -U $DB_USER $DB_NAME | gzip > "$DAILY_FILE"
+
+
+COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
+COUNT=$((COUNT + 1))
+echo "$COUNT" > "$COUNTER_FILE"
+
+
+if (( COUNT % 7 == 0 )); then
+    WEEK_NUM=$((COUNT / 7))
+    cp "$DAILY_FILE" "$WEEKLY_DIR/week_$WEEK_NUM.sql.gz"
+fi
+
+
+if (( COUNT % 28 == 0 )); then
+    MONTH_NUM=$((COUNT / 28))
+    cp "$DAILY_FILE" "$MONTHLY_DIR/month_$MONTH_NUM.sql.gz"
+fi
+
+ls -t "$DAILY_DIR" | tail -n +8 | 
+    xargs -I {} rm -f "$DAILY_DIR/{}" 2>/dev/null
+ls -t "$WEEKLY_DIR" | tail -n +5 | 
+    xargs -I {} rm -f "$WEEKLY_DIR/{}" 2>/dev/null
+ls -t "$MONTHLY_DIR" | tail -n +13 | 
+    xargs -I {} rm -f "$MONTHLY_DIR/{}" 2>/dev/null
+    \end{verbatim}
+
+    and just enter the command below to run the backup script
+    \begin{verbatim}
+    ./backup.sh
+    \end{verbatim} 
+    for test and make it executable 
+    after enter to crontab file with the command below
+    \begin{verbatim}
+    crontab -e
+    \end{verbatim}
+    and add the following line to run the backup script every day at 2 am
+    \begin{verbatim}
+    0 2 * * * /full/path/to/backup.sh
+    \end{verbatim}
+    this is the simple way to implement the Grandfather–Father–Son backup strategy, but we need to manage the backup files, and we need to delete old backup files to save space, and we need to remember to do it regularly.
+    
+    \end{document}

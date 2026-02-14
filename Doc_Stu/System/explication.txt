@@ -1,0 +1,65 @@
+1-  Authentication:
+
+we have table of users , login_history , refresh_token    
+Authentication allows a user to log in using their credentials stored in the Users table.
+Each successful login creates a record in Login_History and a session entry in Refresh_Tokens.
+
+Each record in Login_History and Refresh_Tokens includes a user_id foreign key that links it to the Users table.
+One user can have many login history and session records, but each record belongs to exactly one user
+
+ 2. Authorization: 
+
+ We have tables : users , role , user_role , permission , permission , role_permission 
+
+ A user is linked to roles through User_Role, and roles are linked to permissions through Role_Permission.
+Example: User Ahmed → Role: Teacher → Permissions: create_class, edit_class.
+
+A user can have many roles, each role can have many permissions, and each permission can belong to many roles.
+This lets one user inherit all permissions from their assigned roles.
+
+
+3. User - Workshop : 
+
+Each user is assigned to exactly one workshop as a leader through a foreign key linking the user to a workshop.
+A workshop can be managed by many leader users, but a leader user belongs to only one workshop.
+
+Students and workshops have a many-to-many relationship: 
+a student can register in many workshops, and a workshop can contain many students through a junction table (User_Workshop).
+
+4. Workshop - Class: 
+Each class belongs to exactly one workshop and is created by the workshop’s leader.
+A workshop can contain many classes, forming a one-to-many relationship between workshop and class.
+
+
+5. Class - user_class - Users:
+
+Classes and students have a many-to-many relationship: a student can attend many classes within a workshop, and each class can contain many students.
+This is implemented through a junction table (e.g., User_Class) that links users (students) to classes.
+
+
+6. Class - Proprities :
+
+Each class has exactly one properties record, and each properties record belongs to one class.
+This forms a one-to-one relationship between Class and Properties.
+
+7. User - Profile :
+
+Each user has exactly one profile, and each profile belongs to one user.
+This creates a one-to-one relationship between Users and Profile.
+
+8. Degree - Level: 
+
+Many levels belong to one degree, and a degree can contain many levels.
+This is a one-to-many relationship between Degree and Level.
+
+Example: Degree = 1:Master ; 2:Licence , Level = 1:L1 , 1:L2 , 1:L3 , 2:M1 , 2:M2
+
+9. Level - Specializations:
+
+Levels and specializations have a many-to-many relationship.
+A level can include many specializations, and a specialization can appear in multiple levels.
+
+10. Profile - Specialization - Level :
+
+Each student profile is assigned to one level and one specialization.
+A specialization within a level can have many students linked to it.

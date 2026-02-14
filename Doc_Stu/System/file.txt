@@ -1,0 +1,73 @@
+we have many workshops ---------- 1
+we have many class ---------------2
+
+we have student register in many workshops ------- 3
+Student 1 register in Networks , AI , UI/UX -------
+So we need a table To know All Students register in workshops ------- and 
+Workshops have many Students
+
+
+Users (role: Student) ------- Stu(id)/Wor(id) --------- Workshops
+
+
+------------------------------------------------------------------------
+
+for The classes :
+
+Workshop have many classes , and one class is Belongs to  workshop
+
+That mean ;   Workshop ------------ class (id_Workshop) as forgien key
+
+-------------------------------------------------------------
+
+for the Student can present in many classes in many defrent workshop
+and leader of workshop can  create a class :
+
+
+and leader can create many class , leader by workshop 
+
+users (role: Leader) ----------  workshop (user_id)  leader by workshop 
+
+
+--------------------------------------------------
+
+
+The Student can present in class that he regisetr in their workshop
+
+
+for this what is the relation 
+
+--------------------------------------------------------------------------------------------
+
+We have Users (Students and Leaders).
+
+Each Leader manages exactly one workshop, and each workshop is managed by one leader.
+ This is a one-to-one relationship between leader and workshop.
+
+Students can register in many workshops, and each workshop can have many students. 
+This registration is stored in a separate table.
+
+A workshop contains many classes, and each class belongs to one workshop.
+ Only the leader of that workshop can create classes.
+
+When a leader creates a class, the system automatically creates attendance records
+ for all students registered in that workshop. By default, all students are marked absent.
+
+During the class, the leader updates the attendance and marks present students.
+ Attendance is stored per student and per class.
+
+This system allows tracking student participation and generating attendance 
+reports.
+
+
+Questions: 
+1 The Workshop have one Leader ?  ore many leader ? 
+2 We have one Co-Leader or not ? and its many ?  
+
+--------------------------------------------------------------------------------------
+
+|| Part 2 : 
+Authorization System : Role-Based Access Control (RBAC)
+
+
+We have Maqnby Tables 

@@ -1,0 +1,13 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{}%
+\contentsline {section}{\numberline {2}Backup Strategy}{3}{}%
+\contentsline {subsection}{\numberline {2.1}Manual Backup}{3}{}%
+\contentsline {subsubsection}{\numberline {2.1.1}Restore}{3}{}%
+\contentsline {subsection}{\numberline {2.2}Automatic Backup}{3}{}%
+\contentsline {subsubsection}{\numberline {2.2.1}Host cron job (pro production)}{3}{}%
+\contentsline {subsubsection}{\numberline {2.2.2}Interval scheduling}{4}{}%
+\contentsline {subsubsection}{\numberline {2.2.3}Time-based scheduling}{4}{}%
+\contentsline {subsubsection}{\numberline {2.2.4}Restore from compressed backup}{5}{}%
+\contentsline {subsection}{\numberline {2.3}Backup Manager}{5}{}%
+\contentsline {subsection}{\numberline {2.4}Grandfather–Father–Son backup strategy}{5}{}%
+\contentsline {subsection}{\numberline {2.5}Types of this strategy}{6}{}%
+\contentsline {subsubsection}{\numberline {2.5.1}Single backup pipeline architecture}{6}{}%
