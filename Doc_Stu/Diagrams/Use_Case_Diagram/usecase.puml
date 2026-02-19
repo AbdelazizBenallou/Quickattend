@@ -1,0 +1,66 @@
+@startuml
+title Workshop Management System - Use Case Diagram
+
+left to right direction
+
+' ===== Base Actor =====
+actor "User" as U
+
+actor "Workshop Leader" as WL
+actor "Co-Leader" as CL
+actor "Student" as ST
+
+' ===== Inheritance =====
+WL -|> U
+CL -|> WL
+ST -|> U
+
+rectangle "Workshop System" {
+
+    ' ===== Common Use Cases =====
+    usecase "Login" as UC_Login
+    usecase "Logout" as UC_Logout
+    usecase "Register" as UC_Register
+    usecase "Refresh Session" as UC_Refresh
+
+    U --> UC_Login
+    U --> UC_Logout
+    U --> UC_Register
+    U --> UC_Refresh
+
+    ' ===== Leader Permissions =====
+    usecase "Create Class" as UC1
+    usecase "Update Class" as UC2
+    usecase "Delete Class" as UC3
+    usecase "View All Students\nin Workshop" as UC4
+    usecase "View All Classes\nin Workshop" as UC5
+    usecase "Add Student\nto Workshop" as UC6
+    usecase "Update Student\nin Workshop" as UC7
+    usecase "Delete Student\nfrom Workshop" as UC8
+    usecase "View Class Members" as UC9
+
+    WL --> UC1
+    WL --> UC2
+    WL --> UC3
+    WL --> UC4
+    WL --> UC5
+    WL --> UC6
+    WL --> UC7
+    WL --> UC8
+    WL --> UC9
+
+    ' ===== Student Permissions =====
+    usecase "View Profile" as UC10
+    usecase "Edit Profile" as UC11
+    usecase "View My Workshops" as UC12
+    usecase "View My Classes" as UC13
+    usecase "Register Presence\nby QR Code" as UC14
+
+    ST --> UC10
+    ST --> UC11
+    ST --> UC12
+    ST --> UC13
+    ST --> UC14
+}
+
+@enduml

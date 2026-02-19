@@ -1,0 +1,32 @@
+for our system we some basics roles and thier permissions
+roles:
+    1.super Admin
+    2.club leader
+    5.club co-leader
+    3.workshop leader
+    4.workshop cl-leader
+    5.member (Student)
+
+we many permissions:
+    1. For the super admin have all permissions 
+    
+we just focus in our system    workshop leader  , and co-leader , Student
+for know we just focus on those roles and their permissions
+
+for Student that register in workshop (private)
+in this case the workshop-leader and co-leader have the same permissions
+    1.workshop-leader:
+        create , delete , update Class
+        see all Students that regiser in his workshop
+        see all Classes that created in his workshop 
+        can add , delete , update Student in his workshop
+        view class members
+
+
+    2. student :
+        view and edit profile 
+        see all workshop that is one of them 
+        see all classes that he present to
+        register his presence in class by scan code qr
+
+        
