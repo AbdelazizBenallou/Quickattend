@@ -1,0 +1,16 @@
+we use monolithic architecture in this project
+also we use REST/HTTP to define services 
+we use MVC pattern to organize project  => View  -> Controler  -> Service  -> models
+for the service build with 3-Tier arch 
+all apis used are synchrone comm 
+
+---------------------------------------------------
+we use also docker for containerization systems
+used postgres for db  postgres:17
+node js 22.22.1 lts version (express)
+for authentication system we used (jwt)
+referse proxy nginx 
+system cache used redis
+
+need monitoring system + good security 
+(DDOS, Sqli, CORS, XSS, http , authenticatio-bypass , authorization )

@@ -1,0 +1,28 @@
+Feature-Based Structure
+
+src/
+│
+├── config/
+├── database/
+│
+├── modules/
+│   ├── auth/
+│   │   ├── auth.controller.js
+│   │   ├── auth.service.js
+│   │   ├── auth.routes.js
+│   │   └── auth.validator.js
+│   │
+│   ├── study/
+│   │   ├── study.controller.js
+│   │   ├── study.service.js
+│   │   ├── study.routes.js
+│   │
+│   ├── module/
+│   │   ├── module.controller.js
+│   │   ├── module.service.js
+│   │   ├── module.routes.js
+│
+├── models/
+├── middleware/
+├── utils/
+└── index.js
