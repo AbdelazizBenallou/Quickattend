@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model has been renamed to 'Renamedclass' during introspection, because the original name 'class' is reserved.
+model Renamedclass {
+  class_id    Int          @id @default(autoincrement())
+  name        String
+  date        DateTime?    @db.Date
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
+  workshop_id Int
+  workshop    workshop     @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+  properties  properties?
+  user_class  user_class[]
+
+  @@index([workshop_id], map: "idx_class_workshop")
+  @@map("class")
+}
+
+model degree_level {
+  degree_level_id Int     @id @default(autoincrement())
+  name            String  @unique
+  level           level[]
+}
+
+model level {
+  level_id             Int                    @id @default(autoincrement())
+  name                 String
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  degree_level_id      Int
+  degree_level         degree_level           @relation(fields: [degree_level_id], references: [degree_level_id], onDelete: Cascade, onUpdate: NoAction)
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model level_specialization {
+  level_id          Int
+  specialization_id Int
+  level             level          @relation(fields: [level_id], references: [level_id], onDelete: Cascade, onUpdate: NoAction)
+  specialization    specialization @relation(fields: [specialization_id], references: [specialization_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([level_id, specialization_id])
+}
+
+model login_history {
+  login_history_id Int       @id @default(autoincrement())
+  user_id          Int
+  login_at         DateTime? @default(now()) @db.Timestamp(6)
+  logout_at        DateTime? @db.Timestamp(6)
+  ip_address       String?
+  user_agent       String?
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_login_history_user")
+}
+
+model permission {
+  permission_id   Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+}
+
+model profile {
+  user_id           Int             @id
+  first_name        String?
+  last_name         String?
+  date_birth        DateTime?       @db.Date
+  address           String?
+  level_id          Int?
+  specialization_id Int?
+  level             level?          @relation(fields: [level_id], references: [level_id], onDelete: NoAction, onUpdate: NoAction)
+  specialization    specialization? @relation(fields: [specialization_id], references: [specialization_id], onDelete: NoAction, onUpdate: NoAction)
+  users             users           @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model properties {
+  class_id     Int          @id
+  room_number  String?
+  capacity     Int?
+  equipment    String?
+  Renamedclass Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model refresh_tokens {
+  refresh_token_id Int       @id @default(autoincrement())
+  user_id          Int
+  token            String    @unique
+  expires_at       DateTime  @db.Timestamp(6)
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  revoked          Boolean?  @default(false)
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_refresh_tokens_user")
+}
+
+model role {
+  role_id         Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+  user_role       user_role[]
+}
+
+model role_permission {
+  role_id       Int
+  permission_id Int
+  permission    permission @relation(fields: [permission_id], references: [permission_id], onDelete: Cascade, onUpdate: NoAction)
+  role          role       @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([role_id, permission_id])
+}
+
+model specialization {
+  specialization_id    Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model user_class {
+  user_class_id Int          @id @default(autoincrement())
+  user_id       Int
+  class_id      Int
+  Renamedclass  Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+  users         users        @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_role {
+  user_id Int
+  role_id Int
+  role    role  @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+  users   users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, role_id])
+}
+
+model user_workshop {
+  user_id     Int
+  workshop_id Int
+  users       users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  workshop    workshop @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, workshop_id])
+}
+
+model users {
+  user_id        Int              @id @default(autoincrement())
+  full_name      String
+  email          String           @unique
+  password_hash  String
+  created_at     DateTime?        @default(now()) @db.Timestamp(6)
+  login_history  login_history[]
+  profile        profile?
+  refresh_tokens refresh_tokens[]
+  user_class     user_class[]
+  user_role      user_role[]
+  user_workshop  user_workshop[]
+  workshop       workshop[]
+
+  @@index([email], map: "idx_users_email")
+}
+
+model workshop {
+  workshop_id    Int             @id @default(autoincrement())
+  name           String
+  created_at     DateTime?       @default(now()) @db.Timestamp(6)
+  leader_user_id Int?
+  Renamedclass   Renamedclass[]
+  user_workshop  user_workshop[]
+  users          users?          @relation(fields: [leader_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
