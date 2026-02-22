@@ -152,6 +152,7 @@ model users {
   full_name      String
   email          String           @unique
   password_hash  String
+  status         user_status      @default(active)
   created_at     DateTime?        @default(now()) @db.Timestamp(6)
   login_history  login_history[]
   profile        profile?
@@ -172,4 +173,11 @@ model workshop {
   Renamedclass   Renamedclass[]
   user_workshop  user_workshop[]
   users          users?          @relation(fields: [leader_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum user_status {
+  active
+  inactive
+  locked
+  suspended
 }
