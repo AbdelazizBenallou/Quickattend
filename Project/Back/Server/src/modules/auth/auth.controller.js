@@ -4,7 +4,6 @@ const { loginUser } = require('./auth.service');
 async function login(req, res) {
   try {
     const { email, password } = req.body;
-    console.log('Login attempt:', { email });
 
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
@@ -12,7 +11,7 @@ async function login(req, res) {
     const { accessToken, refreshToken, user } = await loginUser(email, password, ip, userAgent);
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // HTTPS only in prod
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 5 * 60 * 1000 // 5 minutes
     });
