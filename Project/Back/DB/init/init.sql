@@ -34,7 +34,6 @@ CREATE TYPE user_status AS ENUM (
 
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    full_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     status user_status NOT NULL DEFAULT 'active',

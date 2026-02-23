@@ -1,0 +1,5 @@
+password_reset
+email_validation
+as extend plan with postfix service (Docker)
+
+something else about revokation tokens also problem 

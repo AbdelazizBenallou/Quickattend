@@ -2,9 +2,9 @@
 entity Users {
   +user_id : int (PK)
   --
-  full_name : string
   email : string
   password_hash : string
+  status : string
   created_at : datetime
 }
 
