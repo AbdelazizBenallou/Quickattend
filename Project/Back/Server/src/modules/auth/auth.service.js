@@ -3,9 +3,8 @@ const prisma = require('../../config/prisma');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 const { performance } = require('perf_hooks');
+const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config/env')
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-dev-only';
-const REFRESH_SECRET = process.env.REFRESH_SECRET || 'dev-refresh-secret';
 
 // Dummy hash for non-existent users (prevents timing/user enumeration attacks)
 const DUMMY_HASH = '$argon2id$v=19$m=65536,t=3,p=4$DcYjJbNX7Eq+A/WIO9ZYaQ$3jC76ZFb7t1YHV5gJnoAwmBo0vY4Inui6mZDhQ7gDYw'
@@ -38,11 +37,10 @@ async function loginUser(email, password, ip, userAgent = null) {
 
 
     // 3. Determine success conditions
-    const isAuthenticated = user && isValid && user.status === 'active';
-    if (!isAuthenticated) {
+    if (!user || !isValid || user.status !== 'active') {
         const tFail = performance.now();
         console.log('Total login time (failed):', (tFail - t0).toFixed(2), 'ms');
-        throw new Error('Invalid email or password');
+        throw new Error('Invalid credentials');
     }
 
     // 4. Fetch roles and permissions
@@ -51,32 +49,20 @@ async function loginUser(email, password, ip, userAgent = null) {
     const userRoles = await prisma.user_role.findMany({
         where: { user_id: userId },
         include: {
-            role: {
-                include: {
-                    role_permission: {
-                        include: {
-                            permission: true
-                        }
-                    }
-                }
-            }
+            role: true
         }
     });
     const t6 = performance.now();
     console.log('Fetch roles & permissions time:', (t6 - t5).toFixed(2), 'ms');
 
     // Extract roles
-    const roles = userRoles.map(ur => ({
-        role_id: ur.role.role_id,
-        name: ur.role.name
-    }));
-
+    const roles = userRoles.map(r => r.role.name);
 
     // 5. Generate JWT tokens
     const t7 = performance.now();
     const accessToken = jwt.sign(
         { userId: userId, email: user.email, roles },
-        JWT_SECRET,
+        ACCESS_SECRET,
         { expiresIn: '5m' }
     );
 
@@ -205,28 +191,20 @@ async function registerUser(email, password, ip, userAgent = null) {
     // 2. Load roles & permissions
     // -------------------------
     const tRolesFetchStart = performance.now();
+    const userId = newUser.user_id;
     const userRoles = await prisma.user_role.findMany({
-        where: { user_id: newUser.user_id },
+        where: { user_id: userId },
         include: {
-            role: {
-                include: {
-                    role_permission: {
-                        include: { permission: true }
-                    }
-                }
-            }
+            role: true
         }
     });
+
     const tRolesFetchEnd = performance.now();
     console.log('Fetch roles & permissions time:',
         (tRolesFetchEnd - tRolesFetchStart).toFixed(2), 'ms');
 
 
-    const roles = userRoles.map(ur => ({
-        role_id: ur.role.role_id,
-        name: ur.role.name
-    }));
-
+    const roles = userRoles.map(r => r.role.name);
 
     // -------------------------
     // 3. Generate JWT
@@ -234,7 +212,7 @@ async function registerUser(email, password, ip, userAgent = null) {
     const tJwtStart = performance.now();
     const accessToken = jwt.sign(
         { userId: newUser.user_id, email: newUser.email, roles },
-        JWT_SECRET,
+        ACCESS_SECRET,
         { expiresIn: '5m' }
     );
 
@@ -302,26 +280,16 @@ async function refreshAccessToken(userId) {
     const userRoles = await prisma.user_role.findMany({
         where: { user_id: userId },
         include: {
-            role: {
-                include: {
-                    role_permission: {
-                        include: { permission: true }
-                    }
-                }
-            }
+            role: true
         }
     });
 
-    const roles = userRoles.map(ur => ({
-        role_id: ur.role.role_id,
-        name: ur.role.name
-    }));
-
+    const roles = userRoles.map(r => r.role.name);
 
     // 4️⃣ Generate new access token
     const accessToken = jwt.sign(
         { userId, email: user.email, roles },
-        process.env.JWT_SECRET || 'fallback-secret-for-dev-only',
+        ACCESS_SECRET,
         { expiresIn: '5m' }
     );
 

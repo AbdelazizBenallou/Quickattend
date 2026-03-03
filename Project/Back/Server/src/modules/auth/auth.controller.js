@@ -1,5 +1,7 @@
 // src/modules/auth/auth.controller.js
 const { loginUser, registerUser, refreshAccessToken } = require('./auth.service');
+const response = require('../../utils/response');
+const { NODE_ENV } = require('../../config/env');
 
 async function login(req, res) {
   try {
@@ -11,28 +13,35 @@ async function login(req, res) {
     const { accessToken, refreshToken, user } = await loginUser(email, password, ip, userAgent);
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 5 * 60 * 1000 // 5 minutes
+      maxAge: 5 * 60 * 1000
     });
 
-    // Send refresh token (longer-lived)
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: NODE_ENV,
       sameSite: 'lax',
-      maxAge: 10 * 60 * 1000 // 10 minutes
+      maxAge: 10 * 60 * 1000
     });
 
-    return res.json({
-      message: 'Login successful',
-      user,
-      accessToken: accessToken,
-      refreshToken: refreshToken
-    });
+    return response.success(
+      res,
+      {
+        user,
+        accessToken,
+        refreshToken
+      },
+      "Login successful"
+    );
+
   } catch (error) {
     console.error('Login error:', error.message);
-    return res.status(401).json({ error: error.message || 'Authentication failed' });
+    return response.error(
+      res,
+      "Invalid credentials",
+      401
+    );
   }
 }
 
@@ -48,33 +57,36 @@ async function register(req, res) {
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 5 * 60 * 1000
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: NODE_ENV,
       sameSite: 'lax',
       maxAge: 10 * 60 * 1000
     });
 
-    return res.status(201).json({
-      message: 'User registered successfully',
-      user,
-      accessToken,
-      refreshToken
-    });
-
+    return response.success(
+      res,
+      {
+        user,
+        accessToken,
+        refreshToken
+      },
+      "User registered successfully",
+      201
+    );
   } catch (error) {
     console.error('Register error:', error.message);
 
     if (error.message === 'Email already exists') {
-      return res.status(409).json({ error: error.message });
+      return response.error(res, "Registration failed", 409);
     }
 
-    return res.status(400).json({ error: error.message });
+    return response.error(res, "Registration failed", 400);
   }
 }
 
@@ -87,20 +99,19 @@ async function refreshToken(req, res) {
 
     res.cookie('accessToken', newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 5 * 60 * 1000
     });
 
-    return res.json({
-      message: 'New access token generated',
-      accessToken: newAccessToken
-    });
+    return response.success(
+      res,
+      { accessToken: newAccessToken },
+      "Access token refreshed"
+    );
 
   } catch (err) {
-    return res.status(err.status || 500).json({
-      error: err.message || 'Refresh failed'
-    });
+    return res.error(res, "Could not refresh token", 500);
   }
 }
 

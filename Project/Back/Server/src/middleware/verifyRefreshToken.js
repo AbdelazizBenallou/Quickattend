@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-
-const REFRESH_SECRET = process.env.REFRESH_SECRET || 'dev-refresh-secret';
+const { REFRESH_SECRET } = require('../config/env');
 
 function verifyRefreshToken(req, res, next) {
 
@@ -25,6 +24,6 @@ function verifyRefreshToken(req, res, next) {
 }
 
 function verifyAccessToken(req, res, next){
-    
+
 }
-module.exports = {verifyRefreshToken, verifyAccessToken};
+module.exports = verifyRefreshToken, verifyAccessToken;
