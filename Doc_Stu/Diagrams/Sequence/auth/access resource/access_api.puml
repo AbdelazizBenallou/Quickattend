@@ -1,0 +1,50 @@
+@startuml
+actor User as user
+
+participant "Server" as server
+participant "Users" as users
+participant "Role_User" as role_user
+participant "Role" as role
+participant "Role_Permission" as role_permission
+participant "Permissions" as permissions
+
+user -> server: Access Ressource (API)
+server -> server: Validate Input
+
+alt Invalid
+    server --> user: 400 Bad Request
+else Valid 
+    server -> server: VerifySigntureToken(Access_Token)
+
+    alt InValid Token
+        server --> user: 403 Token Error
+    else Valid Token
+        server -> server: user_info(user_id, roles)
+        server --> users: CheckExist(user_id)
+        alt User not Exist
+            users --> server: null
+            server --> user: 401 Unauthorized
+        else User Exist
+            users -> server: user_info (status)
+            server -> server: CheckActivation(status == 'Active')
+
+            alt Account Not Active
+                server --> user: 403 Forbidden
+            else Account Active
+                server -> role_user: GetPermissions(user_id)
+                role_user --> server: all_permissions
+                server -> server: CompareApiPermissions
+                alt Not Authorized
+
+                else Authorized
+
+                end
+
+            end
+
+        end
+    end
+end
+
+
+@enduml

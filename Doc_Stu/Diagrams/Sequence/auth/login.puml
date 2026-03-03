@@ -14,15 +14,15 @@ user -> server: POST /login (email,password)
 
 server -> server: validateInput(email,password)
 alt Input Not Valid
-    server -> user: 400 Bad Request
+    server --> user: 400 Bad Request
 else Input Valid
 
     server -> users: findByEmail(email)
 
     alt Email Not Found
-        users -> server: null
+        users --> server: null
         server -> server: hashCompare(password, fake_hash)
-        server -> user: 401 Unauthorized\nInvalid credentials
+        server --> user: 401 Unauthorized\nInvalid credentials
 
     else Email Found
 
@@ -30,35 +30,35 @@ else Input Valid
 
         server -> server: checkAccountStatus()
         alt Account Not Allowed
-            server -> user: 403 Forbidden
+            server --> user: 403 Forbidden
         else Account OK
 
             server -> server: hashCompare(password, password_hash)
 
             alt Password Invalid
-                server -> user: 401 Unauthorized\nInvalid credentials
+                server --> user: 401 Unauthorized\nInvalid credentials
 
             else Password Valid
 
                 server -> profile: getProfile(user_id)
-                profile -> server: profile_data
+                profile --> server: profile_data
 
                 server -> role_user: getRoles(user_id)
-                role_user -> server: role_ids
+                role_user --> server: role_ids
 
                 server -> role: getRoleDetails(role_ids)
-                role -> server: roles
+                role --> server: roles
 
                 server -> role_permission: getPermissions(role_ids)
-                role_permission -> server: permission_ids
+                role_permission --> server: permission_ids
 
                 server -> permissions: getPermissionDetails(permission_ids)
-                permissions -> server: permissions_list
+                permissions --> server: permissions_list
 
                 server -> server: generateTokens(user + roles + permissions)
 
                 server -> login_history: insert(user_id, ip, device)
-                login_history -> server: Done
+                login_history --> server: Done
 
                 server -> user: 200 OK + tokens
 

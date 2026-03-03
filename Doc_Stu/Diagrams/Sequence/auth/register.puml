@@ -1,40 +1,53 @@
 @startuml
-actor User as user
+actor User as User
 
-participant "Server" as server
-participant "Users" as users
-participant "Profile" as profile
-participant "Role_User" as role_user
-participant "Role" as role
-participant "Role_Permission" as role_permission
-participant "Permissions" as permissions
+participant "Server" as Server
+participant "Users" as Users
+participant "Profile" as Profile
+participant "Role_User" as Role_User
+participant "Role" as Role
 participant "login_history" as login_history
 
+User -> Server: POST /register
 
-user -> server: Post /register (username, email, password)
-server -> server: ValidationInput(email, password)
-alt Input Not Valid
-    server -> user: 400 Bad Request
-else Input Valid
-    server -> users: findByEmail(email)
-    alt Email Found
-        users -> server: Email Exist
-        server -> user: 404 Email Already Exist
-    else Email Not Found
-        server -> server: hashpassword(password)
-        server -> users: Insert(email; password_hash, status='Active')
-        users -> server: return (user_id)
-        users -> role: Getrole('member')
-        role -> users: member_id
-        server -> role_user: Insert(user_id, member_id)
-        role_user -> server: insert Success
+Server -> Server: Validate input
+alt Invalid
+    Server -> User: 400 Bad Request
+else Valid
 
-        server -> user: 200, Account Created
+    Server -> Server: Start Transaction
+
+    Server -> Server: hashPassword(password)
+
+    Server -> Users: Insert user (email UNIQUE)
+    Users -> Server: return (user_id)
+
+    alt Unique constraint error
+        Server -> Server: Rollback
+        Server -> User: 409 Conflict
+    else Success
+
+        Server -> Role: Get default role
+        Role -> Server: Return Default Role
+   
+        Server -> Role_User: Insert relation (user_id, default_role)
+        Role_User -> Server: Success 
+        
+
+        Server -> Profile: Create profile(user_id)
+        Profile -> Server: Success
+
+        Server -> Server: Commit
+
+        Server -> Server: Load permissions for role
+        Server -> Server: GenerateToken()
+
+        Server -> login_history: insert(user_id, ip, device)
+        login_history -> Server: Done
+        
+        Server -> User: 201 Created + Tokens
     end
-
 end
-
-
 
 
 @enduml

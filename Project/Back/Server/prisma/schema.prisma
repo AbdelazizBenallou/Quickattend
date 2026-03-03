@@ -149,7 +149,6 @@ model user_workshop {
 
 model users {
   user_id        Int              @id @default(autoincrement())
-  full_name      String
   email          String           @unique
   password_hash  String
   status         user_status      @default(active)

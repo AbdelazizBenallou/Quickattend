@@ -71,25 +71,11 @@ async function loginUser(email, password, ip, userAgent = null) {
         name: ur.role.name
     }));
 
-    // Extract permissions (unique)
-    const permissions = [
-        ...new Map(
-            userRoles.flatMap(ur =>
-                ur.role.role_permission.map(rp => [
-                    rp.permission.permission_id,
-                    {
-                        permission_id: rp.permission.permission_id,
-                        name: rp.permission.name
-                    }
-                ])
-            )
-        ).values()
-    ];
 
     // 5. Generate JWT tokens
     const t7 = performance.now();
     const accessToken = jwt.sign(
-        { userId: userId, email: user.email, roles, permissions },
+        { userId: userId, email: user.email, roles },
         JWT_SECRET,
         { expiresIn: '5m' }
     );
@@ -131,4 +117,215 @@ async function loginUser(email, password, ip, userAgent = null) {
     return { accessToken, refreshToken, user: safeUser };
 }
 
-module.exports = { loginUser };
+async function registerUser(email, password, ip, userAgent = null) {
+
+    const t0 = performance.now(); // total start
+
+    // -------------------------
+    // 1. Transaction block
+    // -------------------------
+    const newUser = await prisma.$transaction(async (tx) => {
+
+        // 🔹 Hash password
+        const tHashStart = performance.now();
+        const password_hash = await argon2.hash(password, {
+            type: argon2.argon2id,
+            memoryCost: 65536,
+            timeCost: 3,
+            parallelism: 4
+        });
+        const tHashEnd = performance.now();
+        console.log('Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
+
+
+        // 🔹 Create user
+        const tCreateStart = performance.now();
+        let createdUser;
+        try {
+            createdUser = await tx.users.create({
+                data: {
+                    email,
+                    password_hash,
+                    status: 'active'
+                }
+            });
+        } catch (err) {
+            if (err.code === 'P2002') {
+                throw new Error('Email already exists');
+            }
+            throw err;
+        }
+        const tCreateEnd = performance.now();
+        console.log('User insert time:', (tCreateEnd - tCreateStart).toFixed(2), 'ms');
+
+
+        // 🔹 Get default role
+        const tRoleStart = performance.now();
+        const defaultRole = await tx.role.findUnique({
+            where: { name: 'Student' }
+        });
+
+        if (!defaultRole) {
+            throw new Error('Default role not configured');
+        }
+        const tRoleEnd = performance.now();
+        console.log('Get role time:', (tRoleEnd - tRoleStart).toFixed(2), 'ms');
+
+
+        // 🔹 Insert user_role
+        const tUserRoleStart = performance.now();
+        await tx.user_role.create({
+            data: {
+                user_id: createdUser.user_id,
+                role_id: defaultRole.role_id
+            }
+        });
+        const tUserRoleEnd = performance.now();
+        console.log('User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
+
+
+        // 🔹 Create profile
+        const tProfileStart = performance.now();
+        await tx.profile.create({
+            data: {
+                user_id: createdUser.user_id
+            }
+        });
+        const tProfileEnd = performance.now();
+        console.log('Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
+
+        return createdUser;
+    });
+
+    const tAfterTransaction = performance.now();
+    console.log('Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // 2. Load roles & permissions
+    // -------------------------
+    const tRolesFetchStart = performance.now();
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: newUser.user_id },
+        include: {
+            role: {
+                include: {
+                    role_permission: {
+                        include: { permission: true }
+                    }
+                }
+            }
+        }
+    });
+    const tRolesFetchEnd = performance.now();
+    console.log('Fetch roles & permissions time:',
+        (tRolesFetchEnd - tRolesFetchStart).toFixed(2), 'ms');
+
+
+    const roles = userRoles.map(ur => ({
+        role_id: ur.role.role_id,
+        name: ur.role.name
+    }));
+
+
+    // -------------------------
+    // 3. Generate JWT
+    // -------------------------
+    const tJwtStart = performance.now();
+    const accessToken = jwt.sign(
+        { userId: newUser.user_id, email: newUser.email, roles },
+        JWT_SECRET,
+        { expiresIn: '5m' }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: newUser.user_id, email: newUser.email },
+        REFRESH_SECRET,
+        { expiresIn: '10m' }
+    );
+    const tJwtEnd = performance.now();
+    console.log('JWT generation time:', (tJwtEnd - tJwtStart).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // 4. Insert login history
+    // -------------------------
+    const tLoginHistoryStart = performance.now();
+    await prisma.login_history.create({
+        data: {
+            user_id: newUser.user_id,
+            ip_address: ip,
+            user_agent: userAgent || 'unknown'
+        }
+    });
+    const tLoginHistoryEnd = performance.now();
+    console.log('Login history insert time:',
+        (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // TOTAL TIME
+    // -------------------------
+    const tFinal = performance.now();
+    console.log('Total register time:',
+        (tFinal - t0).toFixed(2), 'ms');
+
+
+    return {
+        accessToken,
+        refreshToken,
+        user: {
+            user_id: newUser.user_id,
+            email: newUser.email,
+            status: newUser.status
+        }
+    };
+}
+
+async function refreshAccessToken(userId) {
+
+    // 1️⃣ Check user exists
+    const user = await prisma.users.findUnique({
+        where: { user_id: userId }
+    });
+
+    if (!user) {
+        throw { status: 401, message: 'User does not exist' };
+    }
+
+    // 2️⃣ Check activation
+    if (user.status !== 'active') {
+        throw { status: 403, message: 'Account is not active' };
+    }
+
+    // 3️⃣ Get roles & permissions
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: {
+                include: {
+                    role_permission: {
+                        include: { permission: true }
+                    }
+                }
+            }
+        }
+    });
+
+    const roles = userRoles.map(ur => ({
+        role_id: ur.role.role_id,
+        name: ur.role.name
+    }));
+
+
+    // 4️⃣ Generate new access token
+    const accessToken = jwt.sign(
+        { userId, email: user.email, roles },
+        process.env.JWT_SECRET || 'fallback-secret-for-dev-only',
+        { expiresIn: '5m' }
+    );
+
+    return accessToken;
+}
+
+module.exports = { loginUser, registerUser, refreshAccessToken };

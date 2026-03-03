@@ -3,9 +3,9 @@ This digest is designed to be easily parsed by Large Language Models.
 
 --- SUMMARY ---
 Repository: Server
-Files Analyzed: 10
-Total Text Size: 1.38 KB
-Estimated Tokens (text only): ~602
+Files Analyzed: 12
+Total Text Size: 14.5 KB
+Estimated Tokens (text only): ~4,083
 
 --- DIRECTORY STRUCTURE ---
 Server/
@@ -16,41 +16,275 @@ Server/
 │   │   └── prisma.js
 │   ├── middleware/
 │   │   └── ratelimiter.js
-│   └── modules/
-│       ├── auth/
-│       │   ├── auth.controller.js
-│       │   ├── auth.routes.js
-│       │   ├── auth.service.js
-│       │   └── auth.validator.js
-│       └── users/
-│           └── users.routes.js
+│   ├── modules/
+│   │   ├── auth/
+│   │   │   ├── auth.controller.js
+│   │   │   ├── auth.routes.js
+│   │   │   ├── auth.service.js
+│   │   │   └── auth.validator.js
+│   │   └── users/
+│   │       └── users.routes.js
+│   └── utils/
+│       ├── base64.js
+│       └── hash.js
 ├── package.json
 └── server.js
 
 
 --- FILE CONTENTS ---
 ============================================================
+FILE: prisma/schema.prisma
+============================================================
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model has been renamed to 'Renamedclass' during introspection, because the original name 'class' is reserved.
+model Renamedclass {
+  class_id    Int          @id @default(autoincrement())
+  name        String
+  date        DateTime?    @db.Date
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
+  workshop_id Int
+  workshop    workshop     @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+  properties  properties?
+  user_class  user_class[]
+
+  @@index([workshop_id], map: "idx_class_workshop")
+  @@map("class")
+}
+
+model degree_level {
+  degree_level_id Int     @id @default(autoincrement())
+  name            String  @unique
+  level           level[]
+}
+
+model level {
+  level_id             Int                    @id @default(autoincrement())
+  name                 String
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  degree_level_id      Int
+  degree_level         degree_level           @relation(fields: [degree_level_id], references: [degree_level_id], onDelete: Cascade, onUpdate: NoAction)
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model level_specialization {
+  level_id          Int
+  specialization_id Int
+  level             level          @relation(fields: [level_id], references: [level_id], onDelete: Cascade, onUpdate: NoAction)
+  specialization    specialization @relation(fields: [specialization_id], references: [specialization_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([level_id, specialization_id])
+}
+
+model login_history {
+  login_history_id Int       @id @default(autoincrement())
+  user_id          Int
+  login_at         DateTime? @default(now()) @db.Timestamp(6)
+  logout_at        DateTime? @db.Timestamp(6)
+  ip_address       String?
+  user_agent       String?
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_login_history_user")
+}
+
+model permission {
+  permission_id   Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+}
+
+model profile {
+  user_id           Int             @id
+  first_name        String?
+  last_name         String?
+  date_birth        DateTime?       @db.Date
+  address           String?
+  level_id          Int?
+  specialization_id Int?
+  level             level?          @relation(fields: [level_id], references: [level_id], onDelete: NoAction, onUpdate: NoAction)
+  specialization    specialization? @relation(fields: [specialization_id], references: [specialization_id], onDelete: NoAction, onUpdate: NoAction)
+  users             users           @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model properties {
+  class_id     Int          @id
+  room_number  String?
+  capacity     Int?
+  equipment    String?
+  Renamedclass Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model refresh_tokens {
+  refresh_token_id Int       @id @default(autoincrement())
+  user_id          Int
+  token            String    @unique
+  expires_at       DateTime  @db.Timestamp(6)
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  revoked          Boolean?  @default(false)
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_refresh_tokens_user")
+}
+
+model role {
+  role_id         Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+  user_role       user_role[]
+}
+
+model role_permission {
+  role_id       Int
+  permission_id Int
+  permission    permission @relation(fields: [permission_id], references: [permission_id], onDelete: Cascade, onUpdate: NoAction)
+  role          role       @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([role_id, permission_id])
+}
+
+model specialization {
+  specialization_id    Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model user_class {
+  user_class_id Int          @id @default(autoincrement())
+  user_id       Int
+  class_id      Int
+  Renamedclass  Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+  users         users        @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_role {
+  user_id Int
+  role_id Int
+  role    role  @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+  users   users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, role_id])
+}
+
+model user_workshop {
+  user_id     Int
+  workshop_id Int
+  users       users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  workshop    workshop @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, workshop_id])
+}
+
+model users {
+  user_id        Int              @id @default(autoincrement())
+  full_name      String
+  email          String           @unique
+  password_hash  String
+  status         user_status      @default(active)
+  created_at     DateTime?        @default(now()) @db.Timestamp(6)
+  login_history  login_history[]
+  profile        profile?
+  refresh_tokens refresh_tokens[]
+  user_class     user_class[]
+  user_role      user_role[]
+  user_workshop  user_workshop[]
+  workshop       workshop[]
+
+  @@index([email], map: "idx_users_email")
+}
+
+model workshop {
+  workshop_id    Int             @id @default(autoincrement())
+  name           String
+  created_at     DateTime?       @default(now()) @db.Timestamp(6)
+  leader_user_id Int?
+  Renamedclass   Renamedclass[]
+  user_workshop  user_workshop[]
+  users          users?          @relation(fields: [leader_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum user_status {
+  active
+  inactive
+  locked
+  suspended
+}
+
+
+============================================================
 FILE: src/config/prisma.js
 ============================================================
 const { PrismaClient } = require('@prisma/client');
-
 const prisma = new PrismaClient();
-
 module.exports = prisma;
+
+============================================================
+FILE: src/modules/auth/auth.controller.js
+============================================================
+// src/modules/auth/auth.controller.js
+const { loginUser } = require('./auth.service');
+
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    const ip = req.ip || req.connection.remoteAddress;
+    const userAgent = req.get('User-Agent');
+
+    const { accessToken, refreshToken, user } = await loginUser(email, password, ip, userAgent);
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000 // 5 minutes
+    });
+
+    // Send refresh token (longer-lived)
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000 // 10 minutes
+    });
+
+    return res.json({
+      message: 'Login successful',
+      user
+    });
+  } catch (error) {
+    console.error('Login error:', error.message);
+    return res.status(401).json({ error: error.message || 'Authentication failed' });
+  }
+}
+
+
+
+module.exports = { login };
 
 ============================================================
 FILE: src/modules/auth/auth.routes.js
 ============================================================
 const express = require('express');
 const router = express.Router();
-
-
+const prisma = require("../../config/prisma");
+const { login } = require('./auth.controller');
+const { loginValidationRules, validateLogin } = require('./auth.validator');
 
 /* Rate limiter for auth routes */
 
 /** Auth Routes **/
 /* Post /v1/auth/login */
 
+router.post('/login', loginValidationRules(), validateLogin, login);
 /* Post /v1/auth/register */
 
 
@@ -65,6 +299,171 @@ module.exports = router;
 
 
 ============================================================
+FILE: src/modules/auth/auth.service.js
+============================================================
+// src/modules/auth/auth.service.js
+const prisma = require('../../config/prisma');
+const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
+const { performance } = require('perf_hooks');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-dev-only';
+const REFRESH_SECRET = process.env.REFRESH_SECRET || 'dev-refresh-secret';
+
+// Dummy hash for non-existent users (prevents timing/user enumeration attacks)
+const DUMMY_HASH = '$argon2id$v=19$m=65536,t=3,p=4$DcYjJbNX7Eq+A/WIO9ZYaQ$3jC76ZFb7t1YHV5gJnoAwmBo0vY4Inui6mZDhQ7gDYw'
+
+async function loginUser(email, password, ip, userAgent = null) {
+
+    const t0 = performance.now(); // total timer start
+
+    // 1. Attempt to find user
+    const t1 = performance.now();
+    const user = await prisma.users.findUnique({
+        where: { email },
+        select: {
+            user_id: true,
+            email: true,
+            password_hash: true,
+            status: true,
+        }
+    });
+    const t2 = performance.now();
+    console.log('Find user time:', (t2 - t1).toFixed(2), 'ms');
+
+
+    // 2. Always verify password (even if user doesn't exist)
+    const t3 = performance.now();
+    const hashToVerify = user ? user.password_hash : DUMMY_HASH;
+    const isValid = await argon2.verify(hashToVerify, password);
+    const t4 = performance.now();
+    console.log('Password verify time:', (t4 - t3).toFixed(2), 'ms');
+
+
+    // 3. Determine success conditions
+    const isAuthenticated = user && isValid && user.status === 'active';
+    if (!isAuthenticated) {
+        const tFail = performance.now();
+        console.log('Total login time (failed):', (tFail - t0).toFixed(2), 'ms');
+        throw new Error('Invalid email or password');
+    }
+
+    // 4. Fetch roles and permissions
+    const t5 = performance.now();
+    const userId = user.user_id;
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: {
+                include: {
+                    role_permission: {
+                        include: {
+                            permission: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+    const t6 = performance.now();
+    console.log('Fetch roles & permissions time:', (t6 - t5).toFixed(2), 'ms');
+
+    // Extract roles
+    const roles = userRoles.map(ur => ({
+        role_id: ur.role.role_id,
+        name: ur.role.name
+    }));
+
+    // Extract permissions (unique)
+    const permissions = [
+        ...new Map(
+            userRoles.flatMap(ur =>
+                ur.role.role_permission.map(rp => [
+                    rp.permission.permission_id,
+                    {
+                        permission_id: rp.permission.permission_id,
+                        name: rp.permission.name
+                    }
+                ])
+            )
+        ).values()
+    ];
+
+    // 5. Generate JWT tokens
+    const t7 = performance.now();
+    const accessToken = jwt.sign(
+        { userId: userId, email: user.email, roles, permissions },
+        JWT_SECRET,
+        { expiresIn: '5m' }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: userId, email: user.email },
+        REFRESH_SECRET,
+        { expiresIn: '10m' }
+    );
+    const t8 = performance.now();
+    console.log('JWT generation time:', (t8 - t7).toFixed(2), 'ms');
+
+
+    // 6. Log successful login
+    const t9 = performance.now();
+    await prisma.login_history.create({
+        data: {
+            user_id: user.user_id,
+            ip_address: ip,
+            user_agent: userAgent || 'unknown'
+        }
+    });
+    const t10 = performance.now();
+    console.log('Login history insert time:', (t10 - t9).toFixed(2), 'ms');
+
+
+    // Total time
+    const tFinal = performance.now();
+    console.log('Total login time (success):', (tFinal - t0).toFixed(2), 'ms');
+
+
+    // Return sanitized user + tokens
+    const safeUser = {
+        user_id: userId,
+        email: user.email,
+        status: user.status
+    };
+
+    return { accessToken, refreshToken, user: safeUser };
+}
+
+
+
+module.exports = { loginUser };
+
+============================================================
+FILE: src/modules/auth/auth.validator.js
+============================================================
+const { body, validationResult } = require('express-validator');
+
+const loginValidationRules = () => {
+  return [
+    body('email').isEmail().normalizeEmail(),
+    body('password').notEmpty().isLength({ min: 6 })
+  ];
+};
+
+const validateLogin = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
+
+module.exports = {
+  loginValidationRules,
+  validateLogin
+};
+
+============================================================
 FILE: src/modules/users/users.routes.js
 ============================================================
 const express = require('express');
@@ -75,6 +474,42 @@ const router = express.Router();
 /** User Routes **/
 /* Get /v1/users/profile */
 
+
+============================================================
+FILE: src/utils/base64.js
+============================================================
+const token = ' eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYWhtZWQxNDJAZ21haWwuY29tIiwicm9sZXMiOlt7InJvbGVfaWQiOjQsIm5hbWUiOiJTdHVkZW50In1dLCJwZXJtaXNzaW9ucyI6W3sicGVybWlzc2lvbl9pZCI6MTUsIm5hbWUiOiJWaWV3X1Byb2ZpbGUifSx7InBlcm1pc3Npb25faWQiOjE2LCJuYW1lIjoiRWRpdCBQcm9maWxlIn0seyJwZXJtaXNzaW9uX2lkIjoxNywibmFtZSI6Im1hcmtfYXR0ZW5kYW5jZSJ9XSwiaWF0IjoxNzcxODcxMDQzLCJleHAiOjE3NzE4NzEzNDN9.3tH0K-WHSwrvIEC3USAnFdhxaTkDv0dLNR8hRi0Liq0'
+function decodeJwt(token) {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    // Add padding if needed (Base64 requires length % 4 === 0)
+    const padded = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = Buffer.from(padded, 'base64').toString('utf8');
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    throw new Error('Invalid JWT');
+  }
+}
+
+const payload = decodeJwt(token);
+console.log(payload);
+
+============================================================
+FILE: src/utils/hash.js
+============================================================
+// hash-one.js
+const argon2 = require('argon2');
+
+(async () => {
+  const password = '784512963'; // 👈 change this
+  const hash = await argon2.hash(password, {
+    type: argon2.argon2id,
+    memoryCost: 65536,
+    timeCost: 3,
+    parallelism: 4
+  });
+  console.log('Hash:', hash);
+})();
 
 ============================================================
 FILE: package.json
@@ -92,9 +527,17 @@ FILE: package.json
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@prisma/client": "^7.4.1",
+    "@prisma/client": "^6.19.2",
+    "argon2": "^0.44.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
     "prisma": "^6.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
 
@@ -103,26 +546,12 @@ FILE: package.json
 FILE: server.js
 ============================================================
 const express = require("express");
+const authRoutes = require("./src/modules/auth/auth.routes");
+
 const app = express();
 app.use(express.json());
 
-app.get("/hello", (req, res) => {
-  res.json({ message: "Hello World 👋" });
-});
-
-app.post("/sum", (req, res) => {
-  const { a, b } = req.body;
-
-  const numA = parseFloat(a);
-  const numB = parseFloat(b);
-
-  if (isNaN(numA) || isNaN(numB)) {
-    return res.status(400).json({ error: "Invalid numbers" });
-  }
-
-  res.json({ result: numA + numB });
-});
-
+app.use("/v1/auth", authRoutes);
 
 app.listen(3000,'0.0.0.0', () => {
   console.log("Server running on port 3000");

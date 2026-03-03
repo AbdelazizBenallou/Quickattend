@@ -1,0 +1,43 @@
+@startuml
+actor User as user
+
+participant "Server" as server
+participant "Users" as users
+participant "Role_User" as role_user
+
+
+user -> server: /Post refresh Token
+server -> server: Validate input
+
+alt InValid
+    server --> user: 400 Bad Request
+else Valid
+    server -> server: VerifySigntureToken(refresh_token)
+    alt Invalid Token
+        server --> user: 403 Token Error
+    else Valid Token
+        server -> server: GetUserInfo(refresh_token)
+        server -> users: UserExist(user_id)
+
+        alt User Not Exist
+            users --> server: null
+            server --> user: 401 Unauthorized
+        else User Exist
+
+            users --> server: all user_info
+            server -> server: CheckActivation(user_id)
+            alt Account Not Active
+                server --> user: 403 Forbidden
+            else Account Active
+                server -> role_user: GetAllRoles(user_id)
+                role_user --> server: roles
+                server -> server: GenerateAccessToken(user_id, roles)
+                server --> user: Success; New Access Token 
+            end
+          
+        end
+    end
+end
+
+
+@enduml
