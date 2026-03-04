@@ -3,9 +3,9 @@ This digest is designed to be easily parsed by Large Language Models.
 
 --- SUMMARY ---
 Repository: Server
-Files Analyzed: 21
-Total Text Size: 23.84 KB
-Estimated Tokens (text only): ~6,313
+Files Analyzed: 23
+Total Text Size: 26.4 KB
+Estimated Tokens (text only): ~6,953
 
 --- DIRECTORY STRUCTURE ---
 Server/
@@ -16,7 +16,9 @@ Server/
 │   │   ├── env.js
 │   │   └── prisma.js
 │   ├── middleware/
+│   │   ├── checkPermission.js
 │   │   ├── errorHandler.js
+│   │   ├── originCheck.js
 │   │   ├── ratelimiter.js
 │   │   ├── validator.js
 │   │   └── verifyRefreshToken.js
@@ -245,7 +247,7 @@ requiredEnv.forEach((key) => {
 
 module.exports = {
     NODE_ENV: process.env.NODE_ENV,
-    PORT: process.env.PORT,
+    PORT: process.env.PORT || 5434,
     DATABASE_URL: process.env.DATABASE_URL,
     ACCESS_SECRET: process.env.ACCESS_SECRET,
     REFRESH_SECRET: process.env.REFRESH_SECRET,
@@ -259,11 +261,64 @@ const prisma = new PrismaClient();
 module.exports = prisma;
 
 ============================================================
+FILE: src/middleware/checkPermission.js
+============================================================
+// src/middleware/checkPermission.js
+const prisma = require('../config/prisma');
+const jwt = require('jsonwebtoken');
+const { ACCESS_SECRET } = require('../config/env');
+
+async function checkPermission(permissionName) {
+  return async (req, res, next) => {
+    try {
+      const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
+
+      if (!token) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const decoded = jwt.verify(token, ACCESS_SECRET);
+      const userId = decoded.userId;
+
+      const permissions = await prisma.permission.findMany({
+        where: {
+          role_permission: {
+            some: {
+              role: {
+                user_role: {
+                  some: {
+                    user_id: userId
+                  }
+                }
+              }
+            }
+          },
+          name: permissionName
+        }
+      });
+
+      if (!permissions.length) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      req.user = decoded;
+      next();
+
+    } catch (err) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+  };
+}
+
+module.exports = checkPermission;
+
+============================================================
 FILE: src/middleware/errorHandler.js
 ============================================================
 const errorHandler = (err, req, res, next) => {
+    const [NODE_ENV] = require('../config/env')
 
-    const isDev = process.env.NODE_ENV === 'development';
+    const isDev = NODE_ENV === "dev";
 
     const statusCode = err.statusCode || 500;
 
@@ -285,11 +340,29 @@ const errorHandler = (err, req, res, next) => {
 module.exports = errorHandler;
 
 ============================================================
+FILE: src/middleware/originCheck.js
+============================================================
+const response = require("../utils/response")
+
+const allowedOrigins = [
+    "http://localhost:3000",
+];
+
+function originCheck(req, res, next) {
+    const origin = req.headers.origin;
+    if (!origin) return next();
+    if (!allowedOrigins.includes(origin)) {
+        return response.error(res, "Forbidden origin", 403);
+    }
+}
+
+module.exports = originCheck;
+
+============================================================
 FILE: src/middleware/verifyRefreshToken.js
 ============================================================
 const jwt = require('jsonwebtoken');
-
-const REFRESH_SECRET = process.env.REFRESH_SECRET || 'dev-refresh-secret';
+const { REFRESH_SECRET } = require('../config/env');
 
 function verifyRefreshToken(req, res, next) {
 
@@ -336,7 +409,7 @@ async function login(req, res) {
     const { accessToken, refreshToken, user } = await loginUser(email, password, ip, userAgent);
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: NODE_ENV,
+      secure: NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 5 * 60 * 1000
     });
@@ -380,7 +453,7 @@ async function register(req, res) {
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: NODE_ENV,
+      secure: NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 5 * 60 * 1000
     });
@@ -422,7 +495,7 @@ async function refreshToken(req, res) {
 
     res.cookie('accessToken', newAccessToken, {
       httpOnly: true,
-      secure: NODE_ENV,
+      secure: NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 5 * 60 * 1000
     });
@@ -667,7 +740,7 @@ async function registerUser(email, password, ip, userAgent = null) {
     // 2. Load roles & permissions
     // -------------------------
     const tRolesFetchStart = performance.now();
-    const userId = prisma.users.user_id;
+    const userId = newUser.user_id;
     const userRoles = await prisma.user_role.findMany({
         where: { user_id: userId },
         include: {
@@ -820,16 +893,56 @@ module.exports = {
 
 
 ============================================================
+FILE: src/modules/users/users.controller.js
+============================================================
+const { getAllUsers } = require('./users.service');
+const response = require('../../utils/response');
+
+async function viewUsers(req, res) {
+    const users = await getAllUsers();
+
+    if (!users.length) {
+        return response.error(res, "No users found", 404);
+    }
+
+    return response.success(res, users, "Users fetched");
+}
+
+module.exports = { viewUsers };
+
+============================================================
 FILE: src/modules/users/users.routes.js
 ============================================================
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const { viewUsers } = require("./users.controller");
+const checkPermission = require("../../middleware/checkPermission");
 
-/* Rate limiter for user routes */
+router.get(
+  "/users",
+  checkPermission("view_users"),
+  viewUsers
+);
 
-/** User Routes **/
-/* Get /v1/users/profile */
+module.exports = router;
 
+============================================================
+FILE: src/modules/users/users.service.js
+============================================================
+const prisma = require('../../config/prisma');
+
+async function getAllUsers() {
+    return prisma.users.findMany({
+        select: {
+            user_id: true,
+            email: true,
+            status: true,
+            created_at: true
+        }
+    });
+}
+
+module.exports = { getAllUsers };
 
 ============================================================
 FILE: src/utils/AppError.js
@@ -850,7 +963,7 @@ module.exports = AppError;
 ============================================================
 FILE: src/utils/base64.js
 ============================================================
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIyLCJlbWFpbCI6ImF6aXpnZ2F6aTQ0ejExMTExMTRAZ21haWwuY29tIiwicm9sZXMiOlsiU3R1ZGVudCJdLCJpYXQiOjE3NzI1NzcyMzcsImV4cCI6MTc3MjU3NzUzN30.gBXVEsN3Y2ykCZYmnGYsgUNjoa2X6zW6P1024sDQAPk'
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI5LCJlbWFpbCI6InVzZXJAMTEyMTJleGFtcGxlLmNvbSIsInJvbGVzIjpbIlN0dWRlbnQiLCJTdXBlcl9BZG1pbiJdLCJpYXQiOjE3NzI2MTgwMzQsImV4cCI6MTc3MjYxODMzNH0.HHvoOj3u86-qn_A4nMqDWhTNDQoY5RTjKbZGG7UPXfc'
 function decodeJwt(token) {
   try {
     const payloadBase64 = token.split('.')[1];
@@ -927,6 +1040,7 @@ FILE: package.json
     "@prisma/client": "^6.19.2",
     "argon2": "^0.44.0",
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
@@ -946,7 +1060,9 @@ require('dotenv').config();
 
 const express = require("express");
 const authRoutes = require("./src/modules/auth/auth.routes");
+const userRoutes = require("./src/modules/users/users.routes");
 const errorHandler = require('./src/middleware/errorHandler');
+const originCheck = require('./src/middleware/originCheck');
 const { PORT } = require('./src/config/env');
 
 const app = express();
@@ -954,8 +1070,10 @@ const app = express();
 app.use(express.json());
 
 app.use("/v1/auth", authRoutes);
+app.use("/v1/users", userRoutes);
 
 app.use(errorHandler);
+//app.use(originCheck);
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);

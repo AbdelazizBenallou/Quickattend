@@ -1,4 +1,5 @@
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIyLCJlbWFpbCI6ImF6aXpnZ2F6aTQ0ejExMTExMTRAZ21haWwuY29tIiwicm9sZXMiOlsiU3R1ZGVudCJdLCJpYXQiOjE3NzI1NzcyMzcsImV4cCI6MTc3MjU3NzUzN30.gBXVEsN3Y2ykCZYmnGYsgUNjoa2X6zW6P1024sDQAPk'
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMwLCJlbWFpbCI6InlvdW5iN2VzYmVsQGdtYWlsLmNvbSIsInJvbGVzIjpbIlN0dWRlbnQiXSwiaWF0IjoxNzcyNjMwODE3LCJleHAiOjE3NzI2MzExMTd9.jgWDVabXAzsZ40LebFi9ZW5lStkRwDgmkqv7HqRjChI'
+
 function decodeJwt(token) {
   try {
     const payloadBase64 = token.split('.')[1];

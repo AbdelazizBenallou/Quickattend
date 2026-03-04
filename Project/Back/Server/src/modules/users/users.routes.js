@@ -1,7 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const { viewUsers } = require("./users.controller");
+const checkPermission = require("../../middleware/checkPermission");
 
-/* Rate limiter for user routes */
+router.get(
+  "/users",
+  checkPermission("view_users"),
+  viewUsers
+);
 
-/** User Routes **/
-/* Get /v1/users/profile */
+module.exports = router;
