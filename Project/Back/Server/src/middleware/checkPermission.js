@@ -1,55 +1,38 @@
-// src/middleware/checkPermission.js
-
-const prisma = require('../config/prisma');
-const jwt = require('jsonwebtoken');
-const { ACCESS_SECRET } = require('../config/env');
+const redis = require('../config/redis');
+const getUserPermissions = require('../utils/getUserPermissions');
+const response = require('../utils/response');
 
 function checkPermission(permissionName) {
   return async (req, res, next) => {
     try {
 
-      const token =
-        req.cookies?.accessToken ||
-        req.headers.authorization?.split(" ")[1];
+      const userId = req.user.userId;
+      const cacheKey = `permissions:user:${userId}`;
+      let permissions = await redis.get(cacheKey);
+      if (!permissions) {
+        // load from database
+        const dbPermissions = await getUserPermissions(userId);
+        permissions = dbPermissions;
+        await redis.set(
+          cacheKey,
+          JSON.stringify(dbPermissions),
+          { EX: 600 }
+        );
 
-      if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
+      } else {
+        permissions = JSON.parse(permissions);
       }
 
-      const decoded = jwt.verify(token, ACCESS_SECRET);
-      const userId = decoded.userId;
-
-      const permissions = await prisma.permission.findMany({
-        where: {
-          role_permission: {
-            some: {
-              role: {
-                user_role: {
-                  some: {
-                    user_id: userId
-                  }
-                }
-              }
-            }
-          },
-          name: permissionName
-          
-        }
-      });
-      console.log(permissions);
-      
-      if (!permissions.length) {
-        return res.status(403).json({ message: "Forbidden" });
+      if (!permissions.includes(permissionName)) {
+        return response.error(res, "Forbidden", 403);
       }
-
-      req.user = decoded;
-
       next();
 
     } catch (err) {
-      return res.status(401).json({ message: "Invalid token" });
+      return response.error(res, "Permission check failed", 500);
     }
   };
+
 }
 
 module.exports = checkPermission;

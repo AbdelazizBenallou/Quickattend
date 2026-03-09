@@ -47,13 +47,13 @@ async function login(req, res) {
 
 async function register(req, res) {
   try {
-    const { email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
 
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
 
     const { accessToken, refreshToken, user } =
-      await registerUser(email, password, ip, userAgent);
+      await registerUser(first_name, last_name, email, password, ip, userAgent);
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
@@ -80,7 +80,6 @@ async function register(req, res) {
       201
     );
   } catch (error) {
-    console.error('Register error:', error.message);
 
     if (error.message === 'Email already exists') {
       return response.error(res, "Registration failed", 409);

@@ -3,7 +3,7 @@ const prisma = require('../../config/prisma');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 const { performance } = require('perf_hooks');
-const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config/env')
+const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config/env');
 
 
 // Dummy hash for non-existent users (prevents timing/user enumeration attacks)
@@ -17,13 +17,20 @@ async function loginUser(email, password, ip, userAgent = null) {
     const t1 = performance.now();
     const user = await prisma.users.findUnique({
         where: { email },
-        select: {
-            user_id: true,
-            email: true,
-            password_hash: true,
-            status: true,
+        include: {
+            profile: {
+                include: {
+                    level: {
+                        include: {
+                            degree_level: true
+                        }
+                    },
+                    specialization: true
+                }
+            }
         }
     });
+
     const t2 = performance.now();
     console.log('Find user time:', (t2 - t1).toFixed(2), 'ms');
 
@@ -43,8 +50,20 @@ async function loginUser(email, password, ip, userAgent = null) {
         throw new Error('Invalid credentials');
     }
 
-    // 4. Fetch roles and permissions
+    // 5. fetch profile and specialization and level
     const t5 = performance.now();
+
+    const profile = user.profile;
+    const academicInfo = profile
+        ? {
+            degree: profile.level?.degree_level?.name || null,
+            level: profile.level?.name || null,
+            specialization: profile.specialization?.name || null
+        }
+        : null;
+
+    // 4. Fetch roles and permissions
+
     const userId = user.user_id;
     const userRoles = await prisma.user_role.findMany({
         where: { user_id: userId },
@@ -53,7 +72,7 @@ async function loginUser(email, password, ip, userAgent = null) {
         }
     });
     const t6 = performance.now();
-    console.log('Fetch roles & permissions time:', (t6 - t5).toFixed(2), 'ms');
+    console.log('Fetch roles time:', (t6 - t5).toFixed(2), 'ms');
 
     // Extract roles
     const roles = userRoles.map(r => r.role.name);
@@ -63,7 +82,7 @@ async function loginUser(email, password, ip, userAgent = null) {
     const accessToken = jwt.sign(
         { userId: userId, email: user.email, roles },
         ACCESS_SECRET,
-        { expiresIn: '5m' }
+        { expiresIn: '60m' }
     );
 
     const refreshToken = jwt.sign(
@@ -97,13 +116,14 @@ async function loginUser(email, password, ip, userAgent = null) {
     const safeUser = {
         user_id: userId,
         email: user.email,
-        status: user.status
+        status: user.status,
+        academic: academicInfo
     };
 
     return { accessToken, refreshToken, user: safeUser };
 }
 
-async function registerUser(email, password, ip, userAgent = null) {
+async function registerUser(first_name, last_name, email, password, ip, userAgent = null) {
 
     const t0 = performance.now(); // total start
 
@@ -130,6 +150,7 @@ async function registerUser(email, password, ip, userAgent = null) {
         try {
             createdUser = await tx.users.create({
                 data: {
+
                     email,
                     password_hash,
                     status: 'active'
@@ -169,14 +190,16 @@ async function registerUser(email, password, ip, userAgent = null) {
         const tUserRoleEnd = performance.now();
         console.log('User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
 
-
         // 🔹 Create profile
         const tProfileStart = performance.now();
         await tx.profile.create({
             data: {
-                user_id: createdUser.user_id
+                user_id: createdUser.user_id,
+                first_name,
+                last_name
             }
         });
+
         const tProfileEnd = performance.now();
         console.log('Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
 
@@ -255,7 +278,9 @@ async function registerUser(email, password, ip, userAgent = null) {
         user: {
             user_id: newUser.user_id,
             email: newUser.email,
-            status: newUser.status
+            status: newUser.status,
+            first_name: first_name,
+            last_name: last_name
         }
     };
 }

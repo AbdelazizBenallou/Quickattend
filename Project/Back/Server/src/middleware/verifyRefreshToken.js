@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
+const response = require('../utils/response')
 const { REFRESH_SECRET } = require('../config/env');
+
 
 function verifyRefreshToken(req, res, next) {
 
     const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
 
     if (!refreshToken) {
-        return res.status(400).json({
-            error: 'Refresh token is required'
-        });
+        return response.error(res, 'Refresh token is required', 400)
     }
 
     try {
@@ -17,13 +17,8 @@ function verifyRefreshToken(req, res, next) {
         next();
 
     } catch (err) {
-        return res.status(403).json({
-            error: 'Invalid or expired refresh token'
-        });
+        return response.error(res, 'Invalid or expired refresh token', 403)
     }
 }
 
-function verifyAccessToken(req, res, next){
-
-}
-module.exports = verifyRefreshToken, verifyAccessToken;
+module.exports = verifyRefreshToken;
