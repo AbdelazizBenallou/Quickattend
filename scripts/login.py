@@ -2,7 +2,7 @@ import requests
 import time
 
 # Configuration
-url = "https://jaylen-protoplasmatic-kimora.ngrok-free.dev/v1/auth/login"  # Update if using ngrok or remote server
+url = "http://localhost:3000/v1/auth/login"  # Update if using ngrok or remote server
 email = "ahmed142@gmail.com"
 password = "784512963"  # ⚠️ Change this!
 

@@ -29,15 +29,22 @@ else Valid
             server -> server: CheckActivation(status == 'Active')
 
             alt Account Not Active
-                server --> user: 403 Forbidden
+                server --> user: 401 Unauthorized
             else Account Active
                 server -> role_user: GetPermissions(user_id)
                 role_user --> server: all_permissions
                 server -> server: CompareApiPermissions
                 alt Not Authorized
-
+                server -> user: 401 Unauthorized
                 else Authorized
-
+                server -> users: GetAllUsers()
+                users -> server: null
+                    alt No Data
+                        server -> user: 404 Not Found
+                    else success
+                        users -> server: Data
+                        server -> user: Suceess, Data
+                    end 
                 end
 
             end

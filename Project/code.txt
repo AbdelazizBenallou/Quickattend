@@ -1,0 +1,4578 @@
+The following is a digest of the repository "Project".
+This digest is designed to be easily parsed by Large Language Models.
+
+--- SUMMARY ---
+Repository: Project
+Files Analyzed: 43
+Total Text Size: 132.96 KB
+Estimated Tokens (text only): ~36,158
+
+--- DIRECTORY STRUCTURE ---
+Project/
+├── Back/
+│   ├── DB/
+│   │   ├── Doc_Exp/
+│   │   │   ├── backup.aux [binary]
+│   │   │   ├── backup.fdb_latexmk
+│   │   │   ├── backup.fls
+│   │   │   ├── backup.tex
+│   │   │   └── backup.toc [binary]
+│   │   └── backup_fin.sh
+│   └── Server/
+│       ├── prisma/
+│       │   └── schema.prisma
+│       ├── src/
+│       │   ├── config/
+│       │   │   ├── env.js
+│       │   │   ├── prisma.js
+│       │   │   ├── redis.js
+│       │   │   └── swagger.js
+│       │   ├── middleware/
+│       │   │   ├── checkPermission.js
+│       │   │   ├── errorHandler.js
+│       │   │   ├── originCheck.js
+│       │   │   ├── ratelimiter.js
+│       │   │   ├── validator.js
+│       │   │   ├── verifyAccessToken.js
+│       │   │   └── verifyRefreshToken.js
+│       │   ├── modules/
+│       │   │   ├── auth/
+│       │   │   │   ├── auth.controller.js
+│       │   │   │   ├── auth.routes.js
+│       │   │   │   ├── auth.service.js
+│       │   │   │   └── auth.validator.js
+│       │   │   ├── rbac/
+│       │   │   │   └── role/
+│       │   │   │       ├── role.controller.js
+│       │   │   │       ├── role.route.js
+│       │   │   │       ├── role.service.js
+│       │   │   │       └── role.validator.js
+│       │   │   ├── users/
+│       │   │   │   ├── users.controller.js
+│       │   │   │   ├── users.routes.js
+│       │   │   │   ├── users.service.js
+│       │   │   │   └── users.vaidator.js
+│       │   │   └── workshop/
+│       │   │       ├── workshop.controller.js
+│       │   │       ├── workshop.routes.js
+│       │   │       ├── workshop.service.js
+│       │   │       └── workshop.validator.js
+│       │   └── utils/
+│       │       ├── AppError.js
+│       │       ├── base64.js
+│       │       ├── getUserPermissions.js
+│       │       ├── hash.js
+│       │       └── response.js
+│       ├── code.txt
+│       ├── package.json
+│       └── server.js
+└── Front/
+    └── Mobile_App/
+        └── file.txt
+
+
+--- FILE CONTENTS ---
+============================================================
+FILE: Back/DB/Doc_Exp/backup.fdb_latexmk
+============================================================
+# Fdb version 4
+["pdflatex"] 1771028264.7715 "/run/media/patrik/More/2026/WORk/CLIENTS/2026-02-10 QuickRol/Project/Back/DB/Doc A Exp/backup.tex" "backup.pdf" "backup" 1771028265.65051 0
+  "/etc/texmf/web2c/texmf.cnf" 1767147283.9159 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/patrik/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1440.600pk" 1767316985.21821 29384 03c82b2e620bf1d34bc572772d72b137 ""
+  "/home/patrik/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt3583.600pk" 1771028009.42321 87272 1a2593c7a5b59942d983ff03df6f12a4 ""
+  "/run/media/patrik/More/2026/WORk/CLIENTS/2026-02-10 QuickRol/Project/Back/DB/Doc A Exp/backup.tex" 1771028264.64563 11084 0503231642478ff3bb7cca483c6e836b ""
+  "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
+  "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm" 1136768653 4524 6bce29db5bc272ba5f332261583fee9c ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm" 1136768653 6880 f19b8995b61c334d78fc734065f6b4d4 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8c.tfm" 1136768653 1352 fa28a7e6d323c65ce7d13d5342ff6be2 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm" 1136768653 4408 25b74d011a4c66b7f212c0cc3c90061b ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm" 1136768653 6672 e3ab9e37e925f3045c9005e6d1473d56 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm" 1136768653 2288 f478fc8fed18759effb59f3dad7f3084 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7m.tfm" 1136768653 2232 db256afffc8202da192b4641df14d602 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7t.tfm" 1136768653 2172 1d00c2a0d10f23031be62329457a870c ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7v.tfm" 1136768653 1032 20febbd0f0c9a48eb78616f897008286 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7y.tfm" 1136768653 1520 ad7b3c1a480a03b3e41b5fbb13d938f2 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecrm1440.tfm" 1136768653 3584 3169d30142b88a27d4ab0e3468e963a2 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ectt1440.tfm" 1136768653 1536 c11bc34b66290f7f0e17b810bad04543 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ectt3583.tfm" 1136768653 1536 a36d1de3dd0abb6b98d697d5c7b45b3b ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb" 1136849748 44729 811d6c62865936705a31c797a1d5dada ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb" 1136849748 46026 6dab18b61c907687b520c72847215a68 ""
+  "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf" 1136768653 2340 df9c920cc5688ebbf16a93f45ce7bdd3 ""
+  "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8c.vf" 1136768653 3556 8a9a6dcbcd146ef985683f677f4758a6 ""
+  "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf" 1136768653 2348 91706c542228501c410c266421fbe30c ""
+  "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
+  "/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty" 1734129479 7984 7dbb9280f03c0a315425f1b4f35d43ee ""
+  "/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty" 1572645307 1057 525c2192b5febbd8c1f662c9468335bb ""
+  "/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty" 1701727651 17865 1a9bd36b4f98178fa551aca822290953 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/exscale.sty" 1761946296 2581 e3b93c96ce990e6e2ffc819a28b77ea9 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty" 1761946296 5275 6f9d359641b36842524cdb97716ab75f ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty" 1738182759 5048 0270515b828149155424600fd2d58ac5 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty" 1696191071 56128 c2ccf1a29d78c33bc553880402e4fb9a ""
+  "/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty" 1696191071 72619 ee90b6612147680fd73c3b1406a74245 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/draftwatermark/draftwatermark.sty" 1709586629 7056 92cf7c114203ae12de1e4f68040f8e48 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty" 1738874546 52272 63d293bc0d496619edb57585740861a2 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty" 1579991033 13886 d1306dcf79a944f6988e688c1785f9ce ""
+  "/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty" 1759437024 46885 8953c67ffba03252c6090aa19568b8ba ""
+  "/usr/share/texlive/texmf-dist/tex/latex/extsizes/extarticle.cls" 1137110130 20602 3112294ba237d94ce4a1502cfef3594f ""
+  "/usr/share/texlive/texmf-dist/tex/latex/extsizes/size14.clo" 1137110130 6214 cc6d832fdd2fc5f4a20ee1a002f45d0f ""
+  "/usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty" 1739048179 31715 19e60610b63819fe670dfa1cd84a4e94 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/float/float.sty" 1137110151 6749 16d2656a1984957e674b149555f1ea1d ""
+  "/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty" 1578002852 41601 9cf6c5257b1bc7af01a58859749dd37a ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg" 1459978653 1213 620bba36b25224fa9b7e1ccb4ecb76fd ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1465944070 1224 978390e9c2234eab29404bc21b268d1e ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def" 1759176675 19626 23e2822b9b2b5005f4c549ca98b9334d ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty" 1748806692 18363 69bb4f5538964bfea50d1e6d89cbe69f ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty" 1748806692 8118 43b99e52946c33a23f5f43b52d5cc5ec ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty" 1748806692 2671 d9941f4bf4750e9b0603c9a2ec54693b ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx" 1667332637 2885 9c645d672ae17285bba324998918efd8 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty" 1748806692 4023 e66acf578d6b564c4670fb57ff336a7a ""
+  "/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty" 1655478651 22555 6d8e155cfef6d82c3d5c742fea7c992e ""
+  "/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty" 1665067230 13815 760b0c02f691ea230f5359c4e1de23a7 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def" 1761248321 30662 bfd6e864f4ffc5018b0e2b6260c3181c ""
+  "/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg" 1279039959 678 4792914a8f45be57bb98413425e4c7af ""
+  "/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def" 1752091573 49656 229fb67764dc0abf5c6f072ee0d27147 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg" 1752091573 27628 65e257a6863987c0e5097054c917d02d ""
+  "/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty" 1752091573 102775 cc4629d7100508b1ba679322aef9b545 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg" 1739394495 12427 78d94d2b9d095b6021a1cc87fb6d8cd7 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathptmx.sty" 1586716065 4631 6e41de2b7a83dfa5d2c4b0a2fe01f046 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd" 1137110629 411 12564a37a279e4e0b533cdf5e03eeb7c ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd" 1137110629 348 f4ce75d394e7d9ac12ca7aac4045ed77 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd" 1137110629 329 c8cddcc90b6f567b28408eb374773c9c ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd" 1137110629 961 15056f4a61917ceed3a44e4ac11fcc52 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd" 1137110629 329 aee7226812ba4138ac67a018466b488d ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd" 1137110629 774 61d7da1e9f9e74989b196d147e623736 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd" 1137110629 619 96f56dc5d1ef1fe1121f1cfeec70ee0c ""
+  "/usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty" 1670275497 22490 8cac309b79a4c53a4ffce4b1b07aead0 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty" 1736023606 48766 87a17a4ef312a39cd43896e34a679a56 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/tocloft/tocloft.sty" 1578692495 36103 3e78d14f0f4b1a30560fea5e04de805d ""
+  "/usr/share/texlive/texmf-dist/tex/latex/tools/indentfirst.sty" 1748806692 1618 30b01152766afcef2ed8f904cfdd3cc6 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty" 1727642399 55384 b454dec21c2d9f45ec0b793f0995b992 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1769369718 41603 27f93b3067076450172040dcd57ca8b3 ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1769369718 41603 27f93b3067076450172040dcd57ca8b3 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1769532267 128227 ed67923a37f7748d267799454bc1f95b ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1769532342 2236308 0ec74ab3832b8f5db7621a2d127b9005 ""
+  "backup.aux" 1771028265.5016 1537 f2216af012ea13fbb85c6a940fcd58e4 "pdflatex"
+  "backup.tex" 1771028264.64563 11084 0503231642478ff3bb7cca483c6e836b ""
+  "backup.toc" 1771028265.5016 972 536f6c18930e058a4be76d7c159f9e77 "pdflatex"
+  (generated)
+  "backup.aux"
+  "backup.log"
+  "backup.pdf"
+  "backup.toc"
+  (rewritten before read)
+
+
+============================================================
+FILE: Back/DB/Doc_Exp/backup.fls
+============================================================
+PWD /run/media/patrik/More/2026/WORk/CLIENTS/2026-02-10 QuickRol/Project/Back/DB/Doc A Exp
+INPUT /etc/texmf/web2c/texmf.cnf
+INPUT /usr/share/texmf/web2c/texmf.cnf
+INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT /run/media/patrik/More/2026/WORk/CLIENTS/2026-02-10 QuickRol/Project/Back/DB/Doc A Exp/backup.tex
+OUTPUT backup.log
+INPUT /usr/share/texlive/texmf-dist/tex/latex/extsizes/extarticle.cls
+INPUT /usr/share/texlive/texmf-dist/tex/latex/extsizes/extarticle.cls
+INPUT /usr/share/texlive/texmf-dist/tex/latex/extsizes/size14.clo
+INPUT /usr/share/texlive/texmf-dist/tex/latex/extsizes/size14.clo
+INPUT /usr/share/texlive/texmf-dist/tex/latex/extsizes/size14.clo
+INPUT /usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/exscale.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/exscale.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecrm1440.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/draftwatermark/draftwatermark.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/draftwatermark/draftwatermark.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/tocloft/tocloft.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/tocloft/tocloft.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/mathptmx.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/mathptmx.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/indentfirst.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/indentfirst.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+INPUT ./backup.aux
+INPUT ./backup.aux
+INPUT backup.aux
+OUTPUT backup.aux
+INPUT /usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+INPUT /usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+INPUT /usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+INPUT /usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm
+INPUT ./backup.toc
+INPUT ./backup.toc
+INPUT backup.toc
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7t.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7m.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7m.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7m.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7y.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7y.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7y.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7v.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7v.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/zptmcm7v.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
+OUTPUT backup.toc
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm
+OUTPUT backup.pdf
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
+INPUT /usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ectt1440.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8t.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ectt3583.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8c.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8c.vf
+INPUT backup.aux
+INPUT /home/patrik/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1440.600pk
+INPUT /home/patrik/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt3583.600pk
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
+
+
+============================================================
+FILE: Back/DB/Doc_Exp/backup.tex
+============================================================
+    \documentclass[14pt,a4paper]{extarticle}
+
+    %-------------------------------------------------
+    % Encoding and Language
+    %-------------------------------------------------
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+     
+    \usepackage{draftwatermark}
+
+    \SetWatermarkText{Aziz Benallou}    
+    \SetWatermarkScale{1}       
+\SetWatermarkColor[gray]{0.9} 
+\SetWatermarkAngle{45}       
+
+    \usepackage{graphicx}
+    \usepackage{float}
+    \usepackage{caption}
+    \usepackage{setspace}
+    \usepackage{tocloft}
+    \usepackage{enumitem}
+
+   \usepackage{graphicx}
+
+    %-------------------------------------------------
+    % Page Layout
+    %-------------------------------------------------
+    \usepackage{geometry}
+    \geometry{
+    left=2.54cm,
+    right=2.54cm,
+    top=2.54cm,
+    bottom=2.54cm
+    }
+
+    %-------------------------------------------------
+    % Font (Readable for Scientific Research)
+    %-------------------------------------------------
+    \usepackage{mathptmx}   % Times New Roman-like
+    \usepackage{microtype}  % Improves text readability
+
+    %-------------------------------------------------
+    % Line and Paragraph Spacing
+    %-------------------------------------------------
+    \usepackage{setspace}
+    \setstretch{1.20}        % Line spacing (recommended)
+
+    \setlength{\parindent}{1cm} % Indentation
+    % Space between paragraphs
+
+    \usepackage{indentfirst}
+    \setlength{\parindent}{1cm}
+
+    %-------------------------------------------------
+    % Section Formatting
+    %-------------------------------------------------
+    \usepackage{titlesec}
+
+
+
+    % Section (Title size = 18pt, Bold)
+    \titleformat{\section}
+    {\normalfont\fontsize{18}{20}\bfseries}
+    {\thesection}{0.4em}{}
+
+    % Subsection
+    \titleformat{\subsection}
+    {\normalfont\fontsize{16}{18}\bfseries}
+    {\thesubsection}{0.4em}
+    {}
+
+    % Subsubsection
+    \titleformat{\subsubsection}
+    {\normalfont\fontsize{14}{16}\bfseries}
+    {\thesubsubsection}{0.4em}{}
+
+    %-------------------------------------------------
+    % Header with Line and Section Title
+    %-------------------------------------------------
+    \usepackage{fancyhdr}
+
+    \pagestyle{fancy}
+    \fancyhf{}
+
+    % Section title in header
+    \fancyhead[L]{\nouppercase{\leftmark}}
+
+    % Page number (optional)
+    \fancyhead[R]{\thepage}
+
+    % Header line
+    \renewcommand{\headrulewidth}{0.9pt}
+
+    % Footer (no line)
+    \renewcommand{\footrulewidth}{0pt}
+
+    % Spacing around titles
+    \titlespacing*{\section}{0pt}{1.2em}{0.8em}
+    \titlespacing*{\subsection}{0pt}{1em}{0.6em}
+    \titlespacing*{\subsubsection}{0pt}{0.8em}{0.5em}
+
+
+    \setlist[itemize]{itemsep=1.5pt, topsep=2pt}
+    \setlist[enumerate]{itemsep=1.5pt, topsep=2pt}
+
+    \setlength{\parindent}{1cm}
+    %-------------------------------------------------
+    % Header style
+    %-------------------------------------------------
+    \pagestyle{fancy}
+    \fancyhf{}
+    \lhead{backup System}
+    \rhead{Grandfather–Father–Son backup strategy}
+    \cfoot{\thepage}
+
+    %-------------------------------------------------
+    \begin{document}
+    \tableofcontents
+    \newpage
+
+    \section{Introduction}
+    We talk about backup System, we see a different backup strategy, and we talk about Grandfather–Father–Son backup strategy.
+    we use tools like rsync, tar, and cron to implement backup strategy.
+    and we dont forget linux distribution like ubuntu, debian, and centos.
+    in this tutorial, we se manual backup and automatic backup, and we talk about advantages and disadvantages of each strategy.
+    \newpage
+    \section{Backup Strategy}
+    \subsection{Manual Backup}
+    Because we are using tools like Docker, we have the container and volume.
+    we just run the command below to backup the volume.
+    just create a backups directory in the host machine, and run the command below to backup the volume.
+    \begin{verbatim}
+    docker exec postgres_db pg_dump -U <username> -d <database> \
+     > backup.sql
+    \end{verbatim}
+    \subsubsection{Restore}
+    \begin{verbatim}
+    cat backup.sql | docker exec -i postgres_db \
+    psql -U <username> -d <database>
+    \end{verbatim}
+
+    and thi is the simple way to backup and restore the database, but we need to do it manually, and we need to remember to do it regularly.
+    and dont forget to compress the backup file to save space, and encryption with gpg to secure the backup file.
+
+    \subsection{Automatic Backup}
+    \subsubsection{Host cron job (pro production)}
+    we can use a script to backup the database, and we can use cron to schedule the script to run regularly.
+    the file name is backup.sh, and the content is below.
+    you can specifie a time to run the backup, for example, every day at 2 am.
+
+    \begin{verbatim}
+    CONTAINER=container_name
+    DB_USER=username
+    DB_NAME=database_name
+    BACKUP_ROOT="$HOME/backups"
+
+    TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
+    BACKUP_DIR="$BACKUP_ROOT/$TIMESTAMP"
+
+    mkdir -p "$BACKUP_DIR"
+
+    /usr/bin/docker exec -i $CONTAINER \
+    pg_dump -U $DB_USER $DB_NAME \
+    | gzip > "$BACKUP_DIR/backup.sql.gz"
+
+    echo "Backup created: $BACKUP_DIR/backup.sql.gz"
+    \end{verbatim}
+    dont forget make the script executable with
+    \begin{verbatim}
+    chmod +x backup.sh
+    \end{verbatim}
+    now we can add cron job to run the script , because we have deffrents mode in cron we some jobs 
+    done every day or week or month in specified time, for example, we want to run the backup every day at 2 am, 
+    ather with dellay like every 2 hours or every 30 minutes.
+    for the simullation we test with dellay . \\
+    this called \textbf{Interval scheduling}
+
+    \subsubsection{Interval scheduling}
+    we open the cron file with the command below
+    \begin{verbatim}
+    crontab -e
+    \end{verbatim}
+    and add role to run the backup script every 3 minutes
+    \begin{verbatim}
+    */3 * * * * /full/path/to/backup.sh
+    \end{verbatim}
+
+    \subsubsection{Time-based scheduling}
+    we can use time-based scheduling to run the backup script at a specific time.
+    for example, we want to run the backup every day at 2 am.
+    we can add the following line to the cron file
+    \begin{verbatim}
+    0 2 * * * /full/path/to/backup.sh
+    \end{verbatim}
+
+    \subsubsection{Restore from compressed backup}
+    if we have a compressed backup file, we can restore it with the following command
+    \begin{verbatim}
+    gunzip -c backup.sql.gz | docker exec -i postgres_db \
+    psql -U <username> -d <database>
+    \end{verbatim}
+
+    but those are the simple way to backup and restore the database, waste of space and time . finally you found your self have 1 to 9999 backup files, and you need to manage them, and you need to delete the old backup files to save space, and you need to remember to do it regularly.
+   becuase of this problem we need to use backup strategy to manage the backup files.
+
+   \subsection{Backup Manager}
+   we use backup manager to manage files , daily backup, weekly backup, and monthly backup, and we can set the retention policy to delete old backup files, and we can set the schedule to run the backup script.
+   we create 3 directories in the host machine, daily, weekly, and monthly, and we set the retention policy to keep 7 daily backup files, 4 weekly backup files, and 12 monthly backup files.
+   \subsection{Grandfather–Father–Son backup strategy}
+    this strategy is a common backup strategy that uses three levels of backups: daily (son),
+weekly (father), and monthly (grandfather). The idea is to have a hierarchy of backups that allows for both short-term and long-term recovery options.
+    \begin{itemize}
+        \item Daily (Son): These are the most recent backups, typically created every day.
+        \item Weekly (Father): These are created less frequently, usually once a week, and are kept for a longer period than daily backups.
+        \item Monthly (Grandfather): These are the least frequent backups, created once a month
+and kept for the longest period, often several months or even years
+    \end{itemize}
+    \subsection{Types of this strategy}
+    \begin{itemize}
+        \item Seperated backup: we dont have relation between the backup files, we just create backup files and store them in the directories, and we set the retention policy to delete old backup files.
+        \item  Hierarchical time-based backup: backups are organized in a tiered structure (daily, weekly, monthly) and triggered by time schedules rather than direct dependency between backup files. Each backup remains independent while following a hierarchical retention policy.
+
+    \end{itemize}
+
+    \subsubsection{Single backup pipeline architecture}
+    the ather level of backup files weekly and monthly backup files are created from the daily backup files, and we set the retention policy to delete old backup files, and we can set the schedule to run the backup script.
+    for example, we can set the schedule to run the daily backup script every day at 2 am
+    we use and counter to count the number of daily backup files, 
+    and we set the retention policy to keep 4 weekly backup files, 
+    
+    and this code is backup script for the single backup pipeline architecture
+    \begin{verbatim}
+    #!/bin/bash
+
+CONTAINER=postgres_db_test
+DB_USER=admin
+DB_NAME=mydb
+BACKUP_ROOT="$HOME/backups"
+
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+
+DAILY_DIR="$BACKUP_ROOT/daily"
+WEEKLY_DIR="$BACKUP_ROOT/weekly"
+MONTHLY_DIR="$BACKUP_ROOT/monthly"
+
+COUNTER_FILE="$BACKUP_ROOT/counter.txt"
+
+mkdir -p "$DAILY_DIR" "$WEEKLY_DIR" "$MONTHLY_DIR"
+
+
+DAILY_FILE="$DAILY_DIR/$TIMESTAMP.sql.gz"
+
+/usr/bin/docker exec -i $CONTAINER \
+pg_dump -U $DB_USER $DB_NAME | gzip > "$DAILY_FILE"
+
+
+COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
+COUNT=$((COUNT + 1))
+echo "$COUNT" > "$COUNTER_FILE"
+
+
+if (( COUNT % 7 == 0 )); then
+    WEEK_NUM=$((COUNT / 7))
+    cp "$DAILY_FILE" "$WEEKLY_DIR/week_$WEEK_NUM.sql.gz"
+fi
+
+
+if (( COUNT % 28 == 0 )); then
+    MONTH_NUM=$((COUNT / 28))
+    cp "$DAILY_FILE" "$MONTHLY_DIR/month_$MONTH_NUM.sql.gz"
+fi
+
+ls -t "$DAILY_DIR" | tail -n +8 | 
+    xargs -I {} rm -f "$DAILY_DIR/{}" 2>/dev/null
+ls -t "$WEEKLY_DIR" | tail -n +5 | 
+    xargs -I {} rm -f "$WEEKLY_DIR/{}" 2>/dev/null
+ls -t "$MONTHLY_DIR" | tail -n +13 | 
+    xargs -I {} rm -f "$MONTHLY_DIR/{}" 2>/dev/null
+    \end{verbatim}
+
+    and just enter the command below to run the backup script
+    \begin{verbatim}
+    ./backup.sh
+    \end{verbatim} 
+    for test and make it executable 
+    after enter to crontab file with the command below
+    \begin{verbatim}
+    crontab -e
+    \end{verbatim}
+    and add the following line to run the backup script every day at 2 am
+    \begin{verbatim}
+    0 2 * * * /full/path/to/backup.sh
+    \end{verbatim}
+    this is the simple way to implement the Grandfather–Father–Son backup strategy, but we need to manage the backup files, and we need to delete old backup files to save space, and we need to remember to do it regularly.
+    
+    \end{document}
+
+============================================================
+FILE: Back/DB/backup_fin.sh
+============================================================
+#!/bin/bash
+set -euo pipefail
+
+# Load env safely
+set -o allexport
+source "$(dirname "$0")/.env"
+set +o allexport
+
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+
+DAILY_DIR="$BACKUP_ROOT/daily"
+WEEKLY_DIR="$BACKUP_ROOT/weekly"
+MONTHLY_DIR="$BACKUP_ROOT/monthly"
+COUNTER_FILE="$BACKUP_ROOT/counter.txt"
+
+mkdir -p "$DAILY_DIR" "$WEEKLY_DIR" "$MONTHLY_DIR"
+
+DAILY_FILE="$DAILY_DIR/$TIMESTAMP.sql.gz"
+
+echo "Starting backup..."
+
+if /usr/bin/docker exec -i "$CONTAINER" \
+    pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB" | gzip > "$DAILY_FILE"
+then
+    echo "Backup created: $DAILY_FILE"
+else
+    echo "Backup failed!"
+    exit 1
+fi
+
+# Handle counter safely
+COUNT=0
+if [[ -f "$COUNTER_FILE" ]]; then
+    COUNT=$(cat "$COUNTER_FILE")
+fi
+
+COUNT=$((COUNT + 1))
+echo "$COUNT" > "$COUNTER_FILE"
+
+# Weekly backup every 7 days
+if (( COUNT % 7 == 0 )); then
+    WEEK_NUM=$((COUNT / 7))
+    cp "$DAILY_FILE" "$WEEKLY_DIR/week_$WEEK_NUM.sql.gz"
+fi
+
+# Monthly backup every 28 days
+if (( COUNT % 28 == 0 )); then
+    MONTH_NUM=$((COUNT / 28))
+    cp "$DAILY_FILE" "$MONTHLY_DIR/month_$MONTH_NUM.sql.gz"
+fi
+
+# Keep only:
+# 7 daily
+# 4 weekly
+# 12 monthly
+
+find "$DAILY_DIR" -type f -printf '%T@ %p\n' | sort -nr | tail -n +8 | cut -d' ' -f2- | xargs -r rm -f
+find "$WEEKLY_DIR" -type f -printf '%T@ %p\n' | sort -nr | tail -n +5 | cut -d' ' -f2- | xargs -r rm -f
+find "$MONTHLY_DIR" -type f -printf '%T@ %p\n' | sort -nr | tail -n +13 | cut -d' ' -f2- | xargs -r rm -f
+
+echo "Backup rotation complete."
+
+============================================================
+FILE: Back/Server/prisma/schema.prisma
+============================================================
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model has been renamed to 'Renamedclass' during introspection, because the original name 'class' is reserved.
+model Renamedclass {
+  class_id    Int          @id @default(autoincrement())
+  name        String
+  date        DateTime?    @db.Date
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
+  workshop_id Int
+  workshop    workshop     @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+  properties  properties?
+  user_class  user_class[]
+
+  @@index([workshop_id], map: "idx_class_workshop")
+  @@map("class")
+}
+
+model degree_level {
+  degree_level_id Int     @id @default(autoincrement())
+  name            String  @unique
+  level           level[]
+}
+
+model level {
+  level_id             Int                    @id @default(autoincrement())
+  name                 String
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  degree_level_id      Int
+  degree_level         degree_level           @relation(fields: [degree_level_id], references: [degree_level_id], onDelete: Cascade, onUpdate: NoAction)
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model level_specialization {
+  level_id          Int
+  specialization_id Int
+  level             level          @relation(fields: [level_id], references: [level_id], onDelete: Cascade, onUpdate: NoAction)
+  specialization    specialization @relation(fields: [specialization_id], references: [specialization_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([level_id, specialization_id])
+}
+
+model login_history {
+  login_history_id Int       @id @default(autoincrement())
+  user_id          Int
+  login_at         DateTime? @default(now()) @db.Timestamp(6)
+  logout_at        DateTime? @db.Timestamp(6)
+  ip_address       String?
+  user_agent       String?
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_login_history_user")
+}
+
+model permission {
+  permission_id   Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+}
+
+model profile {
+  user_id           Int             @id
+  first_name        String?
+  last_name         String?
+  date_birth        DateTime?       @db.Date
+  address           String?
+  level_id          Int?
+  specialization_id Int?
+  level             level?          @relation(fields: [level_id], references: [level_id], onDelete: NoAction, onUpdate: NoAction)
+  specialization    specialization? @relation(fields: [specialization_id], references: [specialization_id], onDelete: NoAction, onUpdate: NoAction)
+  users             users           @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model properties {
+  class_id     Int          @id
+  room_number  String?
+  capacity     Int?
+  equipment    String?
+  Renamedclass Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model refresh_tokens {
+  refresh_token_id Int       @id @default(autoincrement())
+  user_id          Int
+  token            String    @unique
+  expires_at       DateTime  @db.Timestamp(6)
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  revoked          Boolean?  @default(false)
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_refresh_tokens_user")
+}
+
+model role {
+  role_id         Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+  user_role       user_role[]
+}
+
+model role_permission {
+  role_id       Int
+  permission_id Int
+  permission    permission @relation(fields: [permission_id], references: [permission_id], onDelete: Cascade, onUpdate: NoAction)
+  role          role       @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([role_id, permission_id])
+}
+
+model specialization {
+  specialization_id    Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model user_class {
+  user_class_id Int          @id @default(autoincrement())
+  user_id       Int
+  class_id      Int
+  Renamedclass  Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+  users         users        @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_role {
+  user_id Int
+  role_id Int
+  role    role  @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+  users   users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, role_id])
+}
+
+model user_workshop {
+  user_id     Int
+  workshop_id Int
+  users       users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  workshop    workshop @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, workshop_id])
+}
+
+model users {
+  user_id        Int              @id @default(autoincrement())
+  email          String           @unique
+  password_hash  String
+  status         user_status      @default(active)
+  created_at     DateTime?        @default(now()) @db.Timestamp(6)
+  login_history  login_history[]
+  profile        profile?
+  refresh_tokens refresh_tokens[]
+  user_class     user_class[]
+  user_role      user_role[]
+  user_workshop  user_workshop[]
+  workshop       workshop[]
+
+  @@index([email], map: "idx_users_email")
+}
+
+model workshop {
+  workshop_id    Int             @id @default(autoincrement())
+  name           String
+  created_at     DateTime?       @default(now()) @db.Timestamp(6)
+  leader_user_id Int?
+  Renamedclass   Renamedclass[]
+  user_workshop  user_workshop[]
+  users          users?          @relation(fields: [leader_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum user_status {
+  active
+  inactive
+  locked
+  suspended
+}
+
+
+============================================================
+FILE: Back/Server/src/config/env.js
+============================================================
+const requiredEnv = [
+    'DATABASE_URL',
+    'ACCESS_SECRET',
+    'REFRESH_SECRET',
+];
+
+requiredEnv.forEach((key) => {
+    if (!process.env[key]) {
+        throw new Error(`Missing environment variable: ${key}`);
+    }
+});
+
+module.exports = {
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT || 5434,
+    DATABASE_URL: process.env.DATABASE_URL,
+    ACCESS_SECRET: process.env.ACCESS_SECRET,
+    REFRESH_SECRET: process.env.REFRESH_SECRET,
+};
+
+============================================================
+FILE: Back/Server/src/config/prisma.js
+============================================================
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+module.exports = prisma;
+
+============================================================
+FILE: Back/Server/src/config/redis.js
+============================================================
+const { createClient } = require("redis");
+
+const redis = createClient({
+  url: "redis://localhost:6379"
+});
+
+redis.on("error", (err) => {
+  console.error("Redis error:", err);
+});
+
+(async () => {
+  await redis.connect();
+  console.log("Redis connected");
+})();
+
+module.exports = redis;
+
+============================================================
+FILE: Back/Server/src/config/swagger.js
+============================================================
+// src/config/swagger.js
+const swaggerJsdoc = require("swagger-jsdoc");
+const { PORT } = require("./env");
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "My Application API",
+            version: "1.0.0",
+            description: "API documentation for My Application Backend",
+        },
+        servers: [
+            {
+                url: `http://localhost:${PORT}`,
+                description: "Development server",
+            },
+        ],
+        components: {
+            securitySchemes: {
+                BearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT"
+                }
+            }
+        }
+    },
+    apis: ["./src/modules/**/*.js"],
+};
+
+const specs = swaggerJsdoc(options);
+
+module.exports = specs;
+
+============================================================
+FILE: Back/Server/src/middleware/checkPermission.js
+============================================================
+const redis = require('../config/redis');
+const getUserPermissions = require('../utils/getUserPermissions');
+const response = require('../utils/response');
+
+function checkPermission(permissionName) {
+  return async (req, res, next) => {
+    try {
+
+      const userId = req.user.userId;
+      const cacheKey = `permissions:user:${userId}`;
+      let permissions = await redis.get(cacheKey);
+      if (!permissions) {
+        // load from database
+        const dbPermissions = await getUserPermissions(userId);
+        permissions = dbPermissions;
+        await redis.set(
+          cacheKey,
+          JSON.stringify(dbPermissions),
+          { EX: 600 }
+        );
+
+      } else {
+        permissions = JSON.parse(permissions);
+      }
+
+      if (!permissions.includes(permissionName)) {
+        return response.error(res, "Forbidden", 403);
+      }
+      next();
+
+    } catch (err) {
+      return response.error(res, "Permission check failed", 500);
+    }
+  };
+
+}
+
+module.exports = checkPermission;
+
+============================================================
+FILE: Back/Server/src/middleware/errorHandler.js
+============================================================
+const errorHandler = (err, req, res, next) => {
+    const [NODE_ENV] = require('../config/env')
+
+    const isDev = NODE_ENV === "dev";
+
+    const statusCode = err.statusCode || 500;
+
+    const message =
+        statusCode === 500
+            ? "Something went wrong"
+            : err.message;
+
+    res.status(statusCode).json({
+        success: false,
+        message,
+        ...(isDev && {
+            errorCode: err.errorCode,
+            stack: err.stack
+        })
+    });
+};
+
+module.exports = errorHandler;
+
+============================================================
+FILE: Back/Server/src/middleware/originCheck.js
+============================================================
+const response = require("../utils/response")
+
+const allowedOrigins = [
+    "http://localhost:3000",
+];
+
+function originCheck(req, res, next) {
+    const origin = req.headers.origin;
+    if (!origin) return next();
+    if (!allowedOrigins.includes(origin)) {
+        return response.error(res, "Forbidden origin", 403);
+    }
+}
+
+module.exports = originCheck;
+
+============================================================
+FILE: Back/Server/src/middleware/verifyAccessToken.js
+============================================================
+
+const jwt = require('jsonwebtoken');
+const response = require('../utils/response');
+const { ACCESS_SECRET } = require('../config/env');
+
+function verifyAccessToken(req, res, next) {
+  try {
+    const token =
+      req.cookies?.accessToken ||
+      req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return response.error(res, "Unauthorized", 401);
+    }
+
+    const decoded = jwt.verify(token, ACCESS_SECRET);
+
+    req.user = decoded; // يحتوي userId
+    next();
+
+  } catch (err) {
+    return response.error(res, "Invalid or expired token", 401);
+  }
+}
+
+module.exports = verifyAccessToken;
+
+============================================================
+FILE: Back/Server/src/middleware/verifyRefreshToken.js
+============================================================
+const jwt = require('jsonwebtoken');
+const response = require('../utils/response')
+const { REFRESH_SECRET } = require('../config/env');
+
+
+function verifyRefreshToken(req, res, next) {
+
+    const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+
+    if (!refreshToken) {
+        return response.error(res, 'Refresh token is required', 400)
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, REFRESH_SECRET);
+        req.refreshPayload = decoded;
+        next();
+
+    } catch (err) {
+        return response.error(res, 'Invalid or expired refresh token', 403)
+    }
+}
+
+module.exports = verifyRefreshToken;
+
+============================================================
+FILE: Back/Server/src/modules/auth/auth.controller.js
+============================================================
+// src/modules/auth/auth.controller.js
+const { loginUser, registerUser, refreshAccessToken } = require('./auth.service');
+const response = require('../../utils/response');
+const { NODE_ENV } = require('../../config/env');
+
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    const ip = req.ip || req.connection.remoteAddress;
+    const userAgent = req.get('User-Agent');
+
+    const { accessToken, refreshToken, user } = await loginUser(email, password, ip, userAgent);
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: NODE_ENV,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000
+    });
+
+    return response.success(
+      res,
+      {
+        user,
+        accessToken,
+        refreshToken
+      },
+      "Login successful"
+    );
+
+  } catch (error) {
+    console.error('Login error:', error.message);
+    return response.error(
+      res,
+      "Invalid credentials",
+      401
+    );
+  }
+}
+
+async function register(req, res) {
+  try {
+    const { first_name, last_name, email, password } = req.body;
+
+    const ip = req.ip || req.connection.remoteAddress;
+    const userAgent = req.get('User-Agent');
+
+    const { accessToken, refreshToken, user } =
+      await registerUser(first_name, last_name, email, password, ip, userAgent);
+
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: NODE_ENV,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000
+    });
+
+    return response.success(
+      res,
+      {
+        user,
+        accessToken,
+        refreshToken
+      },
+      "User registered successfully",
+      201
+    );
+  } catch (error) {
+
+    if (error.message === 'Email already exists') {
+      return response.error(res, "Registration failed", 409);
+    }
+
+    return response.error(res, "Registration failed", 400);
+  }
+}
+
+async function refreshToken(req, res) {
+
+  try {
+    const userId = req.refreshPayload.userId;
+
+    const newAccessToken = await refreshAccessToken(userId);
+
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000
+    });
+
+    return response.success(
+      res,
+      { accessToken: newAccessToken },
+      "Access token refreshed"
+    );
+
+  } catch (err) {
+    return res.error(res, "Could not refresh token", 500);
+  }
+}
+
+
+module.exports = { login, register, refreshToken };
+
+============================================================
+FILE: Back/Server/src/modules/auth/auth.routes.js
+============================================================
+const express = require('express');
+const router = express.Router();
+const prisma = require("../../config/prisma");
+const { login, register, refreshToken } = require('./auth.controller');
+const { loginValidationRules, validateLogin, registerValidationRules, validateRegistration } = require('./auth.validator');
+const verifyRefreshToken = require('../../middleware/verifyRefreshToken');
+
+/* Rate limiter for auth routes */
+
+/** Auth Routes **/
+
+/* Post /v1/auth/login */
+
+
+/**
+ * @openapi
+ * tags:
+ *   name: Users
+ *   description: API endpoints for managing users
+ */
+
+/**
+ * @openapi
+ * /v1/auth/login:
+ *   post:
+ *     summary: User Login
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         user_id:
+ *                           type: integer
+ *                           example: 1
+ *                         email:
+ *                           type: string
+ *                           example: user@example.com
+ *                         status:
+ *                           type: string
+ *                           example: active
+ *                         academic:
+ *                           type: object
+ *                           properties:
+ *                             degree:
+ *                               type: string
+ *                               example: Bachelor
+ *                             level:
+ *                               type: string
+ *                               example: Year 2
+ *                             specialization:
+ *                               type: string
+ *                               example: Computer Science
+ *                     accessToken:
+ *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                     refreshToken:
+ *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Invalid login credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid credentials
+ */
+
+router.post(
+    '/login',
+    loginValidationRules(),
+    validateLogin,
+    login
+);
+
+/**
+ * @openapi
+ * /v1/auth/register:
+ *   post:
+ *     summary: Register new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - first_name
+ *               - last_name
+ *               - email
+ *               - password
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 example: John
+ *               last_name:
+ *                 type: string
+ *                 example: Doe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       201:
+ *         description: User registered
+ *       400:
+ *         description: Invalid data
+ *       409:
+ *         description: Email already exists
+ */
+/* Post /v1/auth/register */
+router.post(
+    '/register',
+    registerValidationRules(),
+    validateRegistration,
+    register
+);
+
+/**
+ * @openapi
+ * /v1/auth/refresh-token:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Access token refreshed
+ *       403:
+ *         description: Invalid refresh token
+ */
+
+/* Post /v1/auth/refresh-token */
+router.post(
+    '/refresh-token',
+    verifyRefreshToken,
+    refreshToken
+);
+
+/* Post /v1/auth/logout */
+
+module.exports = router;
+
+
+
+
+============================================================
+FILE: Back/Server/src/modules/auth/auth.service.js
+============================================================
+// src/modules/auth/auth.service.js
+const prisma = require('../../config/prisma');
+const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
+const { performance } = require('perf_hooks');
+const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config/env');
+
+
+// Dummy hash for non-existent users (prevents timing/user enumeration attacks)
+const DUMMY_HASH = '$argon2id$v=19$m=65536,t=3,p=4$DcYjJbNX7Eq+A/WIO9ZYaQ$3jC76ZFb7t1YHV5gJnoAwmBo0vY4Inui6mZDhQ7gDYw'
+
+async function loginUser(email, password, ip, userAgent = null) {
+
+    const t0 = performance.now(); // total timer start
+
+    // 1. Attempt to find user
+    const t1 = performance.now();
+    const user = await prisma.users.findUnique({
+        where: { email },
+        include: {
+            profile: {
+                include: {
+                    level: {
+                        include: {
+                            degree_level: true
+                        }
+                    },
+                    specialization: true
+                }
+            }
+        }
+    });
+
+    const t2 = performance.now();
+    console.log('Find user time:', (t2 - t1).toFixed(2), 'ms');
+
+
+    // 2. Always verify password (even if user doesn't exist)
+    const t3 = performance.now();
+    const hashToVerify = user ? user.password_hash : DUMMY_HASH;
+    const isValid = await argon2.verify(hashToVerify, password);
+    const t4 = performance.now();
+    console.log('Password verify time:', (t4 - t3).toFixed(2), 'ms');
+
+
+    // 3. Determine success conditions
+    if (!user || !isValid || user.status !== 'active') {
+        const tFail = performance.now();
+        console.log('Total login time (failed):', (tFail - t0).toFixed(2), 'ms');
+        throw new Error('Invalid credentials');
+    }
+
+    // 5. fetch profile and specialization and level
+    const t5 = performance.now();
+
+    const profile = user.profile;
+    const academicInfo = profile
+        ? {
+            degree: profile.level?.degree_level?.name || null,
+            level: profile.level?.name || null,
+            specialization: profile.specialization?.name || null
+        }
+        : null;
+
+    // 4. Fetch roles and permissions
+
+    const userId = user.user_id;
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: true
+        }
+    });
+    const t6 = performance.now();
+    console.log('Fetch roles time:', (t6 - t5).toFixed(2), 'ms');
+
+    // Extract roles
+    const roles = userRoles.map(r => r.role.name);
+
+    // 5. Generate JWT tokens
+    const t7 = performance.now();
+    const accessToken = jwt.sign(
+        { userId: userId, email: user.email, roles },
+        ACCESS_SECRET,
+        { expiresIn: '60m' }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: userId, email: user.email },
+        REFRESH_SECRET,
+        { expiresIn: '10m' }
+    );
+    const t8 = performance.now();
+    console.log('JWT generation time:', (t8 - t7).toFixed(2), 'ms');
+
+
+    // 6. Log successful login
+    const t9 = performance.now();
+    await prisma.login_history.create({
+        data: {
+            user_id: user.user_id,
+            ip_address: ip,
+            user_agent: userAgent || 'unknown'
+        }
+    });
+    const t10 = performance.now();
+    console.log('Login history insert time:', (t10 - t9).toFixed(2), 'ms');
+
+
+    // Total time
+    const tFinal = performance.now();
+    console.log('Total login time (success):', (tFinal - t0).toFixed(2), 'ms');
+
+
+    // Return sanitized user + tokens
+    const safeUser = {
+        user_id: userId,
+        email: user.email,
+        status: user.status,
+        academic: academicInfo
+    };
+
+    return { accessToken, refreshToken, user: safeUser };
+}
+
+async function registerUser(first_name, last_name, email, password, ip, userAgent = null) {
+
+    const t0 = performance.now(); // total start
+
+    // -------------------------
+    // 1. Transaction block
+    // -------------------------
+    const newUser = await prisma.$transaction(async (tx) => {
+
+        // 🔹 Hash password
+        const tHashStart = performance.now();
+        const password_hash = await argon2.hash(password, {
+            type: argon2.argon2id,
+            memoryCost: 65536,
+            timeCost: 3,
+            parallelism: 4
+        });
+        const tHashEnd = performance.now();
+        console.log('Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
+
+
+        // 🔹 Create user
+        const tCreateStart = performance.now();
+        let createdUser;
+        try {
+            createdUser = await tx.users.create({
+                data: {
+
+                    email,
+                    password_hash,
+                    status: 'active'
+                }
+            });
+        } catch (err) {
+            if (err.code === 'P2002') {
+                throw new Error('Email already exists');
+            }
+            throw err;
+        }
+        const tCreateEnd = performance.now();
+        console.log('User insert time:', (tCreateEnd - tCreateStart).toFixed(2), 'ms');
+
+
+        // 🔹 Get default role
+        const tRoleStart = performance.now();
+        const defaultRole = await tx.role.findUnique({
+            where: { name: 'Student' }
+        });
+
+        if (!defaultRole) {
+            throw new Error('Default role not configured');
+        }
+        const tRoleEnd = performance.now();
+        console.log('Get role time:', (tRoleEnd - tRoleStart).toFixed(2), 'ms');
+
+
+        // 🔹 Insert user_role
+        const tUserRoleStart = performance.now();
+        await tx.user_role.create({
+            data: {
+                user_id: createdUser.user_id,
+                role_id: defaultRole.role_id
+            }
+        });
+        const tUserRoleEnd = performance.now();
+        console.log('User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
+
+        // 🔹 Create profile
+        const tProfileStart = performance.now();
+        await tx.profile.create({
+            data: {
+                user_id: createdUser.user_id,
+                first_name,
+                last_name
+            }
+        });
+
+        const tProfileEnd = performance.now();
+        console.log('Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
+
+        return createdUser;
+    });
+
+    const tAfterTransaction = performance.now();
+    console.log('Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // 2. Load roles & permissions
+    // -------------------------
+    const tRolesFetchStart = performance.now();
+    const userId = newUser.user_id;
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: true
+        }
+    });
+
+    const tRolesFetchEnd = performance.now();
+    console.log('Fetch roles & permissions time:',
+        (tRolesFetchEnd - tRolesFetchStart).toFixed(2), 'ms');
+
+
+    const roles = userRoles.map(r => r.role.name);
+
+    // -------------------------
+    // 3. Generate JWT
+    // -------------------------
+    const tJwtStart = performance.now();
+    const accessToken = jwt.sign(
+        { userId: newUser.user_id, email: newUser.email, roles },
+        ACCESS_SECRET,
+        { expiresIn: '5m' }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: newUser.user_id, email: newUser.email },
+        REFRESH_SECRET,
+        { expiresIn: '10m' }
+    );
+    const tJwtEnd = performance.now();
+    console.log('JWT generation time:', (tJwtEnd - tJwtStart).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // 4. Insert login history
+    // -------------------------
+    const tLoginHistoryStart = performance.now();
+    await prisma.login_history.create({
+        data: {
+            user_id: newUser.user_id,
+            ip_address: ip,
+            user_agent: userAgent || 'unknown'
+        }
+    });
+    const tLoginHistoryEnd = performance.now();
+    console.log('Login history insert time:',
+        (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // TOTAL TIME
+    // -------------------------
+    const tFinal = performance.now();
+    console.log('Total register time:',
+        (tFinal - t0).toFixed(2), 'ms');
+
+
+    return {
+        accessToken,
+        refreshToken,
+        user: {
+            user_id: newUser.user_id,
+            email: newUser.email,
+            status: newUser.status,
+            first_name: first_name,
+            last_name: last_name
+        }
+    };
+}
+
+async function refreshAccessToken(userId) {
+
+    // 1️⃣ Check user exists
+    const user = await prisma.users.findUnique({
+        where: { user_id: userId }
+    });
+
+    if (!user) {
+        throw { status: 401, message: 'User does not exist' };
+    }
+
+    // 2️⃣ Check activation
+    if (user.status !== 'active') {
+        throw { status: 403, message: 'Account is not active' };
+    }
+
+    // 3️⃣ Get roles & permissions
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: true
+        }
+    });
+
+    const roles = userRoles.map(r => r.role.name);
+
+    // 4️⃣ Generate new access token
+    const accessToken = jwt.sign(
+        { userId, email: user.email, roles },
+        ACCESS_SECRET,
+        { expiresIn: '5m' }
+    );
+
+    return accessToken;
+}
+
+module.exports = { loginUser, registerUser, refreshAccessToken };
+
+============================================================
+FILE: Back/Server/src/modules/auth/auth.validator.js
+============================================================
+const { body, validationResult } = require('express-validator');
+
+const loginValidationRules = () => {
+  return [
+    body('email')
+      .isEmail()
+      .normalizeEmail(),
+
+    body('password')
+      .notEmpty()
+      .isLength({ min: 6 })
+  ]
+};
+
+const validateLogin = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: 'Invalid login credentials' });
+  }
+  next();
+};
+
+
+const registerValidationRules = () => {
+  return [
+    body('email')
+      .isEmail()
+      .withMessage('Invalid email')
+      .normalizeEmail(),
+
+    body('password')
+      .isLength({ min: 6 })
+      .withMessage('Password must be at least 6 characters'),
+
+    body('first_name')
+      .trim()
+      .notEmpty().withMessage('First name is required')
+      .bail()
+      .isLength({ min: 4 }).withMessage('First name must be at least 4 characters')
+      .bail()
+      .matches(/^[A-Za-z]+$/).withMessage('First name must contain only letters')
+      .bail()
+      ,
+
+    body('last_name')
+      .trim()
+      .notEmpty().withMessage('Last name is required')
+      .bail()
+      .isLength({ min: 4 }).withMessage('Last name must be at least 4 characters')
+      .bail()
+      .matches(/^[A-Za-z]+$/).withMessage('Last name must contain only letters')
+      .bail()
+  ];
+};
+
+const validateRegistration = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: 'Invalid registration data' });
+  }
+  next();
+};
+
+
+module.exports = {
+  loginValidationRules,
+  validateLogin,
+  registerValidationRules,
+  validateRegistration
+};
+
+
+
+============================================================
+FILE: Back/Server/src/modules/rbac/role/role.controller.js
+============================================================
+const {
+    getAllRoles,
+    getRoleById,
+    createRole,
+    updateRole,
+    deleteRole,
+    getRolePermissions,
+    assignPermissionsToRole
+} = require('./role.service');
+const response = require('../../../utils/response');
+
+async function viewRoles(req, res) {
+    try {
+        const roles = await getAllRoles();
+
+        if (!roles.length) {
+            return response.error(res, "No roles found", 404);
+        }
+        return response.success(res, roles, "Roles fetched");
+    } catch (err) {
+        console.error('View roles error:', err.message);
+        return response.error(res, "Failed to fetch roles", 500);
+    }
+}
+
+async function viewRole(req, res) {
+    try {
+        const { id } = req.params;
+        const role = await getRoleById(Number(id));
+        // 'role' will be an object or throw an error if not found
+        return response.success(res, role, "Role fetched");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('View role error:', err.message);
+        return response.error(res, "Failed to fetch role", 500);
+    }
+}
+
+async function create(req, res) {
+    try {
+        const { name } = req.body;
+        const newRole = await createRole(name);
+        return response.success(res, newRole, "Role created successfully", 201);
+    } catch (err) {
+        if (err.message === 'Role name already exists') {
+            return response.error(res, "Role name already exists", 409);
+        }
+        console.error('Create role error:', err.message);
+        return response.error(res, "Failed to create role", 500);
+    }
+}
+
+async function update(req, res) {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        const updatedRole = await updateRole(Number(id), name);
+        return response.success(res, updatedRole, "Role updated successfully");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        } else if (err.message === 'New role name already exists') {
+            return response.error(res, "New role name already exists", 409);
+        }
+        console.error('Update role error:', err.message);
+        return response.error(res, "Failed to update role", 500);
+    }
+}
+
+async function remove(req, res) {
+    try {
+        const { id } = req.params;
+        await deleteRole(Number(id));
+        return response.success(res, null, "Role deleted successfully");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('Delete role error:', err.message);
+        return response.error(res, "Failed to delete role", 500);
+    }
+}
+
+async function viewRolePermissions(req, res) {
+    try {
+        const { id } = req.params;
+        const permissions = await getRolePermissions(Number(id));
+        return response.success(res, permissions, "Permissions for role fetched");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('View role permissions error:', err.message);
+        return response.error(res, "Failed to fetch permissions for role", 500);
+    }
+}
+
+async function assignPermissions(req, res) {
+    try {
+        const { id } = req.params;
+        const { permissionIds } = req.body; 
+        await assignPermissionsToRole(Number(id), permissionIds);
+        return response.success(res, null, "Permissions assigned to role successfully");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('Assign permissions error:', err.message);
+        return response.error(res, "Failed to assign permissions to role", 500);
+    }
+}
+
+
+module.exports = {
+    viewRoles,
+    viewRole,
+    create,
+    update,
+    remove,
+    viewRolePermissions,
+    assignPermissions
+};
+
+============================================================
+FILE: Back/Server/src/modules/rbac/role/role.route.js
+============================================================
+// src/modules/rbac/role/role.route.js
+const express = require("express");
+const router = express.Router();
+const {
+    viewRoles,
+    viewRole,
+    create,
+    update,
+    remove,
+    viewRolePermissions,
+    assignPermissions
+} = require("./role.controller");
+
+const { roleIdValidator, roleNameValidator, assignPermissionsValidator } = require('./role.validator');
+
+const checkPermission = require("../../../middleware/checkPermission");
+const verifyAccessToken = require('../../../middleware/verifyAccessToken');
+
+/* Role Management APIs */
+
+// GET /v1/rbac/roles - Fetch all roles (requires 'view_roles' permission)
+/**
+ * @openapi
+ * tags:
+ *   name: Users
+ *   description: API endpoints for managing users
+ */
+
+/**
+ * @openapi
+ * /v1/roles:
+ *   get:
+ *     summary: Get all roles
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of roles
+ */
+
+router.get(
+    '/',
+    verifyAccessToken,
+    checkPermission("view_roles"),
+    viewRoles
+);
+
+/**
+ * @openapi
+ * /v1/roles/{id}:
+ *   get:
+ *     summary: Get role by ID
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Role fetched
+ */
+
+router.get(
+    '/:id',
+    verifyAccessToken,
+    checkPermission("view_role"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    viewRole
+);
+
+// POST /v1/rbac/roles - Create a new role (requires 'create_role' permission)
+router.post(
+    '/',
+    verifyAccessToken,
+    checkPermission("create_role"), // Ensure this permission exists in your DB
+    roleNameValidator, // Validate the 'name' field in the request body
+    create
+);
+
+// PUT /v1/rbac/roles/:id - Update an existing role by ID (requires 'update_role' permission)
+router.put(
+    '/:id',
+    verifyAccessToken,
+    checkPermission("update_role"), // Ensure this permission exists in your DB
+    roleIdValidator,    // Validate the 'id' parameter
+    roleNameValidator,  // Validate the 'name' field in the request body
+    update
+);
+
+// DELETE /v1/rbac/roles/:id - Delete a role by ID (requires 'delete_role' permission)
+router.delete(
+    '/:id',
+    verifyAccessToken,
+    checkPermission("delete_role"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    remove
+);
+
+// GET /v1/rbac/roles/:id/permissions - Fetch permissions assigned to a specific role (requires 'view_role_permissions' permission)
+router.get(
+    '/:id/permissions',
+    verifyAccessToken,
+    checkPermission("view_role_permissions"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    viewRolePermissions
+);
+
+// PUT /v1/rbac/roles/:id/permissions - Assign permissions to a specific role (requires 'assign_role_permissions' permission)
+router.put(
+    '/:id/permissions',
+    verifyAccessToken,
+    checkPermission("assign_role_permissions"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    assignPermissionsValidator, // Validate the 'permissionIds' array in the request body
+    assignPermissions
+);
+
+
+module.exports = router;
+
+============================================================
+FILE: Back/Server/src/modules/rbac/role/role.service.js
+============================================================
+// src/modules/rbac/role/role.service.js
+const prisma = require('../../../config/prisma');
+
+async function getAllRoles() {
+  return prisma.role.findMany({
+    select: {
+      role_id:true,
+      name: true,
+    }
+  });
+}
+
+async function getRoleById(id) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: id }
+  });
+  
+  if (!role) {
+    throw new Error('Role not found');
+  }
+  return role;
+}
+
+async function createRole(name) {
+  try {
+    const newRole = await prisma.role.create({
+      data: {
+        name },
+    });
+    return newRole;
+  } catch (err) {
+    if (err.code === 'P2002') { 
+      throw new Error('Role name already exists');
+    }
+    throw err;
+  }
+}
+
+
+async function updateRole(id, newName) {
+  try {
+    const updatedRole = await prisma.role.update({
+      where: { role_id: id },
+      data: {
+        name: newName,
+      },
+    });
+    return updatedRole;
+  } catch (err) {
+    if (err.code === 'P2025') { 
+      throw new Error('Role not found');
+    } else if (err.code === 'P2002') { 
+      throw new Error('New role name already exists');
+    }
+    throw err;
+  }
+}
+
+async function deleteRole(id) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: id }
+  });
+
+  if (!role) {
+    throw new Error("Role not found");
+  }
+
+  await prisma.role.delete({
+    where: { role_id: id }
+  });
+
+  return true;
+}
+
+async function getRolePermissions(roleId) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: roleId },
+    include: {
+      role_permission: {
+        include: {
+          permission: true
+        }
+      }
+    }
+  });
+
+  if (!role) {
+    throw new Error('Role not found');
+  }
+
+  return role.role_permission.map(rp => rp.permission);
+}
+
+async function assignPermissionsToRole(roleId, permissionIds) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: roleId }
+  });
+
+  if (!role) {
+    throw new Error('Role not found');
+  }
+
+  // First, delete all existing permissions for this role
+  await prisma.role_permission.deleteMany({
+    where: { role_id: roleId }
+  });
+
+  // Then, create new permission assignments
+  const newAssignments = permissionIds.map(permissionId => ({
+    role_id: roleId,
+    permission_id: permissionId
+  }));
+
+  if (newAssignments.length > 0) {
+    await prisma.role_permission.createMany({
+      data: newAssignments
+    });
+  }
+
+}
+
+
+module.exports = {
+  getAllRoles,
+  getRoleById,
+  createRole,
+  updateRole,
+  deleteRole,
+  getRolePermissions,
+  assignPermissionsToRole
+};
+
+
+============================================================
+FILE: Back/Server/src/modules/rbac/role/role.validator.js
+============================================================
+const { body, param, query } = require('express-validator');
+
+const roleIdValidator = [
+  param("id")
+    .exists().withMessage("Role ID is required")
+    .bail()
+    .isInt({ min: 1 }).withMessage("Role ID must be a positive integer")
+];
+
+const roleNameValidator = [
+  body('name')
+    .trim()
+    .notEmpty().withMessage('Role name is required')
+    .bail()
+    .isLength({ max: 255 }).withMessage('Role name cannot exceed 255 characters')
+    .bail()
+    .matches(/^[a-z]+$/).withMessage('Role name can only contain lowercase letters')
+];
+
+const assignPermissionsValidator = [
+    body('permissionIds') 
+      .isArray({ min: 0 }) 
+      .withMessage('permissionIds must be an array of integers.'),
+    body('permissionIds.*')
+      .isInt({ min: 1 }).withMessage('Each permission ID must be a positive integer.')
+  ];
+
+module.exports = {
+  roleIdValidator,
+  roleNameValidator,
+  assignPermissionsValidator
+};
+
+
+============================================================
+FILE: Back/Server/src/modules/users/users.controller.js
+============================================================
+const { getAllUsers, getUserById,  deleteUserById } = require('./users.service');
+const response = require('../../utils/response');
+
+async function viewUsers(req, res) {
+    const users = await getAllUsers();
+    if (!users.length) {
+        return response.error(res, "No users found", 404);
+    }
+
+    return response.success(res, users, "Users fetched");
+}
+
+async function viewUser(req, res) {
+    try {
+        const { id } = req.params;
+        const user = await getUserById(Number(id));
+        
+        return response.success(res, user, "User fetched");
+    } catch (err) {
+        return response.error(res, "Not Found", 404);
+    }
+}
+
+async function deleteUser(req, res) {
+
+    try {
+        const { id } = req.params;
+        await deleteUserById(Number(id));
+        return response.success(res, null, "User deleted");
+
+    } catch (err) {
+        return response.error(res, "User not found", 404);
+    }
+
+}
+
+module.exports = { viewUsers, viewUser, deleteUser };
+
+============================================================
+FILE: Back/Server/src/modules/users/users.routes.js
+============================================================
+const express = require("express");
+const router = express.Router();
+const { viewUsers, viewUser, deleteUser } = require("./users.controller");
+const checkPermission = require("../../middleware/checkPermission");
+const verifyAccessToken = require('../../middleware/verifyAccessToken');
+const { userIdValidator } = require('./users.vaidator');
+
+/**
+ * @openapi
+ * tags:
+ *   name: Users
+ *   description: API endpoints for managing users
+ */
+
+/**
+ * @openapi
+ * /v1/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Users list
+ */
+
+router.get(
+  "/",
+  verifyAccessToken,
+  checkPermission("view_users"),
+  viewUsers
+);
+
+/**
+ * @openapi
+ * /v1/users/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User details
+ *       404:
+ *         description: User not found
+ */
+
+router.get(
+  "/:id",
+  verifyAccessToken,
+  checkPermission("view_users"),
+  userIdValidator,
+  viewUser
+);
+
+/**
+ * @openapi
+ * /v1/users/{id}:
+ *   delete:
+ *     summary: Delete user
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: User deleted
+ *       404:
+ *         description: User not found
+ */
+
+router.delete(
+  "/:id",
+  verifyAccessToken,
+  checkPermission("delete_user"),
+  userIdValidator,
+  deleteUser
+);
+
+
+module.exports = router;
+
+============================================================
+FILE: Back/Server/src/modules/users/users.service.js
+============================================================
+const prisma = require('../../config/prisma');
+
+
+async function getAllUsers() {
+    return prisma.users.findMany({
+        select: {
+            user_id: true,
+            email: true,
+            status: true,
+            created_at: true
+        }
+    });
+}
+
+async function getUserById(id) {
+
+    const user = await prisma.users.findUnique({
+        where: { user_id: id },
+        select: {
+            user_id: true,
+            email: true,
+            status: true,
+            created_at: true
+        }
+    });
+
+    if (!user) {
+        throw new Error('Invalid User ID');
+    }
+
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: user.user_id },
+        select: {
+            role: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
+
+    const roles = userRoles.map(r => r.role.name);
+
+    return {
+        ...user,
+        roles
+    };
+}
+
+async function deleteUserById(id) {
+
+    const user = await prisma.users.findUnique({
+        where: { user_id: id }
+    });
+    if (!user) {
+        throw new Error("User not found");
+    }
+    await prisma.users.delete({
+        where: { user_id: id }
+    });
+
+    return true;
+}
+
+module.exports = { getAllUsers, getUserById, deleteUserById };
+
+============================================================
+FILE: Back/Server/src/modules/users/users.vaidator.js
+============================================================
+const { param } = require("express-validator");
+
+const userIdValidator = [
+  param("id")
+    .exists().withMessage("User ID is required")
+    .bail()
+    .isInt({ min: 1 }).withMessage("User ID must be a positive integer")
+];
+
+module.exports = { userIdValidator };
+
+============================================================
+FILE: Back/Server/src/utils/AppError.js
+============================================================
+class AppError extends Error {
+    constructor(message, statusCode = 500, errorCode = null, isOperational = true) {
+        super(message);
+        this.statusCode = statusCode;
+        this.errorCode = errorCode;
+        this.isOperational = isOperational;
+
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+module.exports = AppError;
+
+============================================================
+FILE: Back/Server/src/utils/base64.js
+============================================================
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMwLCJlbWFpbCI6InlvdW5iN2VzYmVsQGdtYWlsLmNvbSIsInJvbGVzIjpbIlN0dWRlbnQiXSwiaWF0IjoxNzcyNjMwODE3LCJleHAiOjE3NzI2MzExMTd9.jgWDVabXAzsZ40LebFi9ZW5lStkRwDgmkqv7HqRjChI'
+
+function decodeJwt(token) {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    // Add padding if needed (Base64 requires length % 4 === 0)
+    const padded = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = Buffer.from(padded, 'base64').toString('utf8');
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    throw new Error('Invalid JWT');
+  }
+}
+
+const payload = decodeJwt(token);
+console.log(payload);
+
+============================================================
+FILE: Back/Server/src/utils/getUserPermissions.js
+============================================================
+const prisma = require("../config/prisma");
+
+async function getUserPermissions(userId) {
+
+    const roles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: {
+                include: {
+                    role_permission: {
+                        include: {
+                            permission: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const permissions = [];
+
+    roles.forEach(r => {
+        r.role.role_permission.forEach(p => {
+            permissions.push(p.permission.name);
+        });
+    });
+
+    return permissions;
+}
+
+module.exports = getUserPermissions;
+
+============================================================
+FILE: Back/Server/src/utils/hash.js
+============================================================
+// hash-one.js
+const argon2 = require('argon2');
+
+(async () => {
+  const password = '784512963'; // 👈 change this
+  const hash = await argon2.hash(password, {
+    type: argon2.argon2id,
+    memoryCost: 65536,
+    timeCost: 3,
+    parallelism: 4
+  });
+  console.log('Hash:', hash);
+})();
+
+============================================================
+FILE: Back/Server/src/utils/response.js
+============================================================
+const send = (res, statusCode, success, message, data = null, meta = null) => {
+    const response = {
+        success,
+        message,
+    };
+
+    if (data !== null) response.data = data;
+    if (meta !== null) response.meta = meta;
+
+    return res.status(statusCode).json(response);
+};
+
+const response = {
+    success: (res, data = {}, message = "Success", statusCode = 200) =>
+        send(res, statusCode, true, message, data),
+
+    error: (res, message = "Something went wrong", statusCode = 500) =>
+        send(res, statusCode, false, message),
+};
+
+module.exports = response;
+
+============================================================
+FILE: Back/Server/code.txt
+============================================================
+The following is a digest of the repository "Server".
+This digest is designed to be easily parsed by Large Language Models.
+
+--- SUMMARY ---
+Repository: Server
+Files Analyzed: 35
+Total Text Size: 45.03 KB
+Estimated Tokens (text only): ~11,489
+
+--- DIRECTORY STRUCTURE ---
+Server/
+├── prisma/
+│   └── schema.prisma
+├── src/
+│   ├── config/
+│   │   ├── env.js
+│   │   ├── prisma.js
+│   │   ├── redis.js
+│   │   └── swagger.js
+│   ├── middleware/
+│   │   ├── checkPermission.js
+│   │   ├── errorHandler.js
+│   │   ├── originCheck.js
+│   │   ├── ratelimiter.js
+│   │   ├── validator.js
+│   │   ├── verifyAccessToken.js
+│   │   └── verifyRefreshToken.js
+│   ├── modules/
+│   │   ├── auth/
+│   │   │   ├── auth.controller.js
+│   │   │   ├── auth.routes.js
+│   │   │   ├── auth.service.js
+│   │   │   └── auth.validator.js
+│   │   ├── rbac/
+│   │   │   └── role/
+│   │   │       ├── role.controller.js
+│   │   │       ├── role.route.js
+│   │   │       ├── role.service.js
+│   │   │       └── role.validator.js
+│   │   ├── users/
+│   │   │   ├── users.controller.js
+│   │   │   ├── users.routes.js
+│   │   │   ├── users.service.js
+│   │   │   └── users.vaidator.js
+│   │   └── workshop/
+│   │       ├── workshop.controller.js
+│   │       ├── workshop.routes.js
+│   │       ├── workshop.service.js
+│   │       └── workshop.validator.js
+│   └── utils/
+│       ├── AppError.js
+│       ├── base64.js
+│       ├── getUserPermissions.js
+│       ├── hash.js
+│       └── response.js
+├── package.json
+└── server.js
+
+
+--- FILE CONTENTS ---
+============================================================
+FILE: prisma/schema.prisma
+============================================================
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model has been renamed to 'Renamedclass' during introspection, because the original name 'class' is reserved.
+model Renamedclass {
+  class_id    Int          @id @default(autoincrement())
+  name        String
+  date        DateTime?    @db.Date
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
+  workshop_id Int
+  workshop    workshop     @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+  properties  properties?
+  user_class  user_class[]
+
+  @@index([workshop_id], map: "idx_class_workshop")
+  @@map("class")
+}
+
+model degree_level {
+  degree_level_id Int     @id @default(autoincrement())
+  name            String  @unique
+  level           level[]
+}
+
+model level {
+  level_id             Int                    @id @default(autoincrement())
+  name                 String
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  degree_level_id      Int
+  degree_level         degree_level           @relation(fields: [degree_level_id], references: [degree_level_id], onDelete: Cascade, onUpdate: NoAction)
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model level_specialization {
+  level_id          Int
+  specialization_id Int
+  level             level          @relation(fields: [level_id], references: [level_id], onDelete: Cascade, onUpdate: NoAction)
+  specialization    specialization @relation(fields: [specialization_id], references: [specialization_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([level_id, specialization_id])
+}
+
+model login_history {
+  login_history_id Int       @id @default(autoincrement())
+  user_id          Int
+  login_at         DateTime? @default(now()) @db.Timestamp(6)
+  logout_at        DateTime? @db.Timestamp(6)
+  ip_address       String?
+  user_agent       String?
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_login_history_user")
+}
+
+model permission {
+  permission_id   Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+}
+
+model profile {
+  user_id           Int             @id
+  first_name        String?
+  last_name         String?
+  date_birth        DateTime?       @db.Date
+  address           String?
+  level_id          Int?
+  specialization_id Int?
+  level             level?          @relation(fields: [level_id], references: [level_id], onDelete: NoAction, onUpdate: NoAction)
+  specialization    specialization? @relation(fields: [specialization_id], references: [specialization_id], onDelete: NoAction, onUpdate: NoAction)
+  users             users           @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model properties {
+  class_id     Int          @id
+  room_number  String?
+  capacity     Int?
+  equipment    String?
+  Renamedclass Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model refresh_tokens {
+  refresh_token_id Int       @id @default(autoincrement())
+  user_id          Int
+  token            String    @unique
+  expires_at       DateTime  @db.Timestamp(6)
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  revoked          Boolean?  @default(false)
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_refresh_tokens_user")
+}
+
+model role {
+  role_id         Int               @id @default(autoincrement())
+  name            String            @unique
+  role_permission role_permission[]
+  user_role       user_role[]
+}
+
+model role_permission {
+  role_id       Int
+  permission_id Int
+  permission    permission @relation(fields: [permission_id], references: [permission_id], onDelete: Cascade, onUpdate: NoAction)
+  role          role       @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([role_id, permission_id])
+}
+
+model specialization {
+  specialization_id    Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  level_specialization level_specialization[]
+  profile              profile[]
+}
+
+model user_class {
+  user_class_id Int          @id @default(autoincrement())
+  user_id       Int
+  class_id      Int
+  Renamedclass  Renamedclass @relation(fields: [class_id], references: [class_id], onDelete: Cascade, onUpdate: NoAction)
+  users         users        @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_role {
+  user_id Int
+  role_id Int
+  role    role  @relation(fields: [role_id], references: [role_id], onDelete: Cascade, onUpdate: NoAction)
+  users   users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, role_id])
+}
+
+model user_workshop {
+  user_id     Int
+  workshop_id Int
+  users       users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  workshop    workshop @relation(fields: [workshop_id], references: [workshop_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([user_id, workshop_id])
+}
+
+model users {
+  user_id        Int              @id @default(autoincrement())
+  email          String           @unique
+  password_hash  String
+  status         user_status      @default(active)
+  created_at     DateTime?        @default(now()) @db.Timestamp(6)
+  login_history  login_history[]
+  profile        profile?
+  refresh_tokens refresh_tokens[]
+  user_class     user_class[]
+  user_role      user_role[]
+  user_workshop  user_workshop[]
+  workshop       workshop[]
+
+  @@index([email], map: "idx_users_email")
+}
+
+model workshop {
+  workshop_id    Int             @id @default(autoincrement())
+  name           String
+  created_at     DateTime?       @default(now()) @db.Timestamp(6)
+  leader_user_id Int?
+  Renamedclass   Renamedclass[]
+  user_workshop  user_workshop[]
+  users          users?          @relation(fields: [leader_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum user_status {
+  active
+  inactive
+  locked
+  suspended
+}
+
+
+============================================================
+FILE: src/config/env.js
+============================================================
+const requiredEnv = [
+    'DATABASE_URL',
+    'ACCESS_SECRET',
+    'REFRESH_SECRET',
+];
+
+requiredEnv.forEach((key) => {
+    if (!process.env[key]) {
+        throw new Error(`Missing environment variable: ${key}`);
+    }
+});
+
+module.exports = {
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT || 5434,
+    DATABASE_URL: process.env.DATABASE_URL,
+    ACCESS_SECRET: process.env.ACCESS_SECRET,
+    REFRESH_SECRET: process.env.REFRESH_SECRET,
+};
+
+============================================================
+FILE: src/config/prisma.js
+============================================================
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+module.exports = prisma;
+
+============================================================
+FILE: src/config/redis.js
+============================================================
+const { createClient } = require("redis");
+
+const redis = createClient({
+  url: "redis://localhost:6379"
+});
+
+redis.on("error", (err) => {
+  console.error("Redis error:", err);
+});
+
+(async () => {
+  await redis.connect();
+  console.log("Redis connected");
+})();
+
+module.exports = redis;
+
+============================================================
+FILE: src/config/swagger.js
+============================================================
+// src/config/swagger.js
+const swaggerJsdoc = require("swagger-jsdoc");
+const { PORT } = require("./env");
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "My Application API",
+            version: "1.0.0",
+            description: "API documentation for My Application Backend",
+        },
+        servers: [
+            {
+                url: `http://localhost:${PORT}`,
+                description: "Development server",
+            },
+        ],
+    },
+    apis: ["./src/modules/**/*.js"],
+};
+
+const specs = swaggerJsdoc(options);
+
+module.exports = specs;
+
+============================================================
+FILE: src/middleware/checkPermission.js
+============================================================
+const redis = require('../config/redis');
+const getUserPermissions = require('../utils/getUserPermissions');
+const response = require('../utils/response');
+
+function checkPermission(permissionName) {
+  return async (req, res, next) => {
+    try {
+
+      const userId = req.user.userId;
+      const cacheKey = `permissions:user:${userId}`;
+      let permissions = await redis.get(cacheKey);
+      if (!permissions) {
+        // load from database
+        const dbPermissions = await getUserPermissions(userId);
+        permissions = dbPermissions;
+        await redis.set(
+          cacheKey,
+          JSON.stringify(dbPermissions),
+          { EX: 600 }
+        );
+
+      } else {
+        permissions = JSON.parse(permissions);
+      }
+
+      if (!permissions.includes(permissionName)) {
+        return response.error(res, "Forbidden", 403);
+      }
+      next();
+
+    } catch (err) {
+      return response.error(res, "Permission check failed", 500);
+    }
+  };
+
+}
+
+module.exports = checkPermission;
+
+============================================================
+FILE: src/middleware/errorHandler.js
+============================================================
+const errorHandler = (err, req, res, next) => {
+    const [NODE_ENV] = require('../config/env')
+
+    const isDev = NODE_ENV === "dev";
+
+    const statusCode = err.statusCode || 500;
+
+    const message =
+        statusCode === 500
+            ? "Something went wrong"
+            : err.message;
+
+    res.status(statusCode).json({
+        success: false,
+        message,
+        ...(isDev && {
+            errorCode: err.errorCode,
+            stack: err.stack
+        })
+    });
+};
+
+module.exports = errorHandler;
+
+============================================================
+FILE: src/middleware/originCheck.js
+============================================================
+const response = require("../utils/response")
+
+const allowedOrigins = [
+    "http://localhost:3000",
+];
+
+function originCheck(req, res, next) {
+    const origin = req.headers.origin;
+    if (!origin) return next();
+    if (!allowedOrigins.includes(origin)) {
+        return response.error(res, "Forbidden origin", 403);
+    }
+}
+
+module.exports = originCheck;
+
+============================================================
+FILE: src/middleware/verifyAccessToken.js
+============================================================
+
+const jwt = require('jsonwebtoken');
+const response = require('../utils/response');
+const { ACCESS_SECRET } = require('../config/env');
+
+function verifyAccessToken(req, res, next) {
+  try {
+    const token =
+      req.cookies?.accessToken ||
+      req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return response.error(res, "Unauthorized", 401);
+    }
+
+    const decoded = jwt.verify(token, ACCESS_SECRET);
+
+    req.user = decoded; // يحتوي userId
+    next();
+
+  } catch (err) {
+    return response.error(res, "Invalid or expired token", 401);
+  }
+}
+
+module.exports = verifyAccessToken;
+
+============================================================
+FILE: src/middleware/verifyRefreshToken.js
+============================================================
+const jwt = require('jsonwebtoken');
+const response = require('../utils/response')
+const { REFRESH_SECRET } = require('../config/env');
+
+
+function verifyRefreshToken(req, res, next) {
+
+    const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+
+    if (!refreshToken) {
+        return response.error(res, 'Refresh token is required', 400)
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, REFRESH_SECRET);
+        req.refreshPayload = decoded;
+        next();
+
+    } catch (err) {
+        return response.error(res, 'Invalid or expired refresh token', 403)
+    }
+}
+
+module.exports = verifyRefreshToken;
+
+============================================================
+FILE: src/modules/auth/auth.controller.js
+============================================================
+// src/modules/auth/auth.controller.js
+const { loginUser, registerUser, refreshAccessToken } = require('./auth.service');
+const response = require('../../utils/response');
+const { NODE_ENV } = require('../../config/env');
+
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    const ip = req.ip || req.connection.remoteAddress;
+    const userAgent = req.get('User-Agent');
+
+    const { accessToken, refreshToken, user } = await loginUser(email, password, ip, userAgent);
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: NODE_ENV,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000
+    });
+
+    return response.success(
+      res,
+      {
+        user,
+        accessToken,
+        refreshToken
+      },
+      "Login successful"
+    );
+
+  } catch (error) {
+    console.error('Login error:', error.message);
+    return response.error(
+      res,
+      "Invalid credentials",
+      401
+    );
+  }
+}
+
+async function register(req, res) {
+  try {
+    const { first_name, last_name, email, password } = req.body;
+
+    const ip = req.ip || req.connection.remoteAddress;
+    const userAgent = req.get('User-Agent');
+
+    const { accessToken, refreshToken, user } =
+      await registerUser(first_name, last_name, email, password, ip, userAgent);
+
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: NODE_ENV,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000
+    });
+
+    return response.success(
+      res,
+      {
+        user,
+        accessToken,
+        refreshToken
+      },
+      "User registered successfully",
+      201
+    );
+  } catch (error) {
+
+    if (error.message === 'Email already exists') {
+      return response.error(res, "Registration failed", 409);
+    }
+
+    return response.error(res, "Registration failed", 400);
+  }
+}
+
+async function refreshToken(req, res) {
+
+  try {
+    const userId = req.refreshPayload.userId;
+
+    const newAccessToken = await refreshAccessToken(userId);
+
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 5 * 60 * 1000
+    });
+
+    return response.success(
+      res,
+      { accessToken: newAccessToken },
+      "Access token refreshed"
+    );
+
+  } catch (err) {
+    return res.error(res, "Could not refresh token", 500);
+  }
+}
+
+
+module.exports = { login, register, refreshToken };
+
+============================================================
+FILE: src/modules/auth/auth.routes.js
+============================================================
+const express = require('express');
+const router = express.Router();
+const prisma = require("../../config/prisma");
+const { login, register, refreshToken } = require('./auth.controller');
+const { loginValidationRules, validateLogin, registerValidationRules, validateRegistration } = require('./auth.validator');
+const verifyRefreshToken = require('../../middleware/verifyRefreshToken');
+
+/* Rate limiter for auth routes */
+
+/** Auth Routes **/
+
+/* Post /v1/auth/login */
+
+
+/**
+ * @openapi
+ * tags:
+ *   name: Users
+ *   description: API endpoints for managing users
+ */
+/**
+ * @openapi
+ * /v1/auth/login:
+ *   post:
+ *     summary: User Login
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         user_id:
+ *                           type: integer
+ *                           example: 1
+ *                         email:
+ *                           type: string
+ *                           example: user@example.com
+ *                         status:
+ *                           type: string
+ *                           example: active
+ *                         academic:
+ *                           type: object
+ *                           properties:
+ *                             degree:
+ *                               type: string
+ *                               example: Bachelor
+ *                             level:
+ *                               type: string
+ *                               example: Year 2
+ *                             specialization:
+ *                               type: string
+ *                               example: Computer Science
+ *                     accessToken:
+ *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                     refreshToken:
+ *                       type: string
+ *                       example: dGhpcyBpcyBhIHJlZnJlc2gtdG9rZW4...
+ *       400:
+ *         description: Invalid login credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid credentials
+ */
+router.post(
+    '/login',
+    loginValidationRules(),
+    validateLogin,
+    login
+);
+
+/* Post /v1/auth/register */
+router.post(
+    '/register',
+    registerValidationRules(),
+    validateRegistration,
+    register
+);
+
+/* Post /v1/auth/refresh-token */
+router.post(
+    '/refresh-token',
+    verifyRefreshToken,
+    refreshToken
+);
+
+/* Post /v1/auth/logout */
+
+module.exports = router;
+
+
+
+
+============================================================
+FILE: src/modules/auth/auth.service.js
+============================================================
+// src/modules/auth/auth.service.js
+const prisma = require('../../config/prisma');
+const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
+const { performance } = require('perf_hooks');
+const { ACCESS_SECRET, REFRESH_SECRET } = require('../../config/env');
+
+
+// Dummy hash for non-existent users (prevents timing/user enumeration attacks)
+const DUMMY_HASH = '$argon2id$v=19$m=65536,t=3,p=4$DcYjJbNX7Eq+A/WIO9ZYaQ$3jC76ZFb7t1YHV5gJnoAwmBo0vY4Inui6mZDhQ7gDYw'
+
+async function loginUser(email, password, ip, userAgent = null) {
+
+    const t0 = performance.now(); // total timer start
+
+    // 1. Attempt to find user
+    const t1 = performance.now();
+    const user = await prisma.users.findUnique({
+        where: { email },
+        include: {
+            profile: {
+                include: {
+                    level: {
+                        include: {
+                            degree_level: true
+                        }
+                    },
+                    specialization: true
+                }
+            }
+        }
+    });
+
+    const t2 = performance.now();
+    console.log('Find user time:', (t2 - t1).toFixed(2), 'ms');
+
+
+    // 2. Always verify password (even if user doesn't exist)
+    const t3 = performance.now();
+    const hashToVerify = user ? user.password_hash : DUMMY_HASH;
+    const isValid = await argon2.verify(hashToVerify, password);
+    const t4 = performance.now();
+    console.log('Password verify time:', (t4 - t3).toFixed(2), 'ms');
+
+
+    // 3. Determine success conditions
+    if (!user || !isValid || user.status !== 'active') {
+        const tFail = performance.now();
+        console.log('Total login time (failed):', (tFail - t0).toFixed(2), 'ms');
+        throw new Error('Invalid credentials');
+    }
+
+    // 5. fetch profile and specialization and level
+    const t5 = performance.now();
+
+    const profile = user.profile;
+    const academicInfo = profile
+        ? {
+            degree: profile.level?.degree_level?.name || null,
+            level: profile.level?.name || null,
+            specialization: profile.specialization?.name || null
+        }
+        : null;
+
+    // 4. Fetch roles and permissions
+
+    const userId = user.user_id;
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: true
+        }
+    });
+    const t6 = performance.now();
+    console.log('Fetch roles time:', (t6 - t5).toFixed(2), 'ms');
+
+    // Extract roles
+    const roles = userRoles.map(r => r.role.name);
+
+    // 5. Generate JWT tokens
+    const t7 = performance.now();
+    const accessToken = jwt.sign(
+        { userId: userId, email: user.email, roles },
+        ACCESS_SECRET,
+        { expiresIn: '60m' }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: userId, email: user.email },
+        REFRESH_SECRET,
+        { expiresIn: '10m' }
+    );
+    const t8 = performance.now();
+    console.log('JWT generation time:', (t8 - t7).toFixed(2), 'ms');
+
+
+    // 6. Log successful login
+    const t9 = performance.now();
+    await prisma.login_history.create({
+        data: {
+            user_id: user.user_id,
+            ip_address: ip,
+            user_agent: userAgent || 'unknown'
+        }
+    });
+    const t10 = performance.now();
+    console.log('Login history insert time:', (t10 - t9).toFixed(2), 'ms');
+
+
+    // Total time
+    const tFinal = performance.now();
+    console.log('Total login time (success):', (tFinal - t0).toFixed(2), 'ms');
+
+
+    // Return sanitized user + tokens
+    const safeUser = {
+        user_id: userId,
+        email: user.email,
+        status: user.status,
+        academic: academicInfo
+    };
+
+    return { accessToken, refreshToken, user: safeUser };
+}
+
+async function registerUser(first_name, last_name, email, password, ip, userAgent = null) {
+
+    const t0 = performance.now(); // total start
+
+    // -------------------------
+    // 1. Transaction block
+    // -------------------------
+    const newUser = await prisma.$transaction(async (tx) => {
+
+        // 🔹 Hash password
+        const tHashStart = performance.now();
+        const password_hash = await argon2.hash(password, {
+            type: argon2.argon2id,
+            memoryCost: 65536,
+            timeCost: 3,
+            parallelism: 4
+        });
+        const tHashEnd = performance.now();
+        console.log('Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
+
+
+        // 🔹 Create user
+        const tCreateStart = performance.now();
+        let createdUser;
+        try {
+            createdUser = await tx.users.create({
+                data: {
+
+                    email,
+                    password_hash,
+                    status: 'active'
+                }
+            });
+        } catch (err) {
+            if (err.code === 'P2002') {
+                throw new Error('Email already exists');
+            }
+            throw err;
+        }
+        const tCreateEnd = performance.now();
+        console.log('User insert time:', (tCreateEnd - tCreateStart).toFixed(2), 'ms');
+
+
+        // 🔹 Get default role
+        const tRoleStart = performance.now();
+        const defaultRole = await tx.role.findUnique({
+            where: { name: 'Student' }
+        });
+
+        if (!defaultRole) {
+            throw new Error('Default role not configured');
+        }
+        const tRoleEnd = performance.now();
+        console.log('Get role time:', (tRoleEnd - tRoleStart).toFixed(2), 'ms');
+
+
+        // 🔹 Insert user_role
+        const tUserRoleStart = performance.now();
+        await tx.user_role.create({
+            data: {
+                user_id: createdUser.user_id,
+                role_id: defaultRole.role_id
+            }
+        });
+        const tUserRoleEnd = performance.now();
+        console.log('User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
+
+        // 🔹 Create profile
+        const tProfileStart = performance.now();
+        await tx.profile.create({
+            data: {
+                user_id: createdUser.user_id,
+                first_name,
+                last_name
+            }
+        });
+
+        const tProfileEnd = performance.now();
+        console.log('Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
+
+        return createdUser;
+    });
+
+    const tAfterTransaction = performance.now();
+    console.log('Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // 2. Load roles & permissions
+    // -------------------------
+    const tRolesFetchStart = performance.now();
+    const userId = newUser.user_id;
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: true
+        }
+    });
+
+    const tRolesFetchEnd = performance.now();
+    console.log('Fetch roles & permissions time:',
+        (tRolesFetchEnd - tRolesFetchStart).toFixed(2), 'ms');
+
+
+    const roles = userRoles.map(r => r.role.name);
+
+    // -------------------------
+    // 3. Generate JWT
+    // -------------------------
+    const tJwtStart = performance.now();
+    const accessToken = jwt.sign(
+        { userId: newUser.user_id, email: newUser.email, roles },
+        ACCESS_SECRET,
+        { expiresIn: '5m' }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: newUser.user_id, email: newUser.email },
+        REFRESH_SECRET,
+        { expiresIn: '10m' }
+    );
+    const tJwtEnd = performance.now();
+    console.log('JWT generation time:', (tJwtEnd - tJwtStart).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // 4. Insert login history
+    // -------------------------
+    const tLoginHistoryStart = performance.now();
+    await prisma.login_history.create({
+        data: {
+            user_id: newUser.user_id,
+            ip_address: ip,
+            user_agent: userAgent || 'unknown'
+        }
+    });
+    const tLoginHistoryEnd = performance.now();
+    console.log('Login history insert time:',
+        (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
+
+
+    // -------------------------
+    // TOTAL TIME
+    // -------------------------
+    const tFinal = performance.now();
+    console.log('Total register time:',
+        (tFinal - t0).toFixed(2), 'ms');
+
+
+    return {
+        accessToken,
+        refreshToken,
+        user: {
+            user_id: newUser.user_id,
+            email: newUser.email,
+            status: newUser.status,
+            first_name: first_name,
+            last_name: last_name
+        }
+    };
+}
+
+async function refreshAccessToken(userId) {
+
+    // 1️⃣ Check user exists
+    const user = await prisma.users.findUnique({
+        where: { user_id: userId }
+    });
+
+    if (!user) {
+        throw { status: 401, message: 'User does not exist' };
+    }
+
+    // 2️⃣ Check activation
+    if (user.status !== 'active') {
+        throw { status: 403, message: 'Account is not active' };
+    }
+
+    // 3️⃣ Get roles & permissions
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: true
+        }
+    });
+
+    const roles = userRoles.map(r => r.role.name);
+
+    // 4️⃣ Generate new access token
+    const accessToken = jwt.sign(
+        { userId, email: user.email, roles },
+        ACCESS_SECRET,
+        { expiresIn: '5m' }
+    );
+
+    return accessToken;
+}
+
+module.exports = { loginUser, registerUser, refreshAccessToken };
+
+============================================================
+FILE: src/modules/auth/auth.validator.js
+============================================================
+const { body, validationResult } = require('express-validator');
+
+const loginValidationRules = () => {
+  return [
+    body('email')
+      .isEmail()
+      .normalizeEmail(),
+
+    body('password')
+      .notEmpty()
+      .isLength({ min: 6 })
+  ]
+};
+
+const validateLogin = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: 'Invalid login credentials' });
+  }
+  next();
+};
+
+
+const registerValidationRules = () => {
+  return [
+    body('email')
+      .isEmail()
+      .withMessage('Invalid email')
+      .normalizeEmail(),
+
+    body('password')
+      .isLength({ min: 6 })
+      .withMessage('Password must be at least 6 characters'),
+
+    body('first_name')
+      .trim()
+      .notEmpty().withMessage('First name is required')
+      .bail()
+      .isLength({ min: 4 }).withMessage('First name must be at least 4 characters')
+      .bail()
+      .matches(/^[A-Za-z]+$/).withMessage('First name must contain only letters')
+      .bail()
+      ,
+
+    body('last_name')
+      .trim()
+      .notEmpty().withMessage('Last name is required')
+      .bail()
+      .isLength({ min: 4 }).withMessage('Last name must be at least 4 characters')
+      .bail()
+      .matches(/^[A-Za-z]+$/).withMessage('Last name must contain only letters')
+      .bail()
+  ];
+};
+
+const validateRegistration = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: 'Invalid registration data' });
+  }
+  next();
+};
+
+
+module.exports = {
+  loginValidationRules,
+  validateLogin,
+  registerValidationRules,
+  validateRegistration
+};
+
+
+
+============================================================
+FILE: src/modules/rbac/role/role.controller.js
+============================================================
+const {
+    getAllRoles,
+    getRoleById,
+    createRole,
+    updateRole,
+    deleteRole,
+    getRolePermissions,
+    assignPermissionsToRole
+} = require('./role.service');
+const response = require('../../../utils/response');
+
+async function viewRoles(req, res) {
+    try {
+        const roles = await getAllRoles();
+
+        if (!roles.length) {
+            return response.error(res, "No roles found", 404);
+        }
+        return response.success(res, roles, "Roles fetched");
+    } catch (err) {
+        console.error('View roles error:', err.message);
+        return response.error(res, "Failed to fetch roles", 500);
+    }
+}
+
+async function viewRole(req, res) {
+    try {
+        const { id } = req.params;
+        const role = await getRoleById(Number(id));
+        // 'role' will be an object or throw an error if not found
+        return response.success(res, role, "Role fetched");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('View role error:', err.message);
+        return response.error(res, "Failed to fetch role", 500);
+    }
+}
+
+async function create(req, res) {
+    try {
+        const { name } = req.body;
+        const newRole = await createRole(name);
+        return response.success(res, newRole, "Role created successfully", 201);
+    } catch (err) {
+        if (err.message === 'Role name already exists') {
+            return response.error(res, "Role name already exists", 409);
+        }
+        console.error('Create role error:', err.message);
+        return response.error(res, "Failed to create role", 500);
+    }
+}
+
+async function update(req, res) {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        const updatedRole = await updateRole(Number(id), name);
+        return response.success(res, updatedRole, "Role updated successfully");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        } else if (err.message === 'New role name already exists') {
+            return response.error(res, "New role name already exists", 409);
+        }
+        console.error('Update role error:', err.message);
+        return response.error(res, "Failed to update role", 500);
+    }
+}
+
+async function remove(req, res) {
+    try {
+        const { id } = req.params;
+        await deleteRole(Number(id));
+        return response.success(res, null, "Role deleted successfully");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('Delete role error:', err.message);
+        return response.error(res, "Failed to delete role", 500);
+    }
+}
+
+async function viewRolePermissions(req, res) {
+    try {
+        const { id } = req.params;
+        const permissions = await getRolePermissions(Number(id));
+        return response.success(res, permissions, "Permissions for role fetched");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('View role permissions error:', err.message);
+        return response.error(res, "Failed to fetch permissions for role", 500);
+    }
+}
+
+async function assignPermissions(req, res) {
+    try {
+        const { id } = req.params;
+        const { permissionIds } = req.body; 
+        await assignPermissionsToRole(Number(id), permissionIds);
+        return response.success(res, null, "Permissions assigned to role successfully");
+    } catch (err) {
+        if (err.message === 'Role not found') {
+            return response.error(res, "Role not found", 404);
+        }
+        console.error('Assign permissions error:', err.message);
+        return response.error(res, "Failed to assign permissions to role", 500);
+    }
+}
+
+
+module.exports = {
+    viewRoles,
+    viewRole,
+    create,
+    update,
+    remove,
+    viewRolePermissions,
+    assignPermissions
+};
+
+============================================================
+FILE: src/modules/rbac/role/role.route.js
+============================================================
+// src/modules/rbac/role/role.route.js
+const express = require("express");
+const router = express.Router();
+const {
+    viewRoles,
+    viewRole,
+    create,
+    update,
+    remove,
+    viewRolePermissions,
+    assignPermissions
+} = require("./role.controller");
+
+const { roleIdValidator, roleNameValidator, assignPermissionsValidator } = require('./role.validator');
+
+const checkPermission = require("../../../middleware/checkPermission");
+const verifyAccessToken = require('../../../middleware/verifyAccessToken');
+
+/* Role Management APIs */
+
+// GET /v1/rbac/roles - Fetch all roles (requires 'view_roles' permission)
+router.get(
+    '/',
+    verifyAccessToken,
+    checkPermission("view_roles"),
+    viewRoles
+);
+
+// GET /v1/rbac/roles/:id - Fetch a specific role by ID (requires 'view_role' permission)
+router.get(
+    '/:id',
+    verifyAccessToken,
+    checkPermission("view_role"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    viewRole
+);
+
+// POST /v1/rbac/roles - Create a new role (requires 'create_role' permission)
+router.post(
+    '/',
+    verifyAccessToken,
+    checkPermission("create_role"), // Ensure this permission exists in your DB
+    roleNameValidator, // Validate the 'name' field in the request body
+    create
+);
+
+// PUT /v1/rbac/roles/:id - Update an existing role by ID (requires 'update_role' permission)
+router.put(
+    '/:id',
+    verifyAccessToken,
+    checkPermission("update_role"), // Ensure this permission exists in your DB
+    roleIdValidator,    // Validate the 'id' parameter
+    roleNameValidator,  // Validate the 'name' field in the request body
+    update
+);
+
+// DELETE /v1/rbac/roles/:id - Delete a role by ID (requires 'delete_role' permission)
+router.delete(
+    '/:id',
+    verifyAccessToken,
+    checkPermission("delete_role"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    remove
+);
+
+// GET /v1/rbac/roles/:id/permissions - Fetch permissions assigned to a specific role (requires 'view_role_permissions' permission)
+router.get(
+    '/:id/permissions',
+    verifyAccessToken,
+    checkPermission("view_role_permissions"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    viewRolePermissions
+);
+
+// PUT /v1/rbac/roles/:id/permissions - Assign permissions to a specific role (requires 'assign_role_permissions' permission)
+router.put(
+    '/:id/permissions',
+    verifyAccessToken,
+    checkPermission("assign_role_permissions"), // Ensure this permission exists in your DB
+    roleIdValidator,
+    assignPermissionsValidator, // Validate the 'permissionIds' array in the request body
+    assignPermissions
+);
+
+
+module.exports = router;
+
+============================================================
+FILE: src/modules/rbac/role/role.service.js
+============================================================
+// src/modules/rbac/role/role.service.js
+const prisma = require('../../../config/prisma');
+
+async function getAllRoles() {
+  return prisma.role.findMany({
+    select: {
+      name: true,
+    }
+  });
+}
+
+async function getRoleById(id) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: id }
+  });
+  
+  if (!role) {
+    throw new Error('Role not found');
+  }
+  return role;
+}
+
+async function createRole(name) {
+  try {
+    const newRole = await prisma.role.create({
+      data: {
+        name },
+    });
+    return newRole;
+  } catch (err) {
+    if (err.code === 'P2002') { 
+      throw new Error('Role name already exists');
+    }
+    throw err;
+  }
+}
+
+
+async function updateRole(id, newName) {
+  try {
+    const updatedRole = await prisma.role.update({
+      where: { role_id: id },
+      data: {
+        name: newName,
+      },
+    });
+    return updatedRole;
+  } catch (err) {
+    if (err.code === 'P2025') { 
+      throw new Error('Role not found');
+    } else if (err.code === 'P2002') { 
+      throw new Error('New role name already exists');
+    }
+    throw err;
+  }
+}
+
+async function deleteRole(id) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: id }
+  });
+
+  if (!role) {
+    throw new Error("Role not found");
+  }
+
+  await prisma.role.delete({
+    where: { role_id: id }
+  });
+
+  return true;
+}
+
+async function getRolePermissions(roleId) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: roleId },
+    include: {
+      role_permission: {
+        include: {
+          permission: true
+        }
+      }
+    }
+  });
+
+  if (!role) {
+    throw new Error('Role not found');
+  }
+
+  return role.role_permission.map(rp => rp.permission);
+}
+
+async function assignPermissionsToRole(roleId, permissionIds) {
+  const role = await prisma.role.findUnique({
+    where: { role_id: roleId }
+  });
+
+  if (!role) {
+    throw new Error('Role not found');
+  }
+
+  // First, delete all existing permissions for this role
+  await prisma.role_permission.deleteMany({
+    where: { role_id: roleId }
+  });
+
+  // Then, create new permission assignments
+  const newAssignments = permissionIds.map(permissionId => ({
+    role_id: roleId,
+    permission_id: permissionId
+  }));
+
+  if (newAssignments.length > 0) {
+    await prisma.role_permission.createMany({
+      data: newAssignments
+    });
+  }
+
+}
+
+
+module.exports = {
+  getAllRoles,
+  getRoleById,
+  createRole,
+  updateRole,
+  deleteRole,
+  getRolePermissions,
+  assignPermissionsToRole
+};
+
+
+============================================================
+FILE: src/modules/rbac/role/role.validator.js
+============================================================
+const { body, param, query } = require('express-validator');
+
+const roleIdValidator = [
+  param("id")
+    .exists().withMessage("Role ID is required")
+    .bail()
+    .isInt({ min: 1 }).withMessage("Role ID must be a positive integer")
+];
+
+const roleNameValidator = [
+  body('name')
+    .trim()
+    .notEmpty().withMessage('Role name is required')
+    .bail()
+    .isLength({ max: 255 }).withMessage('Role name cannot exceed 255 characters')
+    .bail()
+    .matches(/^[a-z]+$/).withMessage('Role name can only contain lowercase letters')
+];
+
+const assignPermissionsValidator = [
+    body('permissionIds') 
+      .isArray({ min: 0 }) 
+      .withMessage('permissionIds must be an array of integers.'),
+    body('permissionIds.*')
+      .isInt({ min: 1 }).withMessage('Each permission ID must be a positive integer.')
+  ];
+
+module.exports = {
+  roleIdValidator,
+  roleNameValidator,
+  assignPermissionsValidator
+};
+
+
+============================================================
+FILE: src/modules/users/users.controller.js
+============================================================
+const { getAllUsers, getUserById,  deleteUserById } = require('./users.service');
+const response = require('../../utils/response');
+
+async function viewUsers(req, res) {
+    const users = await getAllUsers();
+    if (!users.length) {
+        return response.error(res, "No users found", 404);
+    }
+
+    return response.success(res, users, "Users fetched");
+}
+
+async function viewUser(req, res) {
+    try {
+        const { id } = req.params;
+        const user = await getUserById(Number(id));
+        
+        return response.success(res, user, "User fetched");
+    } catch (err) {
+        return response.error(res, "Not Found", 404);
+    }
+}
+
+async function deleteUser(req, res) {
+
+    try {
+        const { id } = req.params;
+        await deleteUserById(Number(id));
+        return response.success(res, null, "User deleted");
+
+    } catch (err) {
+        return response.error(res, "User not found", 404);
+    }
+
+}
+
+module.exports = { viewUsers, viewUser, deleteUser };
+
+============================================================
+FILE: src/modules/users/users.routes.js
+============================================================
+const express = require("express");
+const router = express.Router();
+const { viewUsers, viewUser, deleteUser } = require("./users.controller");
+const checkPermission = require("../../middleware/checkPermission");
+const verifyAccessToken = require('../../middleware/verifyAccessToken');
+const { userIdValidator } = require('./users.vaidator');
+
+router.get(
+  "/",
+  verifyAccessToken,
+  checkPermission("view_users"),
+  viewUsers
+);
+
+router.get(
+  "/:id",
+  verifyAccessToken,
+  checkPermission("view_users"),
+  userIdValidator,
+  viewUser
+);
+
+router.delete(
+  "/:id",
+  verifyAccessToken,
+  checkPermission("delete_user"),
+  userIdValidator,
+  deleteUser
+);
+
+
+module.exports = router;
+
+============================================================
+FILE: src/modules/users/users.service.js
+============================================================
+const prisma = require('../../config/prisma');
+
+
+async function getAllUsers() {
+    return prisma.users.findMany({
+        select: {
+            user_id: true,
+            email: true,
+            status: true,
+            created_at: true
+        }
+    });
+}
+
+async function getUserById(id) {
+
+    const user = await prisma.users.findUnique({
+        where: { user_id: id },
+        select: {
+            user_id: true,
+            email: true,
+            status: true,
+            created_at: true
+        }
+    });
+
+    if (!user) {
+        throw new Error('Invalid User ID');
+    }
+
+    const userRoles = await prisma.user_role.findMany({
+        where: { user_id: user.user_id },
+        select: {
+            role: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
+
+    const roles = userRoles.map(r => r.role.name);
+
+    return {
+        ...user,
+        roles
+    };
+}
+
+async function deleteUserById(id) {
+
+    const user = await prisma.users.findUnique({
+        where: { user_id: id }
+    });
+    if (!user) {
+        throw new Error("User not found");
+    }
+    await prisma.users.delete({
+        where: { user_id: id }
+    });
+
+    return true;
+}
+
+module.exports = { getAllUsers, getUserById, deleteUserById };
+
+============================================================
+FILE: src/modules/users/users.vaidator.js
+============================================================
+const { param } = require("express-validator");
+
+const userIdValidator = [
+  param("id")
+    .exists().withMessage("User ID is required")
+    .bail()
+    .isInt({ min: 1 }).withMessage("User ID must be a positive integer")
+];
+
+module.exports = { userIdValidator };
+
+============================================================
+FILE: src/utils/AppError.js
+============================================================
+class AppError extends Error {
+    constructor(message, statusCode = 500, errorCode = null, isOperational = true) {
+        super(message);
+        this.statusCode = statusCode;
+        this.errorCode = errorCode;
+        this.isOperational = isOperational;
+
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+module.exports = AppError;
+
+============================================================
+FILE: src/utils/base64.js
+============================================================
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMwLCJlbWFpbCI6InlvdW5iN2VzYmVsQGdtYWlsLmNvbSIsInJvbGVzIjpbIlN0dWRlbnQiXSwiaWF0IjoxNzcyNjMwODE3LCJleHAiOjE3NzI2MzExMTd9.jgWDVabXAzsZ40LebFi9ZW5lStkRwDgmkqv7HqRjChI'
+
+function decodeJwt(token) {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    // Add padding if needed (Base64 requires length % 4 === 0)
+    const padded = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = Buffer.from(padded, 'base64').toString('utf8');
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    throw new Error('Invalid JWT');
+  }
+}
+
+const payload = decodeJwt(token);
+console.log(payload);
+
+============================================================
+FILE: src/utils/getUserPermissions.js
+============================================================
+const prisma = require("../config/prisma");
+
+async function getUserPermissions(userId) {
+
+    const roles = await prisma.user_role.findMany({
+        where: { user_id: userId },
+        include: {
+            role: {
+                include: {
+                    role_permission: {
+                        include: {
+                            permission: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const permissions = [];
+
+    roles.forEach(r => {
+        r.role.role_permission.forEach(p => {
+            permissions.push(p.permission.name);
+        });
+    });
+
+    return permissions;
+}
+
+module.exports = getUserPermissions;
+
+============================================================
+FILE: src/utils/hash.js
+============================================================
+// hash-one.js
+const argon2 = require('argon2');
+
+(async () => {
+  const password = '784512963'; // 👈 change this
+  const hash = await argon2.hash(password, {
+    type: argon2.argon2id,
+    memoryCost: 65536,
+    timeCost: 3,
+    parallelism: 4
+  });
+  console.log('Hash:', hash);
+})();
+
+============================================================
+FILE: src/utils/response.js
+============================================================
+const send = (res, statusCode, success, message, data = null, meta = null) => {
+    const response = {
+        success,
+        message,
+    };
+
+    if (data !== null) response.data = data;
+    if (meta !== null) response.meta = meta;
+
+    return res.status(statusCode).json(response);
+};
+
+const response = {
+    success: (res, data = {}, message = "Success", statusCode = 200) =>
+        send(res, statusCode, true, message, data),
+
+    error: (res, message = "Something went wrong", statusCode = 500) =>
+        send(res, statusCode, false, message),
+};
+
+module.exports = response;
+
+============================================================
+FILE: package.json
+============================================================
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^6.19.2",
+    "argon2": "^0.44.0",
+    "bad-words": "^4.0.0",
+    "bcrypt": "^6.0.0",
+    "chalk": "^5.6.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "path": "^0.12.7",
+    "prisma": "^6.19.2",
+    "redis": "^5.11.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
+
+
+============================================================
+FILE: server.js
+============================================================
+
+require('dotenv').config();
+const express = require("express");
+//const path = require('path');
+
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./src/config/swagger');
+
+const authRoutes = require("./src/modules/auth/auth.routes");
+const userRoutes = require("./src/modules/users/users.routes");
+const roleRoutes = require("./src/modules/rbac/role/role.route"); // تأكد من استيراد مسارات الأدوار
+
+
+const errorHandler = require('./src/middleware/errorHandler');
+const { PORT } = require('./src/config/env');
+
+const app = express();
+
+
+app.use(express.json());
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
+
+app.use("/v1/auth", authRoutes);
+app.use("/v1/users", userRoutes);
+app.use("/v1/rbac", roleRoutes); 
+
+app.use(errorHandler);
+
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
+});
+
+============================================================
+FILE: Back/Server/package.json
+============================================================
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^6.19.2",
+    "argon2": "^0.44.0",
+    "bad-words": "^4.0.0",
+    "bcrypt": "^6.0.0",
+    "chalk": "^5.6.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "path": "^0.12.7",
+    "prisma": "^6.19.2",
+    "redis": "^5.11.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
+
+
+============================================================
+FILE: Back/Server/server.js
+============================================================
+
+require('dotenv').config();
+const express = require("express");
+//const path = require('path');
+
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./src/config/swagger');
+
+const authRoutes = require("./src/modules/auth/auth.routes");
+const userRoutes = require("./src/modules/users/users.routes");
+const roleRoutes = require("./src/modules/rbac/role/role.route"); // تأكد من استيراد مسارات الأدوار
+
+
+const errorHandler = require('./src/middleware/errorHandler');
+const { PORT } = require('./src/config/env');
+
+const app = express();
+
+
+app.use(express.json());
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
+
+app.use("/v1/auth", authRoutes);
+app.use("/v1/users", userRoutes);
+app.use("/v1/roles", roleRoutes); 
+
+app.use(errorHandler);
+
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
+});
+
+============================================================
+FILE: Front/Mobile_App/file.txt
+============================================================
+Mobile App
