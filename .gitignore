@@ -1,4 +1,8 @@
 Project/Back/DB/.env
 Project/Back/Server/node_modules/
 Project/Back/Server/.env
+<<<<<<< HEAD
 Project/Back/DB/certs/server.key
+=======
+.env
+>>>>>>> c0e34cc8a26d898fae84341bca6db475c0bf1ec5
