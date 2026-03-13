@@ -4,7 +4,7 @@ const prisma = require('../../../config/prisma');
 async function getAllRoles() {
   return prisma.role.findMany({
     select: {
-      role_id:true,
+      role_id: true,
       name: true,
     }
   });
@@ -14,7 +14,7 @@ async function getRoleById(id) {
   const role = await prisma.role.findUnique({
     where: { role_id: id }
   });
-  
+
   if (!role) {
     throw new Error('Role not found');
   }
@@ -25,11 +25,12 @@ async function createRole(name) {
   try {
     const newRole = await prisma.role.create({
       data: {
-        name },
+        name
+      },
     });
     return newRole;
   } catch (err) {
-    if (err.code === 'P2002') { 
+    if (err.code === 'P2002') {
       throw new Error('Role name already exists');
     }
     throw err;
@@ -47,9 +48,9 @@ async function updateRole(id, newName) {
     });
     return updatedRole;
   } catch (err) {
-    if (err.code === 'P2025') { 
+    if (err.code === 'P2025') {
       throw new Error('Role not found');
-    } else if (err.code === 'P2002') { 
+    } else if (err.code === 'P2002') {
       throw new Error('New role name already exists');
     }
     throw err;
@@ -100,12 +101,10 @@ async function assignPermissionsToRole(roleId, permissionIds) {
     throw new Error('Role not found');
   }
 
-  // First, delete all existing permissions for this role
   await prisma.role_permission.deleteMany({
     where: { role_id: roleId }
   });
 
-  // Then, create new permission assignments
   const newAssignments = permissionIds.map(permissionId => ({
     role_id: roleId,
     permission_id: permissionId

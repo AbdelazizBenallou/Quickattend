@@ -1,4 +1,5 @@
 const { body, validationResult } = require('express-validator');
+const response = require('../../utils/response');
 
 const loginValidationRules = () => {
   return [
@@ -15,11 +16,10 @@ const loginValidationRules = () => {
 const validateLogin = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: 'Invalid login credentials' });
+    return response.error(res, "Invalid login credentials", 400);
   }
   next();
-};
-
+};    
 
 const registerValidationRules = () => {
   return [
@@ -56,12 +56,10 @@ const registerValidationRules = () => {
 const validateRegistration = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: 'Invalid registration data' });
+    return response.error(res, "Invalid registration data", 400);
   }
   next();
-};
-
-
+};  
 module.exports = {
   loginValidationRules,
   validateLogin,

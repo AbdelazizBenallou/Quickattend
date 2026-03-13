@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+
+  server:
+    build:
+      context: ./Back/Server
+      dockerfile: Dockerfile
+
+    container_name: backend_server
+    restart: unless-stopped
+
+    env_file:
+      - ./Back/Server/.env
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    volumes:
+      - ./Back/Server:/app
+      - /app/node_modules
+
+    command: sh -c "npx prisma generate && node server.js"
+
+
+
+  postgres:
+    image: postgres:17
+    container_name: postgres_db
+    restart: unless-stopped
+
+    env_file:
+      - ./Back/DB/.env
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres:/docker-entrypoint-initdb.d
+      - ./init:/docker-entrypoint-initdb.d
+      - ./certs/server.crt:/var/lib/postgresql/server.crt
+      - ./certs/server.key:/var/lib/postgresql/server.key
+
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+
+  redis:
+    image: redis:latest
+    container_name: redis_cache
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+    command: redis-server --appendonly yes
+
+    volumes:
+      - redis_data:/data
+
+
+
+volumes:
+  postgres_data:
+    driver: local
+
+  redis_data:
+    driver: local

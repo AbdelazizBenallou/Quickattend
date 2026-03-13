@@ -74,6 +74,33 @@ router.get(
 );
 
 // POST /v1/rbac/roles - Create a new role (requires 'create_role' permission)
+
+/**
+ * @openapi
+ * /v1/roles:
+ *   post:
+ *     summary: Create a new role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: admin
+ *     responses:
+ *       201:
+ *         description: Role created successfully
+ *       409:
+ *         description: Role name already exists
+ */
 router.post(
     '/',
     verifyAccessToken,
@@ -83,6 +110,36 @@ router.post(
 );
 
 // PUT /v1/rbac/roles/:id - Update an existing role by ID (requires 'update_role' permission)
+/**
+ * @openapi
+ * /v1/roles/{id}:
+ *   put:
+ *     summary: Update role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: admin
+ *     responses:
+ *       200:
+ *         description: Role updated
+ *       404:
+ *         description: Role not found
+ */
 router.put(
     '/:id',
     verifyAccessToken,
@@ -93,6 +150,27 @@ router.put(
 );
 
 // DELETE /v1/rbac/roles/:id - Delete a role by ID (requires 'delete_role' permission)
+
+/**
+ * @openapi
+ * /v1/roles/{id}:
+ *   delete:
+ *     summary: Delete role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Role deleted successfully
+ *       404:
+ *         description: Role not found
+ */
 router.delete(
     '/:id',
     verifyAccessToken,
@@ -102,6 +180,28 @@ router.delete(
 );
 
 // GET /v1/rbac/roles/:id/permissions - Fetch permissions assigned to a specific role (requires 'view_role_permissions' permission)
+
+/**
+ * @openapi
+ * /v1/roles/{id}/permissions:
+ *   get:
+ *     summary: Get permissions assigned to a role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Permissions list
+ *       404:
+ *         description: Role not found
+ */
+
 router.get(
     '/:id/permissions',
     verifyAccessToken,
@@ -111,6 +211,37 @@ router.get(
 );
 
 // PUT /v1/rbac/roles/:id/permissions - Assign permissions to a specific role (requires 'assign_role_permissions' permission)
+
+/**
+ * @openapi
+ * /v1/roles/{id}/permissions:
+ *   put:
+ *     summary: Assign permissions to role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               permissionIds:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 example: [1,2,3]
+ *     responses:
+ *       200:
+ *         description: Permissions assigned
+ */
 router.put(
     '/:id/permissions',
     verifyAccessToken,

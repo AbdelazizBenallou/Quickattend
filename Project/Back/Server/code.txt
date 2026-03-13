@@ -4,8 +4,8 @@ This digest is designed to be easily parsed by Large Language Models.
 --- SUMMARY ---
 Repository: Server
 Files Analyzed: 35
-Total Text Size: 45.03 KB
-Estimated Tokens (text only): ~11,489
+Total Text Size: 51.31 KB
+Estimated Tokens (text only): ~13,044
 
 --- DIRECTORY STRUCTURE ---
 Server/
@@ -262,7 +262,7 @@ requiredEnv.forEach((key) => {
 
 module.exports = {
     NODE_ENV: process.env.NODE_ENV,
-    PORT: process.env.PORT || 5434,
+    PORT: process.env.PORT || 3000,
     DATABASE_URL: process.env.DATABASE_URL,
     ACCESS_SECRET: process.env.ACCESS_SECRET,
     REFRESH_SECRET: process.env.REFRESH_SECRET,
@@ -295,12 +295,12 @@ redis.on("error", (err) => {
 
 module.exports = redis;
 
+
 ============================================================
 FILE: src/config/swagger.js
 ============================================================
 // src/config/swagger.js
 const swaggerJsdoc = require("swagger-jsdoc");
-const { PORT } = require("./env");
 
 const options = {
     definition: {
@@ -312,10 +312,19 @@ const options = {
         },
         servers: [
             {
-                url: `http://localhost:${PORT}`,
+                url: `http://localhost:3000`,
                 description: "Development server",
             },
         ],
+        components: {
+            securitySchemes: {
+                BearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT"
+                }
+            }
+        }
     },
     apis: ["./src/modules/**/*.js"],
 };
@@ -370,8 +379,7 @@ module.exports = checkPermission;
 FILE: src/middleware/errorHandler.js
 ============================================================
 const errorHandler = (err, req, res, next) => {
-    const [NODE_ENV] = require('../config/env')
-
+    const { NODE_ENV } = require('../config/env')
     const isDev = NODE_ENV === "dev";
 
     const statusCode = err.statusCode || 500;
@@ -399,7 +407,9 @@ FILE: src/middleware/originCheck.js
 const response = require("../utils/response")
 
 const allowedOrigins = [
-    "http://localhost:3000",
+     "http://localhost:3000",
+    "http://localhost:5434"
+
 ];
 
 function originCheck(req, res, next) {
@@ -411,6 +421,7 @@ function originCheck(req, res, next) {
 }
 
 module.exports = originCheck;
+
 
 ============================================================
 FILE: src/middleware/verifyAccessToken.js
@@ -523,13 +534,16 @@ async function login(req, res) {
 async function register(req, res) {
   try {
     const { first_name, last_name, email, password } = req.body;
-
+    console.log(first_name, " ", last_name);
+    
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
 
     const { accessToken, refreshToken, user } =
       await registerUser(first_name, last_name, email, password, ip, userAgent);
-
+	
+    console.log(user);
+    
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: NODE_ENV === 'production',
@@ -543,6 +557,9 @@ async function register(req, res) {
       sameSite: 'lax',
       maxAge: 10 * 60 * 1000
     });
+    
+    
+
 
     return response.success(
       res,
@@ -557,9 +574,10 @@ async function register(req, res) {
   } catch (error) {
 
     if (error.message === 'Email already exists') {
+      console.log("Email Alraedy Exist !")
       return response.error(res, "Registration failed", 409);
     }
-
+        console.log(res)
     return response.error(res, "Registration failed", 400);
   }
 }
@@ -592,6 +610,7 @@ async function refreshToken(req, res) {
 
 module.exports = { login, register, refreshToken };
 
+
 ============================================================
 FILE: src/modules/auth/auth.routes.js
 ============================================================
@@ -615,6 +634,7 @@ const verifyRefreshToken = require('../../middleware/verifyRefreshToken');
  *   name: Users
  *   description: API endpoints for managing users
  */
+
 /**
  * @openapi
  * /v1/auth/login:
@@ -627,12 +647,17 @@ const verifyRefreshToken = require('../../middleware/verifyRefreshToken');
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
  *                 example: user@example.com
  *               password:
  *                 type: string
+ *                 format: password
  *                 example: password123
  *     responses:
  *       200:
@@ -648,7 +673,7 @@ const verifyRefreshToken = require('../../middleware/verifyRefreshToken');
  *                 message:
  *                   type: string
  *                   example: Login successful
- *                 
+ *                 data:
  *                   type: object
  *                   properties:
  *                     user:
@@ -680,7 +705,7 @@ const verifyRefreshToken = require('../../middleware/verifyRefreshToken');
  *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *                     refreshToken:
  *                       type: string
- *                       example: dGhpcyBpcyBhIHJlZnJlc2gtdG9rZW4...
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       400:
  *         description: Invalid login credentials
  *         content:
@@ -695,6 +720,7 @@ const verifyRefreshToken = require('../../middleware/verifyRefreshToken');
  *                   type: string
  *                   example: Invalid credentials
  */
+
 router.post(
     '/login',
     loginValidationRules(),
@@ -702,6 +728,44 @@ router.post(
     login
 );
 
+/**
+ * @openapi
+ * /v1/auth/register:
+ *   post:
+ *     summary: Register new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - first_name
+ *               - last_name
+ *               - email
+ *               - password
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 example: John
+ *               last_name:
+ *                 type: string
+ *                 example: Doe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       201:
+ *         description: User registered
+ *       400:
+ *         description: Invalid data
+ *       409:
+ *         description: Email already exists
+ */
 /* Post /v1/auth/register */
 router.post(
     '/register',
@@ -709,6 +773,19 @@ router.post(
     validateRegistration,
     register
 );
+
+/**
+ * @openapi
+ * /v1/auth/refresh-token:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Access token refreshed
+ *       403:
+ *         description: Invalid refresh token
+ */
 
 /* Post /v1/auth/refresh-token */
 router.post(
@@ -879,7 +956,6 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         try {
             createdUser = await tx.users.create({
                 data: {
-
                     email,
                     password_hash,
                     status: 'active'
@@ -1000,7 +1076,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
     console.log('Total register time:',
         (tFinal - t0).toFixed(2), 'ms');
 
-
+    
     return {
         accessToken,
         refreshToken,
@@ -1051,6 +1127,7 @@ async function refreshAccessToken(userId) {
 }
 
 module.exports = { loginUser, registerUser, refreshAccessToken };
+
 
 ============================================================
 FILE: src/modules/auth/auth.validator.js
@@ -1280,6 +1357,26 @@ const verifyAccessToken = require('../../../middleware/verifyAccessToken');
 /* Role Management APIs */
 
 // GET /v1/rbac/roles - Fetch all roles (requires 'view_roles' permission)
+/**
+ * @openapi
+ * tags:
+ *   name: Users
+ *   description: API endpoints for managing users
+ */
+
+/**
+ * @openapi
+ * /v1/roles:
+ *   get:
+ *     summary: Get all roles
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of roles
+ */
+
 router.get(
     '/',
     verifyAccessToken,
@@ -1287,7 +1384,25 @@ router.get(
     viewRoles
 );
 
-// GET /v1/rbac/roles/:id - Fetch a specific role by ID (requires 'view_role' permission)
+/**
+ * @openapi
+ * /v1/roles/{id}:
+ *   get:
+ *     summary: Get role by ID
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Role fetched
+ */
+
 router.get(
     '/:id',
     verifyAccessToken,
@@ -1297,6 +1412,33 @@ router.get(
 );
 
 // POST /v1/rbac/roles - Create a new role (requires 'create_role' permission)
+
+/**
+ * @openapi
+ * /v1/roles:
+ *   post:
+ *     summary: Create a new role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: admin
+ *     responses:
+ *       201:
+ *         description: Role created successfully
+ *       409:
+ *         description: Role name already exists
+ */
 router.post(
     '/',
     verifyAccessToken,
@@ -1306,6 +1448,36 @@ router.post(
 );
 
 // PUT /v1/rbac/roles/:id - Update an existing role by ID (requires 'update_role' permission)
+/**
+ * @openapi
+ * /v1/roles/{id}:
+ *   put:
+ *     summary: Update role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: admin
+ *     responses:
+ *       200:
+ *         description: Role updated
+ *       404:
+ *         description: Role not found
+ */
 router.put(
     '/:id',
     verifyAccessToken,
@@ -1316,6 +1488,27 @@ router.put(
 );
 
 // DELETE /v1/rbac/roles/:id - Delete a role by ID (requires 'delete_role' permission)
+
+/**
+ * @openapi
+ * /v1/roles/{id}:
+ *   delete:
+ *     summary: Delete role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Role deleted successfully
+ *       404:
+ *         description: Role not found
+ */
 router.delete(
     '/:id',
     verifyAccessToken,
@@ -1325,6 +1518,28 @@ router.delete(
 );
 
 // GET /v1/rbac/roles/:id/permissions - Fetch permissions assigned to a specific role (requires 'view_role_permissions' permission)
+
+/**
+ * @openapi
+ * /v1/roles/{id}/permissions:
+ *   get:
+ *     summary: Get permissions assigned to a role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Permissions list
+ *       404:
+ *         description: Role not found
+ */
+
 router.get(
     '/:id/permissions',
     verifyAccessToken,
@@ -1334,6 +1549,37 @@ router.get(
 );
 
 // PUT /v1/rbac/roles/:id/permissions - Assign permissions to a specific role (requires 'assign_role_permissions' permission)
+
+/**
+ * @openapi
+ * /v1/roles/{id}/permissions:
+ *   put:
+ *     summary: Assign permissions to role
+ *     tags: [Roles]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               permissionIds:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 example: [1,2,3]
+ *     responses:
+ *       200:
+ *         description: Permissions assigned
+ */
 router.put(
     '/:id/permissions',
     verifyAccessToken,
@@ -1355,6 +1601,7 @@ const prisma = require('../../../config/prisma');
 async function getAllRoles() {
   return prisma.role.findMany({
     select: {
+      role_id:true,
       name: true,
     }
   });
@@ -1569,12 +1816,54 @@ const checkPermission = require("../../middleware/checkPermission");
 const verifyAccessToken = require('../../middleware/verifyAccessToken');
 const { userIdValidator } = require('./users.vaidator');
 
+/**
+ * @openapi
+ * tags:
+ *   name: Users
+ *   description: API endpoints for managing users
+ */
+
+/**
+ * @openapi
+ * /v1/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Users list
+ */
+
 router.get(
   "/",
   verifyAccessToken,
   checkPermission("view_users"),
   viewUsers
 );
+
+/**
+ * @openapi
+ * /v1/users/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User details
+ *       404:
+ *         description: User not found
+ */
 
 router.get(
   "/:id",
@@ -1583,6 +1872,27 @@ router.get(
   userIdValidator,
   viewUser
 );
+
+/**
+ * @openapi
+ * /v1/users/{id}:
+ *   delete:
+ *     summary: Delete user
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: User deleted
+ *       404:
+ *         description: User not found
+ */
 
 router.delete(
   "/:id",
@@ -1836,36 +2146,38 @@ FILE: server.js
 require('dotenv').config();
 const express = require("express");
 //const path = require('path');
-
+//const origin = require('./src/middleware/originCheck')
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./src/config/swagger');
+const cors = require('cors')
+const originCheck = require('./src/middleware/originCheck');
 
 const authRoutes = require("./src/modules/auth/auth.routes");
 const userRoutes = require("./src/modules/users/users.routes");
-const roleRoutes = require("./src/modules/rbac/role/role.route"); // تأكد من استيراد مسارات الأدوار
+const roleRoutes = require("./src/modules/rbac/role/role.route");
 
 
-const errorHandler = require('./src/middleware/errorHandler');
+//const errorHandler = require('./src/middleware/errorHandler');
 const { PORT } = require('./src/config/env');
 
 const app = express();
 
-
 app.use(express.json());
 
+//app.use(originCheck);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 
 app.use("/v1/auth", authRoutes);
 app.use("/v1/users", userRoutes);
-app.use("/v1/rbac", roleRoutes); 
+app.use("/v1/roles", roleRoutes);
 
-app.use(errorHandler);
+//app.use(errorHandler);
 
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
+  console.log(`Server running on port ${PORT} `);
+  console.log(`Swagger UI available at http://localhost:5434/api-docs`);
 });

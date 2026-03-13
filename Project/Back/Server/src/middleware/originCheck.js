@@ -1,7 +1,9 @@
 const response = require("../utils/response")
 
 const allowedOrigins = [
-    "http://localhost:3000",
+     "http://localhost:3000",
+    "http://localhost:5434"
+
 ];
 
 function originCheck(req, res, next) {

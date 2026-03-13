@@ -150,7 +150,6 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         try {
             createdUser = await tx.users.create({
                 data: {
-
                     email,
                     password_hash,
                     status: 'active'
@@ -271,7 +270,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
     console.log('Total register time:',
         (tFinal - t0).toFixed(2), 'ms');
 
-
+    
     return {
         accessToken,
         refreshToken,

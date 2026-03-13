@@ -1,4 +1,4 @@
-const { getAllUsers, getUserById,  deleteUserById } = require('./users.service');
+const { getAllUsers, getUserById, deleteUserById } = require('./users.service');
 const response = require('../../utils/response');
 
 async function viewUsers(req, res) {
@@ -14,7 +14,7 @@ async function viewUser(req, res) {
     try {
         const { id } = req.params;
         const user = await getUserById(Number(id));
-        
+
         return response.success(res, user, "User fetched");
     } catch (err) {
         return response.error(res, "Not Found", 404);

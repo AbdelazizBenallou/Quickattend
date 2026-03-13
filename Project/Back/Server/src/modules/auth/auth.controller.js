@@ -48,12 +48,15 @@ async function login(req, res) {
 async function register(req, res) {
   try {
     const { first_name, last_name, email, password } = req.body;
+    console.log(first_name, " ", last_name);
 
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
 
     const { accessToken, refreshToken, user } =
       await registerUser(first_name, last_name, email, password, ip, userAgent);
+
+    console.log(user);
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
@@ -69,6 +72,9 @@ async function register(req, res) {
       maxAge: 10 * 60 * 1000
     });
 
+
+
+
     return response.success(
       res,
       {
@@ -82,9 +88,10 @@ async function register(req, res) {
   } catch (error) {
 
     if (error.message === 'Email already exists') {
+      console.log("Email Alraedy Exist !")
       return response.error(res, "Registration failed", 409);
     }
-
+    console.log(res)
     return response.error(res, "Registration failed", 400);
   }
 }
@@ -110,7 +117,7 @@ async function refreshToken(req, res) {
     );
 
   } catch (err) {
-    return res.error(res, "Could not refresh token", 500);
+    return response.error(res, "Could not refresh token", 500);
   }
 }
 
