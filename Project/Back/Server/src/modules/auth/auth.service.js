@@ -124,12 +124,12 @@ async function loginUser(email, password, ip, userAgent = null) {
 }
 
 async function registerUser(first_name, last_name, email, password, ip, userAgent = null) {
-
-    const t0 = performance.now(); // total start
+    const t0 = performance.now(); // Total start
 
     // -------------------------
-    // 1. Transaction block
+    // 1. Transaction Block
     // -------------------------
+    // We await the transaction directly into 'newUser'
     const newUser = await prisma.$transaction(async (tx) => {
 
         // 🔹 Hash password
@@ -141,13 +141,25 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             parallelism: 4
         });
         const tHashEnd = performance.now();
-        console.log('Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
+        console.log('⏱️ Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
 
-
-        // 🔹 Create user
-        const tCreateStart = performance.now();
+        const tStart = performance.now();
         let createdUser;
+
         try {
+            // 1. PROACTIVE CHECK
+            const existingUser = await tx.users.findUnique({
+                where: { email },
+                select: { user_id: true }
+            });
+
+            if (existingUser) {
+                console.log(existingUser);
+
+                throw new Error('EMAIL_EXISTS');
+            }
+
+            // 2. CREATE
             createdUser = await tx.users.create({
                 data: {
                     email,
@@ -155,28 +167,28 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
                     status: 'active'
                 }
             });
+
         } catch (err) {
-            if (err.code === 'P2002') {
-                throw new Error('Email already exists');
-            }
+            if (err.message === 'EMAIL_EXISTS') throw err;
+            if (err.code === 'P2002') throw new Error('EMAIL_EXISTS');
             throw err;
         }
-        const tCreateEnd = performance.now();
-        console.log('User insert time:', (tCreateEnd - tCreateStart).toFixed(2), 'ms');
 
+        const tEnd = performance.now();
+        console.log('⏱️ User creation process time:', (tEnd - tStart).toFixed(2), 'ms');
 
         // 🔹 Get default role
         const tRoleStart = performance.now();
         const defaultRole = await tx.role.findUnique({
             where: { name: 'Student' }
         });
+        console.log(defaultRole)
 
         if (!defaultRole) {
             throw new Error('Default role not configured');
         }
         const tRoleEnd = performance.now();
-        console.log('Get role time:', (tRoleEnd - tRoleStart).toFixed(2), 'ms');
-
+        console.log('⏱️ Get role time:', (tRoleEnd - tRoleStart).toFixed(2), 'ms');
 
         // 🔹 Insert user_role
         const tUserRoleStart = performance.now();
@@ -187,7 +199,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             }
         });
         const tUserRoleEnd = performance.now();
-        console.log('User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
+        console.log('⏱️ User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
 
         // 🔹 Create profile
         const tProfileStart = performance.now();
@@ -198,57 +210,49 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
                 last_name
             }
         });
-
         const tProfileEnd = performance.now();
-        console.log('Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
+        console.log('⏱️ Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
 
-        return createdUser;
-    });
+        // ✅ OPTIMIZATION: Use data already in memory. NO extra DB query.
+        const roles = [defaultRole.name];
+        console.log(roles);
+
+        // Return the combined object
+
+        return {
+            user_id: createdUser.user_id,
+            email: createdUser.email,
+            status: createdUser.status,
+            roles: ['Student'] // Or dynamic from defaultRole.name
+        };
+    }); // End Transaction
+
 
     const tAfterTransaction = performance.now();
-    console.log('Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
-
-
+    console.log('⏱️ Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
     // -------------------------
-    // 2. Load roles & permissions
+    // 2. Generate JWT
     // -------------------------
-    const tRolesFetchStart = performance.now();
-    const userId = newUser.user_id;
-    const userRoles = await prisma.user_role.findMany({
-        where: { user_id: userId },
-        include: {
-            role: true
-        }
-    });
+    console.log(newUser.roles);
 
-    const tRolesFetchEnd = performance.now();
-    console.log('Fetch roles & permissions time:',
-        (tRolesFetchEnd - tRolesFetchStart).toFixed(2), 'ms');
-
-
-    const roles = userRoles.map(r => r.role.name);
-
-    // -------------------------
-    // 3. Generate JWT
-    // -------------------------
     const tJwtStart = performance.now();
     const accessToken = jwt.sign(
-        { userId: newUser.user_id, email: newUser.email, roles },
+        { userId: newUser.user_id, email: newUser.email, roles: newUser.roles },
         ACCESS_SECRET,
-        { expiresIn: '5m' }
+        { expiresIn: '10m' }
     );
 
     const refreshToken = jwt.sign(
         { userId: newUser.user_id, email: newUser.email },
         REFRESH_SECRET,
-        { expiresIn: '10m' }
+        { expiresIn: '20m' } // Consider making refresh tokens longer (e.g., '7d') in production
     );
     const tJwtEnd = performance.now();
-    console.log('JWT generation time:', (tJwtEnd - tJwtStart).toFixed(2), 'ms');
-
+    console.log('⏱️ JWT generation time:', (tJwtEnd - tJwtStart).toFixed(2), 'ms');
 
     // -------------------------
-    // 4. Insert login history
+    // 3. Insert Login History
+    // (Outside transaction because it's audit logging, not critical to user creation)
     // -------------------------
     const tLoginHistoryStart = performance.now();
     await prisma.login_history.create({
@@ -259,18 +263,14 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         }
     });
     const tLoginHistoryEnd = performance.now();
-    console.log('Login history insert time:',
-        (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
-
+    console.log('⏱️ Login history insert time:', (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
 
     // -------------------------
     // TOTAL TIME
     // -------------------------
     const tFinal = performance.now();
-    console.log('Total register time:',
-        (tFinal - t0).toFixed(2), 'ms');
+    console.log('🚀 Total register time:', (tFinal - t0).toFixed(2), 'ms');
 
-    
     return {
         accessToken,
         refreshToken,

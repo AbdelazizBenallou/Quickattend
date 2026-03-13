@@ -19,3 +19,4 @@ Fontconfig error: Cannot load default config file: No such file: (null)
 [8263:8373:0312/202053.498689:ERROR:google_apis/gcm/engine/connection_factory_impl.cc:434] Failed to connect to MCS endpoint with error -105
 [8263:8373:0312/202215.101662:ERROR:google_apis/gcm/engine/connection_factory_impl.cc:434] Failed to connect to MCS endpoint with error -105
 [8263:8373:0312/202505.419929:ERROR:google_apis/gcm/engine/connection_factory_impl.cc:434] Failed to connect to MCS endpoint with error -105
+[8395:8395:0312/205802.212718:ERROR:ui/gl/gl_surface_presentation_helper.cc:260] GetVSyncParametersIfAvailable() failed for 1 times!
