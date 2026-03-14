@@ -3,9 +3,9 @@ This digest is designed to be easily parsed by Large Language Models.
 
 --- SUMMARY ---
 Repository: Server
-Files Analyzed: 35
-Total Text Size: 51.31 KB
-Estimated Tokens (text only): ~13,044
+Files Analyzed: 39
+Total Text Size: 76.78 KB
+Estimated Tokens (text only): ~19,292
 
 --- DIRECTORY STRUCTURE ---
 Server/
@@ -31,6 +31,12 @@ Server/
 │   │   │   ├── auth.routes.js
 │   │   │   ├── auth.service.js
 │   │   │   └── auth.validator.js
+│   │   ├── program/
+│   │   │   └── degree_level/
+│   │   │       ├── degree.controller.js
+│   │   │       ├── degree.route.js
+│   │   │       ├── degree.service.js
+│   │   │       └── degree.validator.js
 │   │   ├── rbac/
 │   │   │   └── role/
 │   │   │       ├── role.controller.js
@@ -343,10 +349,10 @@ const response = require('../utils/response');
 function checkPermission(permissionName) {
   return async (req, res, next) => {
     try {
-
       const userId = req.user.userId;
       const cacheKey = `permissions:user:${userId}`;
       let permissions = await redis.get(cacheKey);
+      
       if (!permissions) {
         // load from database
         const dbPermissions = await getUserPermissions(userId);
@@ -356,21 +362,19 @@ function checkPermission(permissionName) {
           JSON.stringify(dbPermissions),
           { EX: 600 }
         );
-
       } else {
         permissions = JSON.parse(permissions);
       }
-
+      
       if (!permissions.includes(permissionName)) {
         return response.error(res, "Forbidden", 403);
       }
+      
       next();
-
     } catch (err) {
       return response.error(res, "Permission check failed", 500);
     }
   };
-
 }
 
 module.exports = checkPermission;
@@ -378,25 +382,15 @@ module.exports = checkPermission;
 ============================================================
 FILE: src/middleware/errorHandler.js
 ============================================================
+const response = require('../utils/response');
+const { NODE_ENV } = require('../config/env');
+
 const errorHandler = (err, req, res, next) => {
-    const { NODE_ENV } = require('../config/env')
     const isDev = NODE_ENV === "dev";
-
     const statusCode = err.statusCode || 500;
+    const message = statusCode === 500 ? "Something went wrong" : err.message;
 
-    const message =
-        statusCode === 500
-            ? "Something went wrong"
-            : err.message;
-
-    res.status(statusCode).json({
-        success: false,
-        message,
-        ...(isDev && {
-            errorCode: err.errorCode,
-            stack: err.stack
-        })
-    });
+    return response.error(res, message, statusCode);
 };
 
 module.exports = errorHandler;
@@ -535,15 +529,15 @@ async function register(req, res) {
   try {
     const { first_name, last_name, email, password } = req.body;
     console.log(first_name, " ", last_name);
-    
+
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
 
     const { accessToken, refreshToken, user } =
       await registerUser(first_name, last_name, email, password, ip, userAgent);
-	
+
     console.log(user);
-    
+
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: NODE_ENV === 'production',
@@ -557,8 +551,8 @@ async function register(req, res) {
       sameSite: 'lax',
       maxAge: 10 * 60 * 1000
     });
-    
-    
+
+
 
 
     return response.success(
@@ -577,7 +571,7 @@ async function register(req, res) {
       console.log("Email Alraedy Exist !")
       return response.error(res, "Registration failed", 409);
     }
-        console.log(res)
+    console.log(res)
     return response.error(res, "Registration failed", 400);
   }
 }
@@ -603,7 +597,7 @@ async function refreshToken(req, res) {
     );
 
   } catch (err) {
-    return res.error(res, "Could not refresh token", 500);
+    return response.error(res, "Could not refresh token", 500);
   }
 }
 
@@ -930,12 +924,12 @@ async function loginUser(email, password, ip, userAgent = null) {
 }
 
 async function registerUser(first_name, last_name, email, password, ip, userAgent = null) {
-
-    const t0 = performance.now(); // total start
+    const t0 = performance.now(); // Total start
 
     // -------------------------
-    // 1. Transaction block
+    // 1. Transaction Block
     // -------------------------
+    // We await the transaction directly into 'newUser'
     const newUser = await prisma.$transaction(async (tx) => {
 
         // 🔹 Hash password
@@ -947,13 +941,25 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             parallelism: 4
         });
         const tHashEnd = performance.now();
-        console.log('Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
+        console.log('⏱️ Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
 
-
-        // 🔹 Create user
-        const tCreateStart = performance.now();
+        const tStart = performance.now();
         let createdUser;
+
         try {
+            // 1. PROACTIVE CHECK
+            const existingUser = await tx.users.findUnique({
+                where: { email },
+                select: { user_id: true }
+            });
+
+            if (existingUser) {
+                console.log(existingUser);
+
+                throw new Error('EMAIL_EXISTS');
+            }
+
+            // 2. CREATE
             createdUser = await tx.users.create({
                 data: {
                     email,
@@ -961,28 +967,28 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
                     status: 'active'
                 }
             });
+
         } catch (err) {
-            if (err.code === 'P2002') {
-                throw new Error('Email already exists');
-            }
+            if (err.message === 'EMAIL_EXISTS') throw err;
+            if (err.code === 'P2002') throw new Error('EMAIL_EXISTS');
             throw err;
         }
-        const tCreateEnd = performance.now();
-        console.log('User insert time:', (tCreateEnd - tCreateStart).toFixed(2), 'ms');
 
+        const tEnd = performance.now();
+        console.log('⏱️ User creation process time:', (tEnd - tStart).toFixed(2), 'ms');
 
         // 🔹 Get default role
         const tRoleStart = performance.now();
         const defaultRole = await tx.role.findUnique({
             where: { name: 'Student' }
         });
+        console.log(defaultRole)
 
         if (!defaultRole) {
             throw new Error('Default role not configured');
         }
         const tRoleEnd = performance.now();
-        console.log('Get role time:', (tRoleEnd - tRoleStart).toFixed(2), 'ms');
-
+        console.log('⏱️ Get role time:', (tRoleEnd - tRoleStart).toFixed(2), 'ms');
 
         // 🔹 Insert user_role
         const tUserRoleStart = performance.now();
@@ -993,7 +999,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             }
         });
         const tUserRoleEnd = performance.now();
-        console.log('User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
+        console.log('⏱️ User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
 
         // 🔹 Create profile
         const tProfileStart = performance.now();
@@ -1004,57 +1010,49 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
                 last_name
             }
         });
-
         const tProfileEnd = performance.now();
-        console.log('Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
+        console.log('⏱️ Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
 
-        return createdUser;
-    });
+        // ✅ OPTIMIZATION: Use data already in memory. NO extra DB query.
+        const roles = [defaultRole.name];
+        console.log(roles);
+
+        // Return the combined object
+
+        return {
+            user_id: createdUser.user_id,
+            email: createdUser.email,
+            status: createdUser.status,
+            roles: ['Student'] // Or dynamic from defaultRole.name
+        };
+    }); // End Transaction
+
 
     const tAfterTransaction = performance.now();
-    console.log('Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
-
-
+    console.log('⏱️ Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
     // -------------------------
-    // 2. Load roles & permissions
+    // 2. Generate JWT
     // -------------------------
-    const tRolesFetchStart = performance.now();
-    const userId = newUser.user_id;
-    const userRoles = await prisma.user_role.findMany({
-        where: { user_id: userId },
-        include: {
-            role: true
-        }
-    });
+    console.log(newUser.roles);
 
-    const tRolesFetchEnd = performance.now();
-    console.log('Fetch roles & permissions time:',
-        (tRolesFetchEnd - tRolesFetchStart).toFixed(2), 'ms');
-
-
-    const roles = userRoles.map(r => r.role.name);
-
-    // -------------------------
-    // 3. Generate JWT
-    // -------------------------
     const tJwtStart = performance.now();
     const accessToken = jwt.sign(
-        { userId: newUser.user_id, email: newUser.email, roles },
+        { userId: newUser.user_id, email: newUser.email, roles: newUser.roles },
         ACCESS_SECRET,
-        { expiresIn: '5m' }
+        { expiresIn: '10m' }
     );
 
     const refreshToken = jwt.sign(
         { userId: newUser.user_id, email: newUser.email },
         REFRESH_SECRET,
-        { expiresIn: '10m' }
+        { expiresIn: '20m' } // Consider making refresh tokens longer (e.g., '7d') in production
     );
     const tJwtEnd = performance.now();
-    console.log('JWT generation time:', (tJwtEnd - tJwtStart).toFixed(2), 'ms');
-
+    console.log('⏱️ JWT generation time:', (tJwtEnd - tJwtStart).toFixed(2), 'ms');
 
     // -------------------------
-    // 4. Insert login history
+    // 3. Insert Login History
+    // (Outside transaction because it's audit logging, not critical to user creation)
     // -------------------------
     const tLoginHistoryStart = performance.now();
     await prisma.login_history.create({
@@ -1065,18 +1063,14 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         }
     });
     const tLoginHistoryEnd = performance.now();
-    console.log('Login history insert time:',
-        (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
-
+    console.log('⏱️ Login history insert time:', (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
 
     // -------------------------
     // TOTAL TIME
     // -------------------------
     const tFinal = performance.now();
-    console.log('Total register time:',
-        (tFinal - t0).toFixed(2), 'ms');
+    console.log('🚀 Total register time:', (tFinal - t0).toFixed(2), 'ms');
 
-    
     return {
         accessToken,
         refreshToken,
@@ -1133,6 +1127,7 @@ module.exports = { loginUser, registerUser, refreshAccessToken };
 FILE: src/modules/auth/auth.validator.js
 ============================================================
 const { body, validationResult } = require('express-validator');
+const response = require('../../utils/response');
 
 const loginValidationRules = () => {
   return [
@@ -1149,11 +1144,10 @@ const loginValidationRules = () => {
 const validateLogin = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: 'Invalid login credentials' });
+    return response.error(res, "Invalid login credentials", 400);
   }
   next();
-};
-
+};    
 
 const registerValidationRules = () => {
   return [
@@ -1190,12 +1184,10 @@ const registerValidationRules = () => {
 const validateRegistration = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: 'Invalid registration data' });
+    return response.error(res, "Invalid registration data", 400);
   }
   next();
-};
-
-
+};  
 module.exports = {
   loginValidationRules,
   validateLogin,
@@ -1204,6 +1196,178 @@ module.exports = {
 };
 
 
+
+============================================================
+FILE: src/modules/program/degree_level/degree.controller.js
+============================================================
+// src/modules/program/degree_level/degree.controller.js
+const { getAllDegrees, getDegreeById } = require('./degree.service');
+const response = require('../../../utils/response');
+
+async function viewDegrees(req, res) {
+    try {
+        const degrees = await getAllDegrees();
+
+        if (!degrees || degrees.length === 0) {
+            return response.error(res, "No degrees found", 404);
+        }
+
+        return response.success(res, degrees, "Degrees fetched successfully");
+    } catch (err) {
+        console.error('View degrees error:', err.message);
+        return response.error(res, "Failed to fetch degrees", 500);
+    }
+}
+
+async function viewDegree(req, res) {
+    try {
+        const { id } = req.params;
+        const degree = await getDegreeById(Number(id));
+
+        return response.success(res, degree, "Degree fetched successfully");
+    } catch (err) {
+        if (err.message === 'Degree not found') {
+            return response.error(res, "Degree not found", 404);
+        }
+        console.error('View degree error:', err.message);
+        return response.error(res, "Failed to fetch degree", 500);
+    }
+}
+
+module.exports = {
+    viewDegrees,
+    viewDegree
+};
+
+============================================================
+FILE: src/modules/program/degree_level/degree.route.js
+============================================================
+// src/modules/program/degree_level/degree.route.js
+const express = require("express");
+const router = express.Router();
+const { viewDegrees, viewDegree } = require("./degree.controller");
+const { degreeIdValidator } = require("./degree.validator"); // Ensure this validator exists
+
+// Import Middleware
+const verifyAccessToken = require('../../../middleware/verifyAccessToken');
+const checkPermission = require('../../../middleware/checkPermission');
+
+/* Degree Level APIs */
+
+/**
+ * @openapi
+ * tags:
+ *   name: Degrees
+ *   description: API endpoints for managing degree levels
+ */
+
+/**
+ * @openapi
+ * /v1/degrees:
+ *   get:
+ *     summary: Get all degrees
+ *     tags: [Degrees]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of degrees
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (Missing permission)
+ */
+router.get(
+    '/',
+    verifyAccessToken,                  // 1. Check if logged in
+    checkPermission("view_degrees"),    // 2. Check if user has 'view_degrees' permission
+    viewDegrees                         // 3. Execute controller
+);
+
+/**
+ * @openapi
+ * /v1/degrees/{id}:
+ *   get:
+ *     summary: Get degree by ID
+ *     tags: [Degrees]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Degree details
+ *       404:
+ *         description: Degree not found
+ *       403:
+ *         description: Forbidden
+ */
+router.get(
+    '/:id',
+    verifyAccessToken,                  // 1. Check if logged in
+    checkPermission("view_degrees"),    // 2. Check if user has 'view_degrees' permission (or create 'view_degree')
+    degreeIdValidator,                  // 3. Validate ID format
+    viewDegree                          // 4. Execute controller
+);
+
+module.exports = router;
+
+============================================================
+FILE: src/modules/program/degree_level/degree.service.js
+============================================================
+// src/modules/program/degree_level/degree.service.js
+const prisma = require('../../../config/prisma');
+
+async function getAllDegrees() {
+    return prisma.degree_level.findMany({
+        select: {
+            degree_level_id: true,
+            name: true,
+        }
+    });
+}
+
+async function getDegreeById(id) {
+    const degree = await prisma.degree_level.findUnique({
+        where: { degree_level_id: id },
+        select: {
+            degree_level_id: true,
+            name: true,
+        }
+    });
+
+    if (!degree) {
+        throw new Error('Degree not found');
+    }
+
+    return degree;
+}
+
+module.exports = {
+    getAllDegrees,
+    getDegreeById
+};
+
+============================================================
+FILE: src/modules/program/degree_level/degree.validator.js
+============================================================
+// src/modules/program/degree_level/degree.validator.js
+const { param } = require('express-validator');
+
+const degreeIdValidator = [
+    param("id")
+        .exists().withMessage("Degree ID is required")
+        .bail()
+        .isInt({ min: 1 }).withMessage("Degree ID must be a positive integer")
+];
+
+module.exports = {
+    degreeIdValidator
+};
 
 ============================================================
 FILE: src/modules/rbac/role/role.controller.js
@@ -1601,7 +1765,7 @@ const prisma = require('../../../config/prisma');
 async function getAllRoles() {
   return prisma.role.findMany({
     select: {
-      role_id:true,
+      role_id: true,
       name: true,
     }
   });
@@ -1611,7 +1775,7 @@ async function getRoleById(id) {
   const role = await prisma.role.findUnique({
     where: { role_id: id }
   });
-  
+
   if (!role) {
     throw new Error('Role not found');
   }
@@ -1622,11 +1786,12 @@ async function createRole(name) {
   try {
     const newRole = await prisma.role.create({
       data: {
-        name },
+        name
+      },
     });
     return newRole;
   } catch (err) {
-    if (err.code === 'P2002') { 
+    if (err.code === 'P2002') {
       throw new Error('Role name already exists');
     }
     throw err;
@@ -1644,9 +1809,9 @@ async function updateRole(id, newName) {
     });
     return updatedRole;
   } catch (err) {
-    if (err.code === 'P2025') { 
+    if (err.code === 'P2025') {
       throw new Error('Role not found');
-    } else if (err.code === 'P2002') { 
+    } else if (err.code === 'P2002') {
       throw new Error('New role name already exists');
     }
     throw err;
@@ -1697,12 +1862,10 @@ async function assignPermissionsToRole(roleId, permissionIds) {
     throw new Error('Role not found');
   }
 
-  // First, delete all existing permissions for this role
   await prisma.role_permission.deleteMany({
     where: { role_id: roleId }
   });
 
-  // Then, create new permission assignments
   const newAssignments = permissionIds.map(permissionId => ({
     role_id: roleId,
     permission_id: permissionId
@@ -1768,7 +1931,7 @@ module.exports = {
 ============================================================
 FILE: src/modules/users/users.controller.js
 ============================================================
-const { getAllUsers, getUserById,  deleteUserById } = require('./users.service');
+const { getAllUsers, getUserById, deleteUserById, updateUserProfile } = require('./users.service');
 const response = require('../../utils/response');
 
 async function viewUsers(req, res) {
@@ -1784,7 +1947,7 @@ async function viewUser(req, res) {
     try {
         const { id } = req.params;
         const user = await getUserById(Number(id));
-        
+
         return response.success(res, user, "User fetched");
     } catch (err) {
         return response.error(res, "Not Found", 404);
@@ -1804,17 +1967,61 @@ async function deleteUser(req, res) {
 
 }
 
-module.exports = { viewUsers, viewUser, deleteUser };
+async function updateProfile(req, res) {
+    try {
+
+        const targetUserId = Number(req.params.id);
+
+        if (!targetUserId || isNaN(targetUserId)) {
+            return response.error(res, "Invalid User ID provided", 400);
+        }
+        
+        const updates = req.body;
+        const cleanUpdates = {};
+        const allowedFields = ['first_name', 'last_name', 'date_birth', 'address', 'level_id', 'specialization_id'];
+
+        allowedFields.forEach(field => {
+            if (updates[field] !== undefined) {
+                cleanUpdates[field] = updates[field];
+            }
+        });
+
+        if (Object.keys(cleanUpdates).length === 0) {
+            return response.error(res, "No valid fields to update", 400);
+        }
+
+        const updatedProfile = await updateUserProfile(targetUserId, cleanUpdates);
+
+        return response.success(res, updatedProfile, "Profile updated successfully");
+    } catch (err) {
+        console.error('Update profile error:', err.message);
+
+        if (err.message === 'User not found') {
+            return response.error(res, "User not found", 404);
+        }
+        if (err.message.includes('not active')) {
+            return response.error(res, 'Forbidden', 403);
+        }
+        if (err.message.includes('Invalid Level') || err.message.includes('Invalid Specialization')) {
+            return response.error(res, 'Invalid level or specialization', 400);
+        }
+
+        return response.error(res, "Failed to update profile", 500);
+    }
+}
+
+
+module.exports = { viewUsers, viewUser, deleteUser, updateProfile };
 
 ============================================================
 FILE: src/modules/users/users.routes.js
 ============================================================
 const express = require("express");
 const router = express.Router();
-const { viewUsers, viewUser, deleteUser } = require("./users.controller");
+const { viewUsers, viewUser, deleteUser, updateProfile } = require("./users.controller");
 const checkPermission = require("../../middleware/checkPermission");
 const verifyAccessToken = require('../../middleware/verifyAccessToken');
-const { userIdValidator } = require('./users.vaidator');
+const { userIdValidator, updateProfileValidator } = require('./users.vaidator');
 
 /**
  * @openapi
@@ -1902,6 +2109,61 @@ router.delete(
   deleteUser
 );
 
+/**
+ * @openapi
+ * /v1/users/{id}/profile:
+ *   put:
+ *     summary: Update user profile
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               date_birth:
+ *                 type: string
+ *                 format: date
+ *               address:
+ *                 type: string
+ *               level_id:
+ *                 type: integer
+ *               specialization_id:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       400:
+ *         description: Invalid data or IDs
+ *       403:
+ *         description: Forbidden (Inactive user or missing permission)
+ *       404:
+ *         description: User not found
+ */
+
+
+router.put(
+  "/:id/profile",
+  verifyAccessToken,
+  checkPermission("update_profile"), // Ensure this permission exists in DB
+  userIdValidator,                  // Validates the :id in URL
+  updateProfileValidator,           // Validates the body fields
+  updateProfile
+);
 
 module.exports = router;
 
@@ -1972,12 +2234,60 @@ async function deleteUserById(id) {
     return true;
 }
 
-module.exports = { getAllUsers, getUserById, deleteUserById };
+async function updateUserProfile(userId, updates) {
+    // 1. Check if User Exists and is Active
+    const user = await prisma.users.findUnique({
+        where: { user_id: userId },
+        select: { user_id: true, status: true }
+    });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+    console.log(user.user_id);
+
+    if (user.status !== 'active') {
+        throw new Error('Cannot update profile: User account is not active');
+    }
+
+    if (updates.level_id) {
+        const levelExists = await prisma.level.findUnique({
+            where: { level_id: updates.level_id },
+            select: { level_id: true }
+        });
+        if (!levelExists) {
+            throw new Error('Invalid Level ID provided');
+        }
+    }
+    
+    if (updates.specialization_id) {
+        const specExists = await prisma.specialization.findUnique({
+            where: { specialization_id: updates.specialization_id },
+            select: { specialization_id: true }
+        });
+        if (!specExists) {
+            throw new Error('Invalid Specialization ID provided');
+        }
+    }
+
+
+    const updatedProfile = await prisma.profile.update({
+        where: { user_id: userId },
+        data: updates,
+        include: {
+            level: { select: { name: true } },
+            specialization: { select: { name: true } }
+        }
+    });
+
+    return updatedProfile;
+}
+module.exports = { getAllUsers, getUserById, deleteUserById, updateUserProfile };
 
 ============================================================
 FILE: src/modules/users/users.vaidator.js
 ============================================================
-const { param } = require("express-validator");
+const { param, body } = require("express-validator");
 
 const userIdValidator = [
   param("id")
@@ -1986,7 +2296,696 @@ const userIdValidator = [
     .isInt({ min: 1 }).withMessage("User ID must be a positive integer")
 ];
 
-module.exports = { userIdValidator };
+const updateProfileValidator = [
+  body('first_name')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 50 }).withMessage('First name must be between 2 and 50 characters'),
+
+  body('last_name')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 50 }).withMessage('Last name must be between 2 and 50 characters'),
+
+  body('date_birth')
+    .optional({ nullable: true }) 
+    .bail()
+    .isISO8601({ strict: true }) // Enforces strict YYYY-MM-DD or full ISO format
+    .withMessage('Date of birth must be a valid ISO-8601 date (e.g., 1995-12-31)')
+    .toDate(),
+
+  body('address')
+    .optional()
+    .trim()
+    .isLength({ max: 255 }).withMessage('Address cannot exceed 255 characters'),
+
+  body('level_id')
+    .optional()
+    .isInt({ min: 1 }).withMessage('Level ID must be a positive integer'),
+
+  body('specialization_id')
+    .optional()
+    .isInt({ min: 1 }).withMessage('Specialization ID must be a positive integer')
+];
+
+module.exports = {
+  userIdValidator,
+  updateProfileValidator
+};
+
+============================================================
+FILE: src/modules/workshop/workshop.controller.js
+============================================================
+// src/modules/workshop/workshop.controller.js
+const {
+  getAllWorkshops,
+  getWorkshopById,
+  createWorkshop,
+  updateWorkshop,
+  deleteWorkshop,
+  getWorkshopMembers,
+  getWorkshopLeaders,
+  getWorkshopClasses
+} = require('./workshop.service');
+const response = require('../../utils/response');
+
+async function viewWorkshops(req, res) {
+  try {
+    const workshops = await getAllWorkshops();
+    if (!workshops.length) {
+      return response.error(res, "No workshops found", 404);
+    }
+    return response.success(res, workshops, "Workshops fetched");
+  } catch (err) {
+    console.error('View workshops error:', err.message);
+    return response.error(res, "Failed to fetch workshops", 500);
+  }
+}
+
+async function viewWorkshop(req, res) {
+  try {
+    const { id } = req.params;
+    const workshop = await getWorkshopById(Number(id));
+    return response.success(res, workshop, "Workshop fetched");
+  } catch (err) {
+    if (err.message === 'Workshop not found') {
+      return response.error(res, "Workshop not found", 404);
+    }
+    console.error('View workshop error:', err.message);
+    return response.error(res, "Failed to fetch workshop", 500);
+  }
+}
+
+async function create(req, res) {
+  try {
+    const { name, leader_user_id } = req.body;
+    const newWorkshop = await createWorkshop(name, leader_user_id);
+    return response.success(res, newWorkshop, "Workshop created successfully", 201);
+  } catch (err) {
+    if (err.message === 'Workshop name already exists') {
+      return response.error(res, "Workshop name already exists", 409);
+    }
+    console.error('Create workshop error:', err.message);
+    return response.error(res, "Failed to create workshop", 500);
+  }
+}
+
+async function update(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, leader_user_id } = req.body;
+    const updatedWorkshop = await updateWorkshop(Number(id), name, leader_user_id);
+    return response.success(res, updatedWorkshop, "Workshop updated successfully");
+  } catch (err) {
+    if (err.message === 'Workshop not found') {
+      return response.error(res, "Workshop not found", 404);
+    } else if (err.message === 'Workshop name already exists') {
+      return response.error(res, "Workshop name already exists", 409);
+    }
+    console.error('Update workshop error:', err.message);
+    return response.error(res, "Failed to update workshop", 500);
+  }
+}
+
+async function remove(req, res) {
+  try {
+    const { id } = req.params;
+    await deleteWorkshop(Number(id));
+    return response.success(res, null, "Workshop deleted successfully");
+  } catch (err) {
+    if (err.message === 'Workshop not found') {
+      return response.error(res, "Workshop not found", 404);
+    }
+    console.error('Delete workshop error:', err.message);
+    return response.error(res, "Failed to delete workshop", 500);
+  }
+}
+
+async function viewMembers(req, res) {
+  try {
+    const { id } = req.params;
+    const members = await getWorkshopMembers(Number(id));
+    return response.success(res, members, "Workshop members fetched");
+  } catch (err) {
+    if (err.message === 'Workshop not found') {
+      return response.error(res, "Workshop not found", 404);
+    }
+    console.error('View members error:', err.message);
+    return response.error(res, "Failed to fetch members", 500);
+  }
+}
+
+async function viewLeaders(req, res) {
+  try {
+    const { id } = req.params;
+    const leaders = await getWorkshopLeaders(Number(id));
+    return response.success(res, leaders, "Workshop leaders fetched");
+  } catch (err) {
+    if (err.message === 'Workshop not found') {
+      return response.error(res, "Workshop not found", 404);
+    }
+    console.error('View leaders error:', err.message);
+    return response.error(res, "Failed to fetch leaders", 500);
+  }
+}
+
+async function viewClasses(req, res) {
+  try {
+    const { id } = req.params;
+    const classes = await getWorkshopClasses(Number(id));
+    return response.success(res, classes, "Workshop classes fetched");
+  } catch (err) {
+    if (err.message === 'Workshop not found') {
+      return response.error(res, "Workshop not found", 404);
+    }
+    console.error('View classes error:', err.message);
+    return response.error(res, "Failed to fetch classes", 500);
+  }
+}
+
+module.exports = {
+  viewWorkshops,
+  viewWorkshop,
+  create,
+  update,
+  remove,
+  viewMembers,
+  viewLeaders,
+  viewClasses
+};
+
+============================================================
+FILE: src/modules/workshop/workshop.routes.js
+============================================================
+// src/modules/workshop/workshop.routes.js
+const express = require("express");
+const router = express.Router();
+const {
+  viewWorkshops,
+  viewWorkshop,
+  create,
+  update,
+  remove,
+  viewMembers,
+  viewLeaders,
+  viewClasses
+} = require("./workshop.controller");
+const { workshopIdValidator, workshopBodyValidator } = require('./workshop.validator');
+const checkPermission = require("../../middleware/checkPermission");
+const verifyAccessToken = require('../../middleware/verifyAccessToken');
+
+/* Workshop Management APIs */
+
+// GET /v1/workshops - Fetch all workshops
+/**
+* @openapi
+* tags:
+*   name: Workshops
+*   description: API endpoints for managing workshops
+*/
+/**
+* @openapi
+* /v1/workshops:
+*   get:
+*     summary: Get all workshops
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     responses:
+*       200:
+*         description: List of workshops
+*/
+router.get(
+  '/',
+  verifyAccessToken,
+  checkPermission("view_workshops"),
+  viewWorkshops
+);
+
+// POST /v1/workshops - Create a new workshop
+/**
+* @openapi
+* /v1/workshops:
+*   post:
+*     summary: Create a new workshop
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             required:
+*               - name
+*             properties:
+*               name:
+*                 type: string
+*                 example: "Advanced Java"
+*               leader_user_id:
+*                 type: integer
+*                 example: 1
+*     responses:
+*       201:
+*         description: Workshop created successfully
+*       409:
+*         description: Workshop name already exists
+*/
+router.post(
+  '/',
+  verifyAccessToken,
+  checkPermission("create_workshop"),
+  workshopBodyValidator,
+  create
+);
+
+// GET /v1/workshops/:id - Get workshop by ID
+/**
+* @openapi
+* /v1/workshops/{id}:
+*   get:
+*     summary: Get workshop by ID
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     parameters:
+*       - name: id
+*         in: path
+*         required: true
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Workshop fetched
+*       404:
+*         description: Workshop not found
+*/
+router.get(
+  '/:id',
+  verifyAccessToken,
+  checkPermission("view_workshop"),
+  workshopIdValidator,
+  viewWorkshop
+);
+
+// PUT /v1/workshops/:id - Update workshop
+/**
+* @openapi
+* /v1/workshops/{id}:
+*   put:
+*     summary: Update workshop
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     parameters:
+*       - name: id
+*         in: path
+*         required: true
+*         schema:
+*           type: integer
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               name:
+*                 type: string
+*               leader_user_id:
+*                 type: integer
+*     responses:
+*       200:
+*         description: Workshop updated
+*       404:
+*         description: Workshop not found
+*/
+router.put(
+  '/:id',
+  verifyAccessToken,
+  checkPermission("update_workshop"),
+  workshopIdValidator,
+  workshopBodyValidator,
+  update
+);
+
+// DELETE /v1/workshops/:id - Delete workshop
+/**
+* @openapi
+* /v1/workshops/{id}:
+*   delete:
+*     summary: Delete workshop
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     parameters:
+*       - name: id
+*         in: path
+*         required: true
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Workshop deleted successfully
+*       404:
+*         description: Workshop not found
+*/
+router.delete(
+  '/:id',
+  verifyAccessToken,
+  checkPermission("delete_workshop"),
+  workshopIdValidator,
+  remove
+);
+
+// GET /v1/workshops/:id/members - Get members
+/**
+* @openapi
+* /v1/workshops/{id}/members:
+*   get:
+*     summary: Get all members of workshop
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     parameters:
+*       - name: id
+*         in: path
+*         required: true
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: List of members
+*/
+router.get(
+  '/:id/members',
+  verifyAccessToken,
+  checkPermission("view_workshop_members"),
+  workshopIdValidator,
+  viewMembers
+);
+
+// GET /v1/workshops/:id/leaders - Get leaders
+/**
+* @openapi
+* /v1/workshops/{id}/leaders:
+*   get:
+*     summary: Get leaders of workshop
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     parameters:
+*       - name: id
+*         in: path
+*         required: true
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: List of leaders
+*/
+router.get(
+  '/:id/leaders',
+  verifyAccessToken,
+  checkPermission("view_workshop_leaders"),
+  workshopIdValidator,
+  viewLeaders
+);
+
+// GET /v1/workshops/:id/classes - Get classes
+/**
+* @openapi
+* /v1/workshops/{id}/classes:
+*   get:
+*     summary: Get all classes in workshop
+*     tags: [Workshops]
+*     security:
+*       - BearerAuth: []
+*     parameters:
+*       - name: id
+*         in: path
+*         required: true
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: List of classes
+*/
+router.get(
+  '/:id/classes',
+  verifyAccessToken,
+  checkPermission("view_workshop_classes"),
+  workshopIdValidator,
+  viewClasses
+);
+
+module.exports = router;    
+
+============================================================
+FILE: src/modules/workshop/workshop.service.js
+============================================================
+// src/modules/workshop/workshop.service.js
+const prisma = require('../../config/prisma');
+
+async function getAllWorkshops() {
+    return prisma.workshop.findMany({
+        select: {
+            workshop_id: true,
+            name: true,
+            created_at: true,
+            leader_user_id: true
+        }
+    });
+}
+
+async function getWorkshopById(id) {
+    const workshop = await prisma.workshop.findUnique({
+        where: { workshop_id: id },
+        include: {
+            users: {
+                select: {
+                    user_id: true,
+                    email: true,
+                    status: true,
+                    profile: {
+                        select: {
+                            first_name: true,
+                            last_name: true
+                        }
+                    }
+                }
+            } // Includes the leader based on schema relation
+        }
+    });
+    if (!workshop) {
+        throw new Error('Workshop not found');
+    }
+    return workshop;
+}
+
+async function createWorkshop(name, leaderUserId) {
+
+    try {
+
+        const user = await prisma.users.findUnique({
+            where: { user_id: leaderUserId },
+            include: {
+                user_role: {
+                    include: {
+                        role: true
+                    }
+                }
+            }
+        });
+
+        if (!user) {
+            throw new Error("Leader user not found");
+        }
+
+        if (user.status !== "active") {
+            throw new Error("Leader account is not active");
+        }
+        console.log(user.status);
+
+        const roles = user.user_role.map(r => r.role.name);
+
+        if (!roles.includes("WorkShop_Leader")) {
+            throw new Error("User must have WorkshopLeader role");
+        }
+
+        const workshop = await prisma.workshop.create({
+            data: {
+                name,
+                leader_user_id: leaderUserId
+            }
+        });
+
+        return workshop;
+
+    } catch (err) {
+
+        if (err.code === "P2002") {
+            throw new Error("Workshop name already exists");
+        }
+        throw err;
+    }
+}
+
+async function updateWorkshop(id, name, leaderUserId) {
+    try {
+        const updatedWorkshop = await prisma.workshop.update({
+            where: { workshop_id: id },
+            data: {
+                name,
+                leader_user_id: leaderUserId
+            }
+        });
+        return updatedWorkshop;
+    } catch (err) {
+        if (err.code === 'P2025') {
+            throw new Error('Workshop not found');
+        } else if (err.code === 'P2002') {
+            throw new Error('Workshop name already exists');
+        }
+        throw err;
+    }
+}
+
+async function deleteWorkshop(id) {
+    const workshop = await prisma.workshop.findUnique({
+        where: { workshop_id: id }
+    });
+    if (!workshop) {
+        throw new Error("Workshop not found");
+    }
+    await prisma.workshop.delete({
+        where: { workshop_id: id }
+    });
+    return true;
+}
+
+async function getWorkshopMembers(workshopId) {
+    const workshop = await prisma.workshop.findUnique({
+        where: { workshop_id: workshopId }
+    });
+    if (!workshop) {
+        throw new Error('Workshop not found');
+    }
+    const memberships = await prisma.user_workshop.findMany({
+        where: { workshop_id: workshopId },
+        include: {
+            users: {
+                select: {
+                    user_id: true,
+                    email: true,
+                    status: true,
+                    profile: {
+                        select: {
+                            first_name: true,
+                            last_name: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    return memberships.map(m => m.users);
+}
+
+async function getWorkshopLeaders(workshopId) {
+    // 1. First, check if workshop exists
+    const workshop = await prisma.workshop.findUnique({
+        where: { workshop_id: workshopId }
+    });
+
+    if (!workshop) {
+        throw new Error('Workshop not found');
+    }
+
+    if (!workshop.leader_user_id) {
+        return [];
+    }
+
+    const leader = await prisma.users.findUnique({
+        where: { user_id: workshop.leader_user_id },
+        select: {
+            user_id: true,
+            email: true,
+            status: true,
+            profile: {
+                select: {
+                    first_name: true,
+                    last_name: true
+                }
+            }
+        }
+    });
+
+    return leader ? [leader] : [];
+}
+
+async function getWorkshopClasses(workshopId) {
+    const workshop = await prisma.workshop.findUnique({
+        where: { workshop_id: workshopId }
+    });
+    if (!workshop) {
+        throw new Error('Workshop not found');
+    }
+
+    // Note: Model name is 'Renamedclass' due to schema introspection reservation
+    const classes = await prisma.Renamedclass.findMany({
+        where: { workshop_id: workshopId },
+        select: {
+            class_id: true,
+            name: true,
+            date: true,
+            properties: true
+        }
+    });
+    return classes;
+}
+
+module.exports = {
+    getAllWorkshops,
+    getWorkshopById,
+    createWorkshop,
+    updateWorkshop,
+    deleteWorkshop,
+    getWorkshopMembers,
+    getWorkshopLeaders,
+    getWorkshopClasses
+};
+
+============================================================
+FILE: src/modules/workshop/workshop.validator.js
+============================================================
+// src/modules/workshop/workshop.validator.js
+const { body, param } = require('express-validator');
+
+const workshopIdValidator = [
+  param("id")
+    .exists().withMessage("Workshop ID is required")
+    .bail()
+    .isInt({ min: 1 }).withMessage("Workshop ID must be a positive integer")
+];
+
+const workshopBodyValidator = [
+  body('name')
+    .trim()
+    .notEmpty().withMessage('Workshop name is required')
+    .bail()
+    .isLength({ max: 255 }).withMessage('Workshop name cannot exceed 255 characters'),
+  body('leader_user_id')
+    .optional()
+    .isInt({ min: 1 }).withMessage('Leader user ID must be a positive integer')
+];
+
+module.exports = {
+  workshopIdValidator,
+  workshopBodyValidator
+};
 
 ============================================================
 FILE: src/utils/AppError.js
@@ -2122,6 +3121,7 @@ FILE: package.json
     "bad-words": "^4.0.0",
     "bcrypt": "^6.0.0",
     "chalk": "^5.6.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
@@ -2152,17 +3152,18 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./src/config/swagger');
 const cors = require('cors')
 const originCheck = require('./src/middleware/originCheck');
+const cookieParser = require('cookie-parser');
 
 const authRoutes = require("./src/modules/auth/auth.routes");
 const userRoutes = require("./src/modules/users/users.routes");
 const roleRoutes = require("./src/modules/rbac/role/role.route");
-
-
+const workshopRoutes = require("./src/modules/workshop/workshop.routes");
+const degrees = require("./src/modules/program/degree_level/degree.route")
 //const errorHandler = require('./src/middleware/errorHandler');
 const { PORT } = require('./src/config/env');
 
 const app = express();
-
+app.use(cookieParser()); 
 app.use(express.json());
 
 //app.use(originCheck);
@@ -2173,6 +3174,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use("/v1/auth", authRoutes);
 app.use("/v1/users", userRoutes);
 app.use("/v1/roles", roleRoutes);
+app.use("/v1/workshops", workshopRoutes);
+app.use("/v1/degrees", degrees);
 
 //app.use(errorHandler);
 
