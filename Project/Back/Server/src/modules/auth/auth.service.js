@@ -141,7 +141,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             parallelism: 4
         });
         const tHashEnd = performance.now();
-        console.log('⏱️ Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
+        console.log(' Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
 
         const tStart = performance.now();
         let createdUser;
@@ -175,7 +175,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         }
 
         const tEnd = performance.now();
-        console.log('⏱️ User creation process time:', (tEnd - tStart).toFixed(2), 'ms');
+        console.log(' User creation process time:', (tEnd - tStart).toFixed(2), 'ms');
 
         // 🔹 Get default role
         const tRoleStart = performance.now();
@@ -199,7 +199,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             }
         });
         const tUserRoleEnd = performance.now();
-        console.log('⏱️ User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
+        console.log(' User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
 
         // 🔹 Create profile
         const tProfileStart = performance.now();
@@ -213,7 +213,6 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         const tProfileEnd = performance.now();
         console.log('⏱️ Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
 
-        // ✅ OPTIMIZATION: Use data already in memory. NO extra DB query.
         const roles = [defaultRole.name];
         console.log(roles);
 
@@ -229,7 +228,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
 
 
     const tAfterTransaction = performance.now();
-    console.log('⏱️ Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
+    console.log(' Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
     // -------------------------
     // 2. Generate JWT
     // -------------------------
@@ -263,13 +262,13 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         }
     });
     const tLoginHistoryEnd = performance.now();
-    console.log('⏱️ Login history insert time:', (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
+    console.log(' Login history insert time:', (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
 
     // -------------------------
     // TOTAL TIME
     // -------------------------
     const tFinal = performance.now();
-    console.log('🚀 Total register time:', (tFinal - t0).toFixed(2), 'ms');
+    console.log(' Total register time:', (tFinal - t0).toFixed(2), 'ms');
 
     return {
         accessToken,
