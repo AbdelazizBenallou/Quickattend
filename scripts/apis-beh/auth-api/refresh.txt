@@ -1,0 +1,70 @@
+after access token expire you should to renew it by send you refresh token
+to this api :
+
+┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐     ┌─────────────┐
+│   Client    │────▶│ verifyRefreshToken│────▶│  refreshToken   │────▶│   Service   │
+│  (Request)  │     │   (Middleware)   │     │   (Controller)  │     │  (auth.js)  │
+└─────────────┘     └──────────────────┘     └─────────────────┘     └─────────────┘
+                                                                 │
+                                                                 ▼
+                                                      ┌─────────────────┐
+                                                      │  Generate New   │
+                                                      │  Access Token   │
+                                                      └─────────────────┘
+
+
+you just send :
+
+
+1.Successful :
+
+{
+  "success": true,
+  "message": "Access token refreshed",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjY1LCJlbWFpbCI6ImFobWVkMTRhQGdtYWlsLmNvbSIsInJvbGVzIjpbIlN0dWRlbnQiXSwiaWF0IjoxNzczNDkxNDg0LCJleHAiOjE3NzM0OTE3ODR9.-6UVMFgmxQG0Ifgdv5qmGL7ilVWKGAYlG5D3muKBEuY"
+  }
+}
+
+=====================================================================
+
+2. User does not exist: 403 or not active 
+
+{
+  "success": false,
+  "message": "User account is not active"
+}
+
+
+====================================================================
+3. Invalid refresh token format 403
+
+{
+  "success": false,
+  "message": "Invalid refresh token format"
+}
+
+sleep after resend the token
+======================================================================
+4. Refresh token has expired   403
+
+{
+  "success": false,
+  "message": "Invalid or expired refresh token"
+}
+
+
+should logout or change to login page
+===============================================================
+
+5. send token in the body: Refresh token is required in request body 400
+
+{
+  "success": false,
+  "message": "Refresh token is required in request body"
+}
+
+
+
+
+we need just the server because we dont store our tokens in the db 

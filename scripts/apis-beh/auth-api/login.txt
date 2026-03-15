@@ -1,0 +1,77 @@
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Client    │────▶│  Validator   │────▶│  Controller │────▶│   Service   │
+│  (Request)  │     │ (express-    │     │  (auth.     │     │  (auth.     │
+│             │     │  validator)  │     │  controller)│     │  service)   │
+└─────────────┘     └──────────────┘     └─────────────┘     └─────────────┘
+                                                                   │
+                    ┌──────────────────────────────────────────────┘
+                    ▼
+         ┌─────────────────────────┐
+         │   Database Operations   │
+         │  - Find user by email   │
+         │  - Verify password      │
+         │  - Fetch roles          │
+         │  - Generate JWT         │
+         │  - Log login_history    │
+         └─────────────────────────┘
+                    │
+                    ▼
+         ┌─────────────────────────┐
+         │   Response to Client    │
+         │  - Set httpOnly cookies │
+         │  - Return user + tokens │
+         └─────────────────────────┘
+
+you send : 
+{
+  "email": "ahmed14a@gmail.com",
+  "password": "12345678"
+}
+
+1.Successful Login: 200
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "user": {
+      "user_id": 65,
+      "email": "ahmed14a@gmail.com",
+      "status": "active",
+      "academic": {
+        "degree": "Master",
+        "level": "M1",
+        "specialization": "RT"
+      }
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjY1LCJlbWFpbCI6ImFobWVkMTRhQGdtYWlsLmNvbSIsInJvbGVzIjpbIlN0dWRlbnQiXSwiaWF0IjoxNzczNDg5NDg2LCJleHAiOjE3NzM0OTMwODZ9.9scLjIDbjoHst2m6jnHwYXuZeWaISRBBa3YQvchlJyI",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjY1LCJlbWFpbCI6ImFobWVkMTRhQGdtYWlsLmNvbSIsImlhdCI6MTc3MzQ4OTQ4NiwiZXhwIjoxNzczNDkwMDg2fQ.mwkrGwLHavWpEshwbhbQ-8EUfPsEcgi4JYEJDrZzSVc"
+  }
+}
+
+you can get the roles from the access token , or tell me to send all roles in array 
+==============================================================
+
+2. case of Wrong Password ,  User Not Found ,  Account Inactive: (401)
+
+{
+  "success": false,
+  "message": "Invalid credentials"
+}
+
+=================================================================
+
+3.  Validation Error : (email format , password shourt) 400
+
+{
+  "success": false,
+  "message": "Invalid login credentials"
+}
+
+===========================================================
+
+4. Server Error 500 (Problem connection DB  /Network) 500
+
+{
+  "success": false,
+  "message": "Something went wrong"
+}

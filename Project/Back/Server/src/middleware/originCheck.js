@@ -8,10 +8,14 @@ const allowedOrigins = [
 
 function originCheck(req, res, next) {
     const origin = req.headers.origin;
+
     if (!origin) return next();
+
     if (!allowedOrigins.includes(origin)) {
         return response.error(res, "Forbidden origin", 403);
     }
+
+    next();
 }
 
 module.exports = originCheck;

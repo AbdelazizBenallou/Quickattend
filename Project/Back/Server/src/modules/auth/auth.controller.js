@@ -97,27 +97,31 @@ async function register(req, res) {
 }
 
 async function refreshToken(req, res) {
-
   try {
-    const userId = req.refreshPayload.userId;
+    const userId = req.refreshPayload.userId; // Get user ID from verified token
+    const newAccessToken = await refreshAccessToken(userId); // Generate new access token
 
-    const newAccessToken = await refreshAccessToken(userId);
-
+    // Set new access token in cookie
     res.cookie('accessToken', newAccessToken, {
       httpOnly: true,
       secure: NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 5 * 60 * 1000
+      maxAge: 5 * 60 * 1000 // 5 minutes
     });
 
+    // Send success response
     return response.success(
       res,
       { accessToken: newAccessToken },
-      "Access token refreshed"
+      "Access token refreshed successfully"
     );
 
   } catch (err) {
-    return response.error(res, "Could not refresh token", 500);
+    if (err.status) {
+      return response.error(res, err.message, err.status);
+    }
+    console.error('Refresh token error:', err);
+    return response.error(res, "Could not refresh token due to a server error", 500);
   }
 }
 

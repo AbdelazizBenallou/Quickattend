@@ -4,8 +4,8 @@ This digest is designed to be easily parsed by Large Language Models.
 --- SUMMARY ---
 Repository: Server
 Files Analyzed: 39
-Total Text Size: 76.78 KB
-Estimated Tokens (text only): ~19,292
+Total Text Size: 79.81 KB
+Estimated Tokens (text only): ~19,856
 
 --- DIRECTORY STRUCTURE ---
 Server/
@@ -451,26 +451,40 @@ module.exports = verifyAccessToken;
 FILE: src/middleware/verifyRefreshToken.js
 ============================================================
 const jwt = require('jsonwebtoken');
-const response = require('../utils/response')
+const response = require('../utils/response');
 const { REFRESH_SECRET } = require('../config/env');
 
+async function verifyRefreshToken(req, res, next) {
+  // Get refresh token from request body
+  const refreshToken = req.body.refreshToken;
 
-function verifyRefreshToken(req, res, next) {
+  if (!refreshToken) {
+    return response.error(res, 'Refresh token is required in request body', 400);
+  }
 
-    const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+  try {
+    // Verify the JWT token
+    const decoded = jwt.verify(refreshToken, REFRESH_SECRET);
+    const userId = decoded.userId;
 
-    if (!refreshToken) {
-        return response.error(res, 'Refresh token is required', 400)
+    // Check if token has userId
+    if (!userId) {
+      return response.error(res, 'Invalid refresh token: Missing user ID', 403);
     }
 
-    try {
-        const decoded = jwt.verify(refreshToken, REFRESH_SECRET);
-        req.refreshPayload = decoded;
-        next();
+    // Save user info for next steps
+    req.refreshPayload = decoded;
+    next();
 
-    } catch (err) {
-        return response.error(res, 'Invalid or expired refresh token', 403)
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return response.error(res, 'Refresh token has expired', 403);
     }
+    if (err.name === 'JsonWebTokenError') {
+      return response.error(res, 'Invalid refresh token format', 403);
+    }
+    return response.error(res, 'Invalid or expired refresh token', 403);
+  }
 }
 
 module.exports = verifyRefreshToken;
@@ -577,27 +591,31 @@ async function register(req, res) {
 }
 
 async function refreshToken(req, res) {
-
   try {
-    const userId = req.refreshPayload.userId;
+    const userId = req.refreshPayload.userId; // Get user ID from verified token
+    const newAccessToken = await refreshAccessToken(userId); // Generate new access token
 
-    const newAccessToken = await refreshAccessToken(userId);
-
+    // Set new access token in cookie
     res.cookie('accessToken', newAccessToken, {
       httpOnly: true,
       secure: NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 5 * 60 * 1000
+      maxAge: 5 * 60 * 1000 // 5 minutes
     });
 
+    // Send success response
     return response.success(
       res,
       { accessToken: newAccessToken },
-      "Access token refreshed"
+      "Access token refreshed successfully"
     );
 
   } catch (err) {
-    return response.error(res, "Could not refresh token", 500);
+    if (err.status) {
+      return response.error(res, err.message, err.status);
+    }
+    console.error('Refresh token error:', err);
+    return response.error(res, "Could not refresh token due to a server error", 500);
   }
 }
 
@@ -773,23 +791,88 @@ router.post(
  * /v1/auth/refresh-token:
  *   post:
  *     summary: Refresh access token
+ *     description: Exchanges a valid refresh token for a new access token.
  *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: The refresh token obtained during login.
+ *                 example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *     responses:
  *       200:
- *         description: Access token refreshed
+ *         description: Access token successfully refreshed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Access token refreshed successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accessToken:
+ *                       type: string
+ *                       description: The newly generated access token.
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       400:
+ *         description: Refresh token is missing in request body.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Refresh token is required in request body
  *       403:
- *         description: Invalid refresh token
+ *         description: Refresh token is invalid or expired.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid refresh token
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Could not refresh token due to a server error
  */
 
-/* Post /v1/auth/refresh-token */
 router.post(
     '/refresh-token',
     verifyRefreshToken,
     refreshToken
 );
-
-/* Post /v1/auth/logout */
-
 module.exports = router;
 
 
@@ -941,7 +1024,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             parallelism: 4
         });
         const tHashEnd = performance.now();
-        console.log('⏱️ Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
+        console.log(' Hash time:', (tHashEnd - tHashStart).toFixed(2), 'ms');
 
         const tStart = performance.now();
         let createdUser;
@@ -975,7 +1058,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         }
 
         const tEnd = performance.now();
-        console.log('⏱️ User creation process time:', (tEnd - tStart).toFixed(2), 'ms');
+        console.log(' User creation process time:', (tEnd - tStart).toFixed(2), 'ms');
 
         // 🔹 Get default role
         const tRoleStart = performance.now();
@@ -999,7 +1082,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
             }
         });
         const tUserRoleEnd = performance.now();
-        console.log('⏱️ User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
+        console.log(' User_role insert time:', (tUserRoleEnd - tUserRoleStart).toFixed(2), 'ms');
 
         // 🔹 Create profile
         const tProfileStart = performance.now();
@@ -1013,7 +1096,6 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         const tProfileEnd = performance.now();
         console.log('⏱️ Profile insert time:', (tProfileEnd - tProfileStart).toFixed(2), 'ms');
 
-        // ✅ OPTIMIZATION: Use data already in memory. NO extra DB query.
         const roles = [defaultRole.name];
         console.log(roles);
 
@@ -1029,7 +1111,7 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
 
 
     const tAfterTransaction = performance.now();
-    console.log('⏱️ Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
+    console.log(' Transaction total time:', (tAfterTransaction - t0).toFixed(2), 'ms');
     // -------------------------
     // 2. Generate JWT
     // -------------------------
@@ -1063,13 +1145,13 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
         }
     });
     const tLoginHistoryEnd = performance.now();
-    console.log('⏱️ Login history insert time:', (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
+    console.log(' Login history insert time:', (tLoginHistoryEnd - tLoginHistoryStart).toFixed(2), 'ms');
 
     // -------------------------
     // TOTAL TIME
     // -------------------------
     const tFinal = performance.now();
-    console.log('🚀 Total register time:', (tFinal - t0).toFixed(2), 'ms');
+    console.log(' Total register time:', (tFinal - t0).toFixed(2), 'ms');
 
     return {
         accessToken,
@@ -1084,41 +1166,41 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
     };
 }
 
-async function refreshAccessToken(userId) {
 
-    // 1️⃣ Check user exists
+async function refreshAccessToken(userId) {
+    // Get user from database
     const user = await prisma.users.findUnique({
-        where: { user_id: userId }
+        where: { user_id: userId },
+        select: { user_id: true, email: true, status: true }
     });
 
     if (!user) {
         throw { status: 401, message: 'User does not exist' };
     }
 
-    // 2️⃣ Check activation
     if (user.status !== 'active') {
         throw { status: 403, message: 'Account is not active' };
     }
 
-    // 3️⃣ Get roles & permissions
+    // Get user roles
     const userRoles = await prisma.user_role.findMany({
         where: { user_id: userId },
-        include: {
-            role: true
-        }
+        include: { role: { select: { name: true } } }
     });
 
-    const roles = userRoles.map(r => r.role.name);
+    const roles = userRoles.map(ur => ur.role.name);
 
-    // 4️⃣ Generate new access token
-    const accessToken = jwt.sign(
-        { userId, email: user.email, roles },
+    // Create new access token
+    const newAccessToken = jwt.sign(
+        { userId: user.user_id, email: user.email, roles: roles },
         ACCESS_SECRET,
         { expiresIn: '5m' }
     );
 
-    return accessToken;
+    return newAccessToken;
 }
+
+
 
 module.exports = { loginUser, registerUser, refreshAccessToken };
 
@@ -3142,45 +3224,41 @@ FILE: package.json
 ============================================================
 FILE: server.js
 ============================================================
-
+// server.js
 require('dotenv').config();
 const express = require("express");
-//const path = require('path');
-//const origin = require('./src/middleware/originCheck')
+const cookieParser = require('cookie-parser'); // Used later
+const cors = require('cors'); // Used later, if needed
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpecs = require('./src/config/swagger');
-const cors = require('cors')
-const originCheck = require('./src/middleware/originCheck');
-const cookieParser = require('cookie-parser');
-
-const authRoutes = require("./src/modules/auth/auth.routes");
-const userRoutes = require("./src/modules/users/users.routes");
-const roleRoutes = require("./src/modules/rbac/role/role.route");
-const workshopRoutes = require("./src/modules/workshop/workshop.routes");
-const degrees = require("./src/modules/program/degree_level/degree.route")
-//const errorHandler = require('./src/middleware/errorHandler');
 const { PORT } = require('./src/config/env');
 
 const app = express();
-app.use(cookieParser()); 
+
+// --- CRITICAL MIDDLEWARE MUST BE HERE ---
+app.use(cors()); // Apply CORS if needed
+app.use(cookieParser()); // Parse cookies from requests
 app.use(express.json());
+// ----------------------------------------
 
-//app.use(originCheck);
-
+// Swagger setup (if applicable)
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./src/config/swagger');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
+// Route Definitions - These will use the middlewares defined above
+const authRoutes = require("./src/modules/auth/auth.routes");
+const userRoutes = require("./src/modules/users/users.routes");
+// ... import other route modules as needed
 
-app.use("/v1/auth", authRoutes);
+app.use("/v1/auth", authRoutes); // Middleware must run before this
 app.use("/v1/users", userRoutes);
-app.use("/v1/roles", roleRoutes);
-app.use("/v1/workshops", workshopRoutes);
-app.use("/v1/degrees", degrees);
+// ... add other route groups
 
-//app.use(errorHandler);
-
+// Error handling middleware (typically goes last)
+const errorHandler = require('./src/middleware/errorHandler');
+app.use(errorHandler); // Uncomment this if you have error handling
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT} `);
-  console.log(`Swagger UI available at http://localhost:5434/api-docs`);
+    console.log(`Server running on port ${PORT} `);
+    console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
 });

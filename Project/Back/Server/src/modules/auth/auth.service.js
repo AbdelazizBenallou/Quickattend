@@ -283,40 +283,40 @@ async function registerUser(first_name, last_name, email, password, ip, userAgen
     };
 }
 
-async function refreshAccessToken(userId) {
 
-    // 1️⃣ Check user exists
+async function refreshAccessToken(userId) {
+    // Get user from database
     const user = await prisma.users.findUnique({
-        where: { user_id: userId }
+        where: { user_id: userId },
+        select: { user_id: true, email: true, status: true }
     });
 
     if (!user) {
         throw { status: 401, message: 'User does not exist' };
     }
 
-    // 2️⃣ Check activation
     if (user.status !== 'active') {
         throw { status: 403, message: 'Account is not active' };
     }
 
-    // 3️⃣ Get roles & permissions
+    // Get user roles
     const userRoles = await prisma.user_role.findMany({
         where: { user_id: userId },
-        include: {
-            role: true
-        }
+        include: { role: { select: { name: true } } }
     });
 
-    const roles = userRoles.map(r => r.role.name);
+    const roles = userRoles.map(ur => ur.role.name);
 
-    // 4️⃣ Generate new access token
-    const accessToken = jwt.sign(
-        { userId, email: user.email, roles },
+    // Create new access token
+    const newAccessToken = jwt.sign(
+        { userId: user.user_id, email: user.email, roles: roles },
         ACCESS_SECRET,
         { expiresIn: '5m' }
     );
 
-    return accessToken;
+    return newAccessToken;
 }
+
+
 
 module.exports = { loginUser, registerUser, refreshAccessToken };

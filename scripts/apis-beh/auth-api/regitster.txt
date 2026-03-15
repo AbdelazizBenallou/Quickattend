@@ -1,0 +1,93 @@
+You send = 
+
+{
+  "first_name": "ahmed",
+  "last_name": "ahmed",
+  "email": "ahmed14a@gmail.com",
+  "password": "12345678"
+}
+
+1.Successful Registration:
+{
+  "success": true,
+  "message": "User registered successfully",
+  "data": {
+    "user": {
+      "user_id": 65,
+      "email": "ahmed14a@gmail.com",
+      "roles": [
+        "Student"
+      ],
+      "status": "active",
+      "first_name": "ahmed",
+      "last_name": "ahmed"
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjY1LCJlbWFpbCI6ImFobWVkMTRhQGdtYWlsLmNvbSIsInJvbGVzIjpbIlN0dWRlbnQiXSwiaWF0IjoxNzczNDg4NTc4LCJleHAiOjE3NzM0ODkxNzh9.8SmZ42rE_SU3OHt-MW5JC6aygE4v6MMXL1AzT499n8k",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjY1LCJlbWFpbCI6ImFobWVkMTRhQGdtYWlsLmNvbSIsImlhdCI6MTc3MzQ4ODU3OCwiZXhwIjoxNzczNDg5Nzc4fQ.-SOVsLX_CM4kUObf0sNNZk3ji1i80iZBkbYfw83CAjM"
+  }
+}
+
+when the user Register successful , generate tokens --> Go to Home page as he Login
+notice : you can get roles from the access token 
+
+
+after registration complete the ather profile information by sending data to this api:
+
+/v1/users/:id/profile    to update   level , specialization ... (M1, RT) 
+
+we talk about this later !
+{
+  "success": true,
+  "message": "Profile updated successfully",
+  "data": {
+    "user_id": 65,
+    "first_name": "ahmed",
+    "last_name": "ahmed",
+    "date_birth": "2026-03-14T00:00:00.000Z",
+    "address": "Tiaret",
+    "level_id": 4,
+    "specialization_id": 4,
+    "level": {
+      "name": "M1"
+    },
+    "specialization": {
+      "name": "RT"
+    }
+  }
+}
+
+======================================================================
+
+2.Validation Error — First Name Too Short and Last Name  - Email format
+
+{
+  "success": false,
+  "message": "Invalid registration data"
+}
+
+=====================================================================
+
+3.Email Already Exists (Proactive Check)
+
+{
+  "success": false,
+  "message": "Email already registered"
+}
+
+======================================================================
+
+4. Default Role "Student" Not Found 
+
+{
+  "success": false,
+  "message": "Registration failed"
+}
+
+======================================================================
+
+5. Unexpected Error (Database/Network)
+
+{
+  "success": false,
+  "message": "Registration failed"
+}
