@@ -3,7 +3,7 @@ const router = express.Router();
 const { viewUsers, viewUser, deleteUser, updateProfile } = require("./users.controller");
 const checkPermission = require("../../middleware/checkPermission");
 const verifyAccessToken = require('../../middleware/verifyAccessToken');
-const { userIdValidator, updateProfileValidator } = require('./users.vaidator');
+const { userIdValidator, updateProfileValidator } = require('./users.validator');
 
 /**
  * @openapi

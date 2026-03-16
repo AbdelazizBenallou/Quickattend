@@ -1,5 +1,6 @@
 // src/modules/rbac/role/role.service.js
 const prisma = require('../../../config/prisma');
+const redis = require('../../../config/redis');
 
 async function getAllRoles() {
   return prisma.role.findMany({
@@ -36,7 +37,6 @@ async function createRole(name) {
     throw err;
   }
 }
-
 
 async function updateRole(id, newName) {
   try {
@@ -115,6 +115,15 @@ async function assignPermissionsToRole(roleId, permissionIds) {
       data: newAssignments
     });
   }
+
+  const users = await prisma.user_role.findMany({
+    where: { role_id: roleId },
+    select: { user_id: true }
+  });
+
+  await Promise.all(
+    users.map(u => redis.del(`permissions:user:${u.user_id}`))
+  );
 
 }
 

@@ -3,9 +3,9 @@ This digest is designed to be easily parsed by Large Language Models.
 
 --- SUMMARY ---
 Repository: Server
-Files Analyzed: 39
-Total Text Size: 79.81 KB
-Estimated Tokens (text only): ~19,856
+Files Analyzed: 47
+Total Text Size: 91.3 KB
+Estimated Tokens (text only): ~22,668
 
 --- DIRECTORY STRUCTURE ---
 Server/
@@ -32,11 +32,21 @@ Server/
 │   │   │   ├── auth.service.js
 │   │   │   └── auth.validator.js
 │   │   ├── program/
-│   │   │   └── degree_level/
-│   │   │       ├── degree.controller.js
-│   │   │       ├── degree.route.js
-│   │   │       ├── degree.service.js
-│   │   │       └── degree.validator.js
+│   │   │   ├── degree_level/
+│   │   │   │   ├── degree.controller.js
+│   │   │   │   ├── degree.route.js
+│   │   │   │   ├── degree.service.js
+│   │   │   │   └── degree.validator.js
+│   │   │   ├── level/
+│   │   │   │   ├── level.controller.js
+│   │   │   │   ├── level.route.js
+│   │   │   │   ├── level.service.js
+│   │   │   │   └── level.validator.js
+│   │   │   └── specialization/
+│   │   │       ├── specialization.controller.js
+│   │   │       ├── specialization.route.js
+│   │   │       ├── specialization.service.js
+│   │   │       └── specialization.validator.js
 │   │   ├── rbac/
 │   │   │   └── role/
 │   │   │       ├── role.controller.js
@@ -47,7 +57,7 @@ Server/
 │   │   │   ├── users.controller.js
 │   │   │   ├── users.routes.js
 │   │   │   ├── users.service.js
-│   │   │   └── users.vaidator.js
+│   │   │   └── users.validator.js
 │   │   └── workshop/
 │   │       ├── workshop.controller.js
 │   │       ├── workshop.routes.js
@@ -287,11 +297,17 @@ FILE: src/config/redis.js
 const { createClient } = require("redis");
 
 const redis = createClient({
-  url: "redis://localhost:6379"
+  url: "redis://redis:6379"
 });
 
 redis.on("error", (err) => {
   console.error("Redis error:", err);
+  process.exit(1);
+});
+
+process.on('SIGINT', async () => {
+  await redis.quit();
+  process.exit(0);
 });
 
 (async () => {
@@ -349,29 +365,41 @@ const response = require('../utils/response');
 function checkPermission(permissionName) {
   return async (req, res, next) => {
     try {
+
+      if (!req.user || !req.user.userId) {
+        return response.error(res, "Unauthorized", 401)
+      }
+
       const userId = req.user.userId;
       const cacheKey = `permissions:user:${userId}`;
+
       let permissions = await redis.get(cacheKey);
-      
+
       if (!permissions) {
-        // load from database
+
         const dbPermissions = await getUserPermissions(userId);
-        permissions = dbPermissions;
+        permissions = dbPermissions.map(p => p.name);
+
         await redis.set(
           cacheKey,
-          JSON.stringify(dbPermissions),
+          JSON.stringify(permissions),
           { EX: 600 }
         );
+
       } else {
+
         permissions = JSON.parse(permissions);
+
       }
-      
+
       if (!permissions.includes(permissionName)) {
         return response.error(res, "Forbidden", 403);
       }
-      
+
       next();
+
     } catch (err) {
+      console.error(err)
       return response.error(res, "Permission check failed", 500);
     }
   };
@@ -401,17 +429,21 @@ FILE: src/middleware/originCheck.js
 const response = require("../utils/response")
 
 const allowedOrigins = [
-     "http://localhost:3000",
+     "http://172.50.0.11:3000",
     "http://localhost:5434"
 
 ];
 
 function originCheck(req, res, next) {
     const origin = req.headers.origin;
+
     if (!origin) return next();
+
     if (!allowedOrigins.includes(origin)) {
         return response.error(res, "Forbidden origin", 403);
     }
+
+    next();
 }
 
 module.exports = originCheck;
@@ -420,27 +452,45 @@ module.exports = originCheck;
 ============================================================
 FILE: src/middleware/verifyAccessToken.js
 ============================================================
-
+// src/middleware/verifyAccessToken.js
 const jwt = require('jsonwebtoken');
 const response = require('../utils/response');
 const { ACCESS_SECRET } = require('../config/env');
 
 function verifyAccessToken(req, res, next) {
+  // Get access token from cookies first, then fallback to authorization header
+  const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
+
+  // Check if token is provided
+  if (!token) {
+    return response.error(res, "Unauthorized", 401);
+  }
+
   try {
-    const token =
-      req.cookies?.accessToken ||
-      req.headers.authorization?.split(" ")[1];
-
-    if (!token) {
-      return response.error(res, "Unauthorized", 401);
-    }
-
+    // Verify the JWT token signature and expiration
     const decoded = jwt.verify(token, ACCESS_SECRET);
 
-    req.user = decoded; // يحتوي userId
+    // Check if token contains user ID
+    if (!decoded.userId) {
+      return response.error(res, "Invalid token: Missing user ID", 401);
+    }
+
+    req.user = decoded;
+
     next();
 
   } catch (err) {
+    // Handle token expiration error
+    if (err.name === 'TokenExpiredError') {
+      return response.error(res, "Access token has expired", 401);
+    }
+
+    // Handle invalid token format or signature error
+    if (err.name === 'JsonWebTokenError') {
+      return response.error(res, "Invalid token format", 401);
+    }
+
+    // Return generic error for any other JWT errors
     return response.error(res, "Invalid or expired token", 401);
   }
 }
@@ -450,40 +500,71 @@ module.exports = verifyAccessToken;
 ============================================================
 FILE: src/middleware/verifyRefreshToken.js
 ============================================================
+// src/middleware/verifyRefreshToken.js
 const jwt = require('jsonwebtoken');
+const prisma = require('../config/prisma');
 const response = require('../utils/response');
 const { REFRESH_SECRET } = require('../config/env');
 
 async function verifyRefreshToken(req, res, next) {
-  // Get refresh token from request body
-  const refreshToken = req.body.refreshToken;
+  // Get refresh token from cookies first, then fallback to request body
+  const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
 
+  // Check if refresh token is provided
   if (!refreshToken) {
-    return response.error(res, 'Refresh token is required in request body', 400);
+    return response.error(res, 'Refresh token is required', 400);
   }
 
   try {
-    // Verify the JWT token
+    // Verify the JWT token signature and expiration
     const decoded = jwt.verify(refreshToken, REFRESH_SECRET);
     const userId = decoded.userId;
 
-    // Check if token has userId
+    // Check if token contains user ID
     if (!userId) {
       return response.error(res, 'Invalid refresh token: Missing user ID', 403);
     }
 
-    // Save user info for next steps
+    // Check if user exists and account is active
+    const user = await prisma.users.findUnique({
+      where: { user_id: userId },
+      select: { user_id: true, status: true }
+    });
+
+    // If user is not active, revoke all their tokens and return error
+    if (!user || user.status !== 'active') {
+      return response.error(res, 'User account is not active', 403);
+    }
+
+    // Save decoded token and user ID to request object for next middleware
     req.refreshPayload = decoded;
+    req.userId = userId;
+
+    // Proceed to next middleware or route handler
     next();
 
   } catch (err) {
+    // Handle token expiration error
     if (err.name === 'TokenExpiredError') {
+      // Optionally revoke expired token in database
+      await prisma.refresh_tokens.updateMany({
+        where: { token: refreshToken },
+        data: { revoked: true }
+      }).catch(() => { });
+
       return response.error(res, 'Refresh token has expired', 403);
     }
+
+    // Handle invalid token format error
     if (err.name === 'JsonWebTokenError') {
       return response.error(res, 'Invalid refresh token format', 403);
     }
-    return response.error(res, 'Invalid or expired refresh token', 403);
+
+    // Log unexpected errors for debugging
+    console.error('Refresh token verification error:', err);
+
+    // Return generic error for security
+    return response.error(res, 'Internal server error', 500);
   }
 }
 
@@ -514,9 +595,9 @@ async function login(req, res) {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV,
-      sameSite: 'lax',
-      maxAge: 10 * 60 * 1000
+      secure: NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
     return response.success(
@@ -561,13 +642,10 @@ async function register(req, res) {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV,
-      sameSite: 'lax',
-      maxAge: 10 * 60 * 1000
+      secure: NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
-
-
-
 
     return response.success(
       res,
@@ -1229,7 +1307,7 @@ const validateLogin = (req, res, next) => {
     return response.error(res, "Invalid login credentials", 400);
   }
   next();
-};    
+};
 
 const registerValidationRules = () => {
   return [
@@ -1239,9 +1317,12 @@ const registerValidationRules = () => {
       .normalizeEmail(),
 
     body('password')
-      .isLength({ min: 6 })
-      .withMessage('Password must be at least 6 characters'),
-
+      .isLength({ min: 8 })
+      .matches(/[A-Z]/).withMessage('Password must contain uppercase letter')
+      .matches(/[a-z]/).withMessage('Password must contain lowercase letter')
+      .matches(/[0-9]/).withMessage('Password must contain number')
+      .matches(/[!@#$%^&*]/).withMessage('Password must contain special character')
+    ,
     body('first_name')
       .trim()
       .notEmpty().withMessage('First name is required')
@@ -1250,7 +1331,7 @@ const registerValidationRules = () => {
       .bail()
       .matches(/^[A-Za-z]+$/).withMessage('First name must contain only letters')
       .bail()
-      ,
+    ,
 
     body('last_name')
       .trim()
@@ -1269,7 +1350,7 @@ const validateRegistration = (req, res, next) => {
     return response.error(res, "Invalid registration data", 400);
   }
   next();
-};  
+};
 module.exports = {
   loginValidationRules,
   validateLogin,
@@ -1449,6 +1530,374 @@ const degreeIdValidator = [
 
 module.exports = {
     degreeIdValidator
+};
+
+============================================================
+FILE: src/modules/program/level/level.controller.js
+============================================================
+// src/modules/program/level/level.controller.js
+const { getAllLevels, getLevelById } = require('./level.service');
+const response = require('../../../utils/response');
+
+async function viewLevels(req, res) {
+    try {
+        const levels = await getAllLevels();
+        if (!levels || levels.length === 0) {
+            return response.error(res, 'No levels found', 404);
+        }
+        return response.success(res, levels, 'Levels fetched successfully');
+    } catch (err) {
+        console.error('View levels error:', err.message);
+        return response.error(res, 'Failed to fetch levels', 500);
+    }
+}
+
+async function viewLevel(req, res) {
+    try {
+        const { id } = req.params;
+        const level = await getLevelById(Number(id));
+        return response.success(res, level, 'Level fetched successfully');
+    } catch (err) {
+        if (err.message === 'Level not found') {
+            return response.error(res, 'Level not found', 404);
+        }
+        console.error('View level error:', err.message);
+        return response.error(res, 'Failed to fetch level', 500);
+    }
+}
+
+module.exports = {
+    viewLevels,
+    viewLevel
+};
+
+============================================================
+FILE: src/modules/program/level/level.route.js
+============================================================
+// src/modules/program/level/level.route.js
+const express = require('express');
+const router = express.Router();
+const { viewLevels, viewLevel } = require('./level.controller');
+const { levelIdValidator } = require('./level.validator');
+
+// Import Middleware
+const verifyAccessToken = require('../../../middleware/verifyAccessToken');
+const checkPermission = require('../../../middleware/checkPermission');
+
+/* Level APIs */
+
+/**
+ * @openapi
+ * tags:
+ *   name: Levels
+ *   description: API endpoints for managing levels
+ */
+
+/**
+ * @openapi
+ * /v1/levels:
+ *   get:
+ *     summary: Get all levels
+ *     tags: [Levels]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of levels
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (Missing permission)
+ */
+router.get(
+    '/',
+    verifyAccessToken,
+    checkPermission('view_levels'),
+    viewLevels
+);
+
+/**
+ * @openapi
+ * /v1/levels/{id}:
+ *   get:
+ *     summary: Get level by ID
+ *     tags: [Levels]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Level details
+ *       404:
+ *         description: Level not found
+ *       403:
+ *         description: Forbidden
+ */
+router.get(
+    '/:id',
+    verifyAccessToken,
+    checkPermission('view_levels'),
+    levelIdValidator,
+    viewLevel
+);
+
+
+module.exports = router;
+
+============================================================
+FILE: src/modules/program/level/level.service.js
+============================================================
+// src/modules/program/level/level.service.js
+const prisma = require('../../../config/prisma');
+
+async function getAllLevels() {
+    return prisma.level.findMany({
+        select: {
+            level_id: true,
+            name: true,
+            degree_level: {
+                select: {
+                    degree_level_id: true,
+                    name: true
+                }
+            }
+        }
+    });
+}
+
+async function getLevelById(id) {
+    const level = await prisma.level.findUnique({
+        where: { level_id: id },
+        select: {
+            level_id: true,
+            name: true,
+            created_at: true,
+            degree_level: {
+                select: {
+                    degree_level_id: true,
+                    name: true
+                }
+            },
+        }
+    });
+
+    if (!level) {
+        throw new Error('Level not found');
+    }
+
+    return level;
+}
+
+module.exports = {
+    getAllLevels,
+    getLevelById
+};
+
+============================================================
+FILE: src/modules/program/level/level.validator.js
+============================================================
+// src/modules/program/level/level.validator.js
+const { param } = require('express-validator');
+
+const levelIdValidator = [
+    param('id')
+        .exists().withMessage('Level ID is required')
+        .bail()
+        .isInt({ min: 1 }).withMessage('Level ID must be a positive integer')
+];
+
+module.exports = {
+    levelIdValidator
+};
+
+============================================================
+FILE: src/modules/program/specialization/specialization.controller.js
+============================================================
+// src/modules/program/specialization/specialization.controller.js
+const { getAllSpecializations, getSpecializationById } = require('./specialization.service');
+const response = require('../../../utils/response');
+
+async function viewSpecializations(req, res) {
+    try {
+        const specializations = await getAllSpecializations();
+        if (!specializations || specializations.length === 0) {
+            return response.error(res, 'No specializations found', 404);
+        }
+        return response.success(res, specializations, 'Specializations fetched successfully');
+    } catch (err) {
+        console.error('View specializations error:', err.message);
+        return response.error(res, 'Failed to fetch specializations', 500);
+    }
+}
+
+async function viewSpecialization(req, res) {
+    try {
+        const { id } = req.params;
+        const specialization = await getSpecializationById(Number(id));
+        return response.success(res, specialization, 'Specialization fetched successfully');
+    } catch (err) {
+        if (err.message === 'Specialization not found') {
+            return response.error(res, 'Specialization not found', 404);
+        }
+        console.error('View specialization error:', err.message);
+        return response.error(res, 'Failed to fetch specialization', 500);
+    }
+}
+
+module.exports = {
+    viewSpecializations,
+    viewSpecialization
+};
+
+============================================================
+FILE: src/modules/program/specialization/specialization.route.js
+============================================================
+// src/modules/program/specialization/specialization.route.js
+const express = require('express');
+const router = express.Router();
+const { viewSpecializations, viewSpecialization } = require('./specialization.controller');
+const { specializationIdValidator } = require('./specialization.validator');
+
+// Import Middleware
+const verifyAccessToken = require('../../../middleware/verifyAccessToken');
+const checkPermission = require('../../../middleware/checkPermission');
+
+/* Specialization APIs */
+
+/**
+ * @openapi
+ * tags:
+ *   name: Specializations
+ *   description: API endpoints for managing specializations
+ */
+
+/**
+ * @openapi
+ * /v1/specializations:
+ *   get:
+ *     summary: Get all specializations
+ *     tags: [Specializations]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of specializations
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (Missing permission)
+ */
+router.get(
+    '/',
+    verifyAccessToken,
+    checkPermission('view_specializations'),
+    viewSpecializations
+);
+
+/**
+ * @openapi
+ * /v1/specializations/{id}:
+ *   get:
+ *     summary: Get specialization by ID
+ *     tags: [Specializations]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Specialization details
+ *       404:
+ *         description: Specialization not found
+ *       403:
+ *         description: Forbidden
+ */
+router.get(
+    '/:id',
+    verifyAccessToken,
+    checkPermission('view_specializations'),
+    specializationIdValidator,
+    viewSpecialization
+);  
+
+module.exports = router;
+
+============================================================
+FILE: src/modules/program/specialization/specialization.service.js
+============================================================
+// src/modules/program/specialization/specialization.service.js
+const prisma = require('../../../config/prisma');
+
+async function getAllSpecializations() {
+    return prisma.specialization.findMany({
+        select: {
+            specialization_id: true,
+            name: true
+        }
+    });
+}
+
+async function getSpecializationById(id) {
+    const specialization = await prisma.specialization.findUnique({
+        where: { specialization_id: id },
+        select: {
+            specialization_id: true,
+            name: true,
+            level_specialization: {
+                select: {
+                    level: {
+                        select: {
+                            level_id: true,
+                            name: true,
+                            degree_level: {
+                                select: {
+                                    degree_level_id: true,
+                                    name: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    if (!specialization) {
+        throw new Error('Specialization not found');
+    }
+
+    return specialization;
+}
+
+module.exports = {
+    getAllSpecializations,
+    getSpecializationById
+};
+
+============================================================
+FILE: src/modules/program/specialization/specialization.validator.js
+============================================================
+// src/modules/program/specialization/specialization.validator.js
+const { param } = require('express-validator');
+
+const specializationIdValidator = [
+    param('id')
+        .exists().withMessage('Specialization ID is required')
+        .bail()
+        .isInt({ min: 1 }).withMessage('Specialization ID must be a positive integer')
+];
+
+module.exports = {
+    specializationIdValidator
 };
 
 ============================================================
@@ -1843,6 +2292,7 @@ FILE: src/modules/rbac/role/role.service.js
 ============================================================
 // src/modules/rbac/role/role.service.js
 const prisma = require('../../../config/prisma');
+const redis = require('../../../config/redis');
 
 async function getAllRoles() {
   return prisma.role.findMany({
@@ -1879,7 +2329,6 @@ async function createRole(name) {
     throw err;
   }
 }
-
 
 async function updateRole(id, newName) {
   try {
@@ -1957,6 +2406,15 @@ async function assignPermissionsToRole(roleId, permissionIds) {
     await prisma.role_permission.createMany({
       data: newAssignments
     });
+  }
+
+  const users = await prisma.user_role.findMany({
+    where: { role_id: roleId },
+    select: { user_id: true }
+  });
+
+  for (const u of users) {
+    await redis.del(`permissions:user:${u.user_id}`);
   }
 
 }
@@ -2103,7 +2561,7 @@ const router = express.Router();
 const { viewUsers, viewUser, deleteUser, updateProfile } = require("./users.controller");
 const checkPermission = require("../../middleware/checkPermission");
 const verifyAccessToken = require('../../middleware/verifyAccessToken');
-const { userIdValidator, updateProfileValidator } = require('./users.vaidator');
+const { userIdValidator, updateProfileValidator } = require('./users.validator');
 
 /**
  * @openapi
@@ -2367,7 +2825,7 @@ async function updateUserProfile(userId, updates) {
 module.exports = { getAllUsers, getUserById, deleteUserById, updateUserProfile };
 
 ============================================================
-FILE: src/modules/users/users.vaidator.js
+FILE: src/modules/users/users.validator.js
 ============================================================
 const { param, body } = require("express-validator");
 
@@ -3245,18 +3703,27 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./src/config/swagger');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-// Route Definitions - These will use the middlewares defined above
 const authRoutes = require("./src/modules/auth/auth.routes");
 const userRoutes = require("./src/modules/users/users.routes");
+const degreeRoutes = require("./src/modules/program/degree_level/degree.route")
+const levelRoutes = require("./src/modules/program/level/level.route")
+const specializationRoutes = require("./src/modules/program/specialization/specialization.route");
+const roleRoutes = require("./src/modules/rbac/role/role.route");
+const workshopRoutes = require("./src/modules/workshop/workshop.routes");
+
 // ... import other route modules as needed
 
-app.use("/v1/auth", authRoutes); // Middleware must run before this
+app.use("/v1/auth", authRoutes);
 app.use("/v1/users", userRoutes);
-// ... add other route groups
+app.use("/v1/degree", degreeRoutes);
+app.use("/v1/levels", levelRoutes);
+app.use("/v1/specializations", specializationRoutes);
+app.use("/v1/roles", roleRoutes);
+app.use("/v1/workshops", workshopRoutes);
 
-// Error handling middleware (typically goes last)
+
 const errorHandler = require('./src/middleware/errorHandler');
-app.use(errorHandler); // Uncomment this if you have error handling
+app.use(errorHandler);
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT} `);

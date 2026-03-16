@@ -6,6 +6,12 @@ const redis = createClient({
 
 redis.on("error", (err) => {
   console.error("Redis error:", err);
+  process.exit(1);
+});
+
+process.on('SIGINT', async () => {
+  await redis.quit();
+  process.exit(0);
 });
 
 (async () => {

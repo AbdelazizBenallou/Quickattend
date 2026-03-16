@@ -19,7 +19,7 @@ const validateLogin = (req, res, next) => {
     return response.error(res, "Invalid login credentials", 400);
   }
   next();
-};    
+};
 
 const registerValidationRules = () => {
   return [
@@ -29,9 +29,12 @@ const registerValidationRules = () => {
       .normalizeEmail(),
 
     body('password')
-      .isLength({ min: 6 })
-      .withMessage('Password must be at least 6 characters'),
-
+      .isLength({ min: 8 })
+      .matches(/[A-Z]/).withMessage('Password must contain uppercase letter')
+      .matches(/[a-z]/).withMessage('Password must contain lowercase letter')
+      .matches(/[0-9]/).withMessage('Password must contain number')
+      .matches(/[!@#$%^&*]/).withMessage('Password must contain special character')
+    ,
     body('first_name')
       .trim()
       .notEmpty().withMessage('First name is required')
@@ -40,7 +43,7 @@ const registerValidationRules = () => {
       .bail()
       .matches(/^[A-Za-z]+$/).withMessage('First name must contain only letters')
       .bail()
-      ,
+    ,
 
     body('last_name')
       .trim()
@@ -59,7 +62,7 @@ const validateRegistration = (req, res, next) => {
     return response.error(res, "Invalid registration data", 400);
   }
   next();
-};  
+};
 module.exports = {
   loginValidationRules,
   validateLogin,

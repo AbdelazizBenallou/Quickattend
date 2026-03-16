@@ -20,9 +20,9 @@ async function login(req, res) {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV,
-      sameSite: 'lax',
-      maxAge: 10 * 60 * 1000
+      secure: NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
     return response.success(
@@ -67,13 +67,10 @@ async function register(req, res) {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV,
-      sameSite: 'lax',
-      maxAge: 10 * 60 * 1000
+      secure: NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
     });
-
-
-
 
     return response.success(
       res,

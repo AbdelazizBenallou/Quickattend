@@ -22,16 +22,24 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 const authRoutes = require("./src/modules/auth/auth.routes");
 const userRoutes = require("./src/modules/users/users.routes");
 const degreeRoutes = require("./src/modules/program/degree_level/degree.route")
+const levelRoutes = require("./src/modules/program/level/level.route")
+const specializationRoutes = require("./src/modules/program/specialization/specialization.route");
+const roleRoutes = require("./src/modules/rbac/role/role.route");
+const workshopRoutes = require("./src/modules/workshop/workshop.routes");
+
 // ... import other route modules as needed
 
-app.use("/v1/auth", authRoutes); 
+app.use("/v1/auth", authRoutes);
 app.use("/v1/users", userRoutes);
-app.use("/v1/degree", degreeRoutes);
-
+app.use("/v1/degrees", degreeRoutes);
+app.use("/v1/levels", levelRoutes);
+app.use("/v1/specializations", specializationRoutes);
+app.use("/v1/roles", roleRoutes);
+app.use("/v1/workshops", workshopRoutes);
 
 
 const errorHandler = require('./src/middleware/errorHandler');
-app.use(errorHandler); 
+app.use(errorHandler);
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT} `);
