@@ -1,7 +1,7 @@
 const response = require("../utils/response")
 
 const allowedOrigins = [
-     "http://localhost:3000",
+     "http://172.50.0.11:3000",
     "http://localhost:5434"
 
 ];

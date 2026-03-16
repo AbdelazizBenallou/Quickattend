@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict o5DtgmVKoFBE3YqlrWcyWeWRs4XIFBunGFF7GcvVJ8f6ud99h4vD7X95EvD0NIw
+\restrict y4td0Gu8YJokvrZ0lU7WJa5UzPHM1drxnBuLKengDOqKZgxAShCc7hxfWfHCnOZ
 
 -- Dumped from database version 17.8 (Debian 17.8-1.pgdg13+1)
 -- Dumped by pg_dump version 17.8 (Debian 17.8-1.pgdg13+1)
@@ -599,6 +599,8 @@ COPY public.class (class_id, name, date, created_at, workshop_id) FROM stdin;
 --
 
 COPY public.degree_level (degree_level_id, name) FROM stdin;
+1	Licence
+2	Master
 \.
 
 
@@ -607,6 +609,11 @@ COPY public.degree_level (degree_level_id, name) FROM stdin;
 --
 
 COPY public.level (level_id, name, created_at, degree_level_id) FROM stdin;
+1	L1	2026-03-07 16:04:43.23604	1
+2	L2	2026-03-07 16:04:48.220394	1
+3	L3	2026-03-07 16:04:52.300519	1
+4	M1	2026-03-07 16:05:06.753331	2
+5	M2	2026-03-07 16:05:11.058071	2
 \.
 
 
@@ -623,93 +630,53 @@ COPY public.level_specialization (level_id, specialization_id) FROM stdin;
 --
 
 COPY public.login_history (login_history_id, user_id, login_at, logout_at, ip_address, user_agent) FROM stdin;
-1	1	2026-02-23 17:27:37.367	\N	127.0.0.1	PostmanRuntime/7.51.1
-2	1	2026-02-23 17:28:11.791	\N	127.0.0.1	PostmanRuntime/7.51.1
-3	1	2026-02-23 17:28:16.608	\N	127.0.0.1	PostmanRuntime/7.51.1
-4	1	2026-02-23 17:28:20.986	\N	127.0.0.1	PostmanRuntime/7.51.1
-5	1	2026-02-23 17:35:17.027	\N	127.0.0.1	PostmanRuntime/7.51.1
-6	1	2026-02-23 17:36:41.901	\N	127.0.0.1	PostmanRuntime/7.51.1
-7	1	2026-02-23 17:36:49.959	\N	127.0.0.1	PostmanRuntime/7.51.1
-8	2	2026-02-23 17:40:23.173	\N	127.0.0.1	PostmanRuntime/7.51.1
-9	2	2026-02-23 17:45:53.273	\N	127.0.0.1	PostmanRuntime/7.51.1
-10	2	2026-02-23 17:47:32.578	\N	127.0.0.1	PostmanRuntime/7.51.1
-11	2	2026-02-23 17:48:35.132	\N	127.0.0.1	PostmanRuntime/7.51.1
-12	2	2026-02-23 18:20:18.429	\N	127.0.0.1	PostmanRuntime/7.51.1
-13	2	2026-02-23 18:22:44.516	\N	127.0.0.1	PostmanRuntime/7.51.1
-14	2	2026-02-23 18:24:03.762	\N	127.0.0.1	PostmanRuntime/7.51.1
-15	2	2026-02-23 18:26:30.519	\N	127.0.0.1	PostmanRuntime/7.51.1
-16	2	2026-02-23 18:26:37.029	\N	127.0.0.1	PostmanRuntime/7.51.1
-17	2	2026-02-23 18:33:26.909	\N	127.0.0.1	PostmanRuntime/7.51.1
-18	2	2026-02-23 18:33:32.03	\N	127.0.0.1	PostmanRuntime/7.51.1
-19	2	2026-02-23 18:33:35.101	\N	127.0.0.1	PostmanRuntime/7.51.1
-20	2	2026-02-23 18:33:37.105	\N	127.0.0.1	PostmanRuntime/7.51.1
-21	2	2026-02-23 18:37:18.347	\N	127.0.0.1	PostmanRuntime/7.51.1
-22	2	2026-02-23 18:38:15.704	\N	127.0.0.1	PostmanRuntime/7.51.1
-23	2	2026-02-23 18:38:37.066	\N	127.0.0.1	PostmanRuntime/7.51.1
-24	2	2026-02-23 21:09:17.101	\N	127.0.0.1	PostmanRuntime/7.51.1
-25	2	2026-02-23 21:09:21.026	\N	127.0.0.1	PostmanRuntime/7.51.1
-26	2	2026-02-23 21:09:25.043	\N	127.0.0.1	PostmanRuntime/7.51.1
-27	2	2026-02-23 21:19:11.221	\N	127.0.0.1	python-requests/2.32.5
-28	2	2026-02-23 21:19:12.399	\N	127.0.0.1	python-requests/2.32.5
-29	2	2026-02-23 21:19:13.603	\N	127.0.0.1	python-requests/2.32.5
-30	2	2026-02-23 21:19:14.787	\N	127.0.0.1	python-requests/2.32.5
-31	2	2026-02-23 21:19:15.99	\N	127.0.0.1	python-requests/2.32.5
-32	2	2026-02-23 21:19:17.299	\N	127.0.0.1	python-requests/2.32.5
-33	2	2026-02-23 21:19:18.502	\N	127.0.0.1	python-requests/2.32.5
-34	2	2026-02-23 21:19:19.669	\N	127.0.0.1	python-requests/2.32.5
-35	2	2026-02-23 21:19:20.86	\N	127.0.0.1	python-requests/2.32.5
-36	2	2026-02-23 21:19:22.059	\N	127.0.0.1	python-requests/2.32.5
-37	2	2026-02-23 21:20:11.62	\N	127.0.0.1	python-requests/2.32.5
-38	2	2026-02-23 21:20:12.795	\N	127.0.0.1	python-requests/2.32.5
-39	2	2026-02-23 21:20:14.174	\N	127.0.0.1	python-requests/2.32.5
-40	2	2026-02-23 21:20:15.351	\N	127.0.0.1	python-requests/2.32.5
-41	2	2026-02-23 21:20:16.546	\N	127.0.0.1	python-requests/2.32.5
-42	2	2026-02-23 21:20:17.707	\N	127.0.0.1	python-requests/2.32.5
-43	2	2026-02-23 21:20:18.874	\N	127.0.0.1	python-requests/2.32.5
-44	2	2026-02-23 21:20:20.041	\N	127.0.0.1	python-requests/2.32.5
-45	2	2026-02-23 21:20:21.212	\N	127.0.0.1	python-requests/2.32.5
-46	2	2026-02-23 21:20:22.382	\N	127.0.0.1	python-requests/2.32.5
-47	2	2026-02-23 21:21:55.956	\N	127.0.0.1	python-requests/2.32.5
-48	2	2026-02-23 21:21:58.286	\N	127.0.0.1	python-requests/2.32.5
-49	2	2026-02-23 21:22:00.248	\N	127.0.0.1	python-requests/2.32.5
-50	2	2026-02-23 21:22:02.26	\N	127.0.0.1	python-requests/2.32.5
-51	2	2026-02-23 21:22:04.34	\N	127.0.0.1	python-requests/2.32.5
-52	2	2026-02-23 21:22:06.312	\N	127.0.0.1	python-requests/2.32.5
-53	2	2026-02-23 21:22:08.326	\N	127.0.0.1	python-requests/2.32.5
-54	2	2026-02-23 21:22:10.182	\N	127.0.0.1	python-requests/2.32.5
-55	2	2026-02-23 21:22:12.424	\N	127.0.0.1	python-requests/2.32.5
-56	2	2026-02-23 21:22:14.543	\N	127.0.0.1	python-requests/2.32.5
-57	2	2026-02-23 21:24:42.019	\N	127.0.0.1	python-requests/2.32.5
-58	2	2026-02-23 21:24:43.948	\N	127.0.0.1	python-requests/2.32.5
-59	2	2026-02-23 21:24:46.081	\N	127.0.0.1	python-requests/2.32.5
-60	2	2026-02-23 21:24:47.965	\N	127.0.0.1	python-requests/2.32.5
-61	2	2026-02-23 21:24:50.271	\N	127.0.0.1	python-requests/2.32.5
-62	2	2026-02-23 21:24:52.469	\N	127.0.0.1	python-requests/2.32.5
-63	2	2026-02-23 21:24:54.531	\N	127.0.0.1	python-requests/2.32.5
-64	2	2026-02-23 21:24:56.628	\N	127.0.0.1	python-requests/2.32.5
-65	2	2026-02-23 21:24:58.866	\N	127.0.0.1	python-requests/2.32.5
-66	2	2026-02-23 21:25:00.787	\N	127.0.0.1	python-requests/2.32.5
-67	2	2026-02-23 21:25:09.028	\N	127.0.0.1	python-requests/2.32.5
-68	2	2026-02-23 21:25:11.141	\N	127.0.0.1	python-requests/2.32.5
-69	2	2026-02-23 21:25:13.525	\N	127.0.0.1	python-requests/2.32.5
-70	2	2026-02-23 21:25:21.011	\N	127.0.0.1	python-requests/2.32.5
-71	2	2026-02-23 21:25:23.004	\N	127.0.0.1	python-requests/2.32.5
-72	2	2026-02-23 21:25:25.437	\N	127.0.0.1	python-requests/2.32.5
-73	2	2026-02-23 21:25:27.607	\N	127.0.0.1	python-requests/2.32.5
-74	2	2026-02-23 21:25:29.909	\N	127.0.0.1	python-requests/2.32.5
-75	2	2026-02-23 21:25:31.912	\N	127.0.0.1	python-requests/2.32.5
-76	2	2026-02-23 21:25:34.429	\N	127.0.0.1	python-requests/2.32.5
-77	2	2026-02-23 21:30:19.758	\N	127.0.0.1	PostmanRuntime/7.51.1
-78	2	2026-02-23 21:34:50.193	\N	127.0.0.1	PostmanRuntime/7.51.1
-79	2	2026-02-23 21:35:00.968	\N	127.0.0.1	PostmanRuntime/7.51.1
-80	2	2026-02-23 21:35:24.536	\N	127.0.0.1	PostmanRuntime/7.51.1
-81	2	2026-02-23 21:36:13.511	\N	127.0.0.1	PostmanRuntime/7.51.1
-82	2	2026-02-23 21:36:25.819	\N	127.0.0.1	PostmanRuntime/7.51.1
-83	2	2026-02-23 21:36:34.098	\N	127.0.0.1	PostmanRuntime/7.51.1
-84	2	2026-02-23 21:38:14.131	\N	127.0.0.1	PostmanRuntime/7.51.1
-85	2	2026-02-23 21:39:07.196	\N	127.0.0.1	PostmanRuntime/7.51.1
-86	2	2026-02-23 21:39:13.16	\N	127.0.0.1	PostmanRuntime/7.51.1
-87	2	2026-02-23 21:43:11.591	\N	127.0.0.1	PostmanRuntime/7.51.1
+222	41	2026-03-12 08:09:35.194	\N	127.0.0.1	curl/8.19.0-rc2
+223	23	2026-03-12 08:14:29.059	\N	127.0.0.1	curl/8.19.0-rc2
+224	42	2026-03-12 08:42:59.706	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+225	41	2026-03-12 08:44:30.005	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+226	41	2026-03-12 22:18:52.568	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+227	43	2026-03-12 22:42:40.619	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+228	43	2026-03-12 22:44:31.974	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+229	41	2026-03-12 22:50:16.996	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+230	41	2026-03-12 22:51:03.704	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+231	41	2026-03-12 23:19:33.319	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+232	41	2026-03-12 23:28:41.594	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+233	41	2026-03-12 23:28:42.883	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+234	41	2026-03-12 23:30:55.333	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+235	41	2026-03-12 23:58:27.359	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+236	41	2026-03-12 23:58:28.767	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+237	41	2026-03-12 23:58:51.651	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+238	44	2026-03-13 12:07:45.282	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+239	46	2026-03-13 12:08:12.165	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+240	47	2026-03-13 12:09:11.731	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+241	57	2026-03-13 13:02:00.388	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+242	57	2026-03-13 13:17:25.903	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+243	57	2026-03-13 13:17:28.462	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+244	57	2026-03-13 13:47:47.444	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+245	57	2026-03-13 15:52:50.184	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+246	57	2026-03-13 16:09:45.27	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+247	58	2026-03-14 10:55:28.842	\N	127.0.0.1	curl/8.19.0-rc2
+248	59	2026-03-14 10:57:55.861	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+249	60	2026-03-14 11:10:41.043	\N	127.0.0.1	curl/8.19.0-rc2
+250	61	2026-03-14 11:16:07.956	\N	127.0.0.1	curl/8.19.0-rc2
+251	61	2026-03-14 11:17:42.13	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+252	62	2026-03-14 11:41:08.693	\N	127.0.0.1	curl/8.19.0-rc2
+253	63	2026-03-14 11:41:49.911	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+254	64	2026-03-14 11:42:18.376	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+255	65	2026-03-14 11:42:58.702	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+256	65	2026-03-14 11:44:52.705	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+257	65	2026-03-14 11:56:59.715	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+258	65	2026-03-14 11:58:06.553	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+259	65	2026-03-14 12:30:54.514	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+260	65	2026-03-14 12:30:56.419	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+261	65	2026-03-14 12:53:25.142	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+262	65	2026-03-15 10:04:22.851	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+295	65	2026-03-15 19:18:23.527	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+296	65	2026-03-15 19:40:11.227	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+297	65	2026-03-15 19:40:59.952	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+298	65	2026-03-15 19:45:08.794	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+299	65	2026-03-15 19:46:16.559	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+300	65	2026-03-15 19:46:19.435	\N	127.0.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
 \.
 
 
@@ -736,6 +703,24 @@ COPY public.permission (permission_id, name) FROM stdin;
 16	Edit Profile
 17	mark_attendance
 18	view_attendance
+19	view_users
+20	delete_user
+21	view_roles
+22	view_role
+23	create_role
+24	update_role
+25	delete_role
+26	view_role_permissions
+27	assign_role_permissions
+29	view_workshops
+30	create_workshop
+31	view_workshop
+32	update_workshop
+33	delete_workshop
+35	view_workshop_leaders
+36	view_workshop_classes
+37	view_degrees
+38	update_profile
 \.
 
 
@@ -744,6 +729,30 @@ COPY public.permission (permission_id, name) FROM stdin;
 --
 
 COPY public.profile (user_id, first_name, last_name, date_birth, address, level_id, specialization_id) FROM stdin;
+41	black	aziz	\N	\N	\N	\N
+42	mohamed	mohamed	\N	\N	\N	\N
+43	abdou	laclass	\N	\N	\N	\N
+44	user	ones	\N	\N	\N	\N
+46	user	ones	\N	\N	\N	\N
+47	user	ones	\N	\N	\N	\N
+48	user	ones	\N	\N	\N	\N
+49	user	ones	\N	\N	\N	\N
+50	user	ones	\N	\N	\N	\N
+51	user	ones	\N	\N	\N	\N
+52	user	ones	\N	\N	\N	\N
+53	user	ones	\N	\N	\N	\N
+54	user	ones	\N	\N	\N	\N
+55	user	ones	\N	\N	\N	\N
+56	user	ones	\N	\N	\N	\N
+57	aziz	aziz	2004-03-13	Sidi Ali Mellal	3	1
+58	ghost	ghost	\N	\N	\N	\N
+59	alem	alem	\N	\N	\N	\N
+60	ghost	ghost	\N	\N	\N	\N
+61	ahmed	ahmed	2026-03-14	Tiaret	3	1
+62	ghot	ghost	\N	\N	\N	\N
+63	alem	alem	\N	\N	\N	\N
+64	alem	alem	\N	\N	\N	\N
+65	ahmed	ahmed	2026-03-14	Tiaret	4	4
 \.
 
 
@@ -789,6 +798,24 @@ COPY public.role_permission (role_id, permission_id) FROM stdin;
 4	15
 4	16
 4	17
+1	19
+1	20
+1	21
+1	22
+1	23
+1	24
+1	25
+1	26
+1	27
+1	29
+1	30
+1	31
+1	32
+1	33
+1	35
+1	36
+1	37
+4	38
 \.
 
 
@@ -797,6 +824,12 @@ COPY public.role_permission (role_id, permission_id) FROM stdin;
 --
 
 COPY public.specialization (specialization_id, name) FROM stdin;
+1	ISIL
+2	SI
+3	AI
+4	RT
+5	GL
+6	GI
 \.
 
 
@@ -813,9 +846,34 @@ COPY public.user_class (user_class_id, user_id, class_id) FROM stdin;
 --
 
 COPY public.user_role (user_id, role_id) FROM stdin;
-1	3
-1	4
-2	4
+41	4
+41	1
+42	4
+43	4
+42	3
+42	2
+44	4
+46	4
+47	4
+48	4
+49	4
+50	4
+51	4
+52	4
+53	4
+54	4
+55	4
+56	4
+57	4
+57	1
+58	4
+59	4
+60	4
+61	4
+62	4
+63	4
+64	4
+65	4
 \.
 
 
@@ -832,8 +890,49 @@ COPY public.user_workshop (user_id, workshop_id) FROM stdin;
 --
 
 COPY public.users (user_id, email, password_hash, status, created_at) FROM stdin;
-1	azizbenallou14@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$wNR38ssXFMN9dNx2U/U3uw$BIyBGF/4OCbFZQF2klAyWbbBCCZAUIXzrLHauY0dl8s	active	2026-02-23 09:55:26.298229
 2	ahmed142@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$9cio7EOCLk6yqxvocOtq5A$DIUm9Lk3AbhtJIsp9rqgXZd4VJh47Cq80Mk9pmfq3+A	active	2026-02-23 17:12:22.448608
+6	stud878ent1@test.com	$argon2id$v=19$m=65536,t=3,p=4$zOEEFe58bkOi0TdG7aCFIg$oynwIL/KmJWX2gfttNWAtQWVMXzJjib66kT0AaTTxe4	active	2026-03-01 18:35:58.85
+8	stud878e78nt1@test.com	$argon2id$v=19$m=65536,t=3,p=4$0xKrM/5uU1IOyLkS3Qpplg$es+Xa8K29jDhtBRsAsAoGFymNLxx5U+XpgnjBQHO/Zo	active	2026-03-01 18:43:32.299
+10	azizben@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$63HgZWcN3CZy1nqBeUCaqQ$PsHD1H+Q6sUvZG/k7wSdZxCPwGoPFpbN55Adv7jq8Nw	active	2026-03-02 10:03:15.259
+11	azizaziz@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$C3/11G/dM07X0B6xyuanGA$nDNcFjVydb8qo6aa4Q3ZYjNMwpND9h3ljz64hnC3gMs	active	2026-03-03 21:26:17.275
+16	azizaziz14@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$egozdGjViod6hc2R3vKWBg$FLWEC0gLsBxmkmwiBAAKOa3m98AtNUwjGM19eIJpji0	active	2026-03-03 21:34:23.969
+17	azizggaziz14@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$XXCoZEQQ7Y7cmc5ZPCcTOQ$wLO2PD9ze1n8dSSYug33UHu3JiNex7GvIzth1GQqLNI	active	2026-03-03 22:19:52.71
+18	azizggazi44z14@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$ljTE9qcO2iJZI5LV9FowIw$4TdJ59B1YgJ9TL06kG4olv9YKJF6o0RT9szEX7+Wsr8	active	2026-03-03 22:20:03.275
+20	azizggazi44z1114@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$rzZXf+bTjCKXEmCPkVlD9Q$n21tNYomDLU5Z7ddSBlg+zflKP6oumnVIzwASLKDas8	active	2026-03-03 22:23:30.126
+22	azizggazi44z1111114@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$f7u7Ajth1wSddPNRYLb9LA$vMU7+6nEVvlv70CcSNZpULxDdEARxL0ufYxjF84OPMs	active	2026-03-03 22:23:58.89
+23	user@example.com	$argon2id$v=19$m=65536,t=3,p=4$IzyAFhY9glWOBJXxYLsZeA$3LB2Qb+2XIHcGDpMKek5OWEqucFrTzDz5jUlNpTJSZ0	active	2026-03-03 23:09:06.311
+27	user@112example.com	$argon2id$v=19$m=65536,t=3,p=4$6vSSWpNf0lD/6vIJv0gxMQ$XuNwA1j+6EM8zdLQi3byJbjsp9X6HKyCrsYMhUq51us	active	2026-03-04 09:28:32.14
+29	user@11212example.com	$argon2id$v=19$m=65536,t=3,p=4$Vbbiu4N8tVQDw6NNh5CWJQ$azGweEvba4Mx6XKAC9oLBLY1seZ6xa2md8puze0rGJk	active	2026-03-04 09:53:13.356
+32	ghost@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$YYi4pUR/MFCeuvQgHqNOYQ$q8RB1oywuddg2gEA11B4ytkEU30Ls5CI5OmGwCY0DHo	active	2026-03-07 16:54:53.507
+34	ghos12t@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$ceCEdc0GqiGvgY9QXCAbxw$dqcIGpkb4T8GsnhyHJZHR6om1N2yDYDIhoTcX0xsMSg	active	2026-03-07 16:55:25.778
+35	ghos12t8@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$qL1PDIBLs5vIi3TV9M8S9w$HJPOTXJ2Pa1Cb7MVVRNQ6bviutOd39bwcp+vihSDG3g	active	2026-03-07 17:14:14.056
+36	sidou1212@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$PyDdm/XekzgbgHYPK/fryw$voLthXNR+6tyngYk3lyFTuGa88q5NqxrZGVwj9w2xn0	active	2026-03-07 17:29:59.02
+38	ahmed123@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$cSW1PF9ApBNw2VkNzlaH5Q$AkOTTgVDjw1S0PZgf1HObWMiFOEHCzTTMN/C6Pa8B6Y	active	2026-03-08 11:14:58.079
+40	ahmed7878@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$d5PKxkqCUvw32WGVX7I2kQ$JlW2vQkLMNW8Yb8Nj+hsCpBxLa9imW7epGA6W0aLBvQ	active	2026-03-08 11:21:52.785
+41	azizblack1414@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$tXxqIKwGwmye+/kWjcFFMg$6SuY6h5wcmvtAnOCG+82ycrByok/xy4/2pZy/0/iQHQ	active	2026-03-12 08:09:35.158
+42	mohamed@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$lFbusDSusZf9PcBwV56+yA$kyIlj9MSmz98MTXkj1XZqPsb/QNv30TAMnqkJWa4qXU	active	2026-03-12 08:42:59.667
+43	abdouaziz@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$bT4+DeAjiWgAIE/WYOPNeg$+vbUjbdIb9pPkmufqauHpRV61gnnCgzavzrpxRbLpUQ	active	2026-03-12 22:42:40.584
+44	userone@gmailk.com	$argon2id$v=19$m=65536,t=3,p=4$p0A/xwXIMRbPaGI4X7CZHw$yfw0jdGab0igLev+WSCrnhj1uvJBhc18NLq0kdkiWqA	active	2026-03-13 12:07:45.198
+46	userone1@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$AqzQhNsywW6zBP5zeW1zZg$HiTgE1cF/jKL+BqtfCqGIsUBGQOGUT9sWhfjdU6URas	active	2026-03-13 12:08:12.144
+47	userone2@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$cvwnyGgY0bMirx1eQAv3NQ$wYvnjtQi+6ItEwYeeaf/ChOSYjCFqNq6Nu5iJgstNmo	active	2026-03-13 12:09:11.71
+48	userone33@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$F8spYmQOXLdHpYcADYx1Og$+6VtF/XWxGQNKd1EN6cAyZCTAGZf9lp7t4h+kmi4FvA	active	2026-03-13 12:36:56.17
+49	userone332@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$h/CUNHrSA1Kuurnhn22diA$SQ75u8eEl+ZgMARcgZQNkd3DXrRNAB6mfjd2hTIg6eo	active	2026-03-13 12:37:08.85
+50	userone335552@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$bvCzJL4Y7F9R3W2dPLKYRQ$qV5S6RA9H3pityD2fVAgwAZswpSbsi0/YrmyaiYWo+0	active	2026-03-13 12:39:52.073
+51	userone335552aa@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$O5mErCSvPrOe/y/gXNIPMw$JF7REu2S2Hd7HFcfT6cmAEYdZa3EPGTT0ter3/cl4Kg	active	2026-03-13 12:44:26.947
+52	userone33aa2aa@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$GjGKBw10yFryVcg9yOAZQw$O4lnyiKssiqJUyU/KLSzBA/eMb3YLN28e/pM7umFEmk	active	2026-03-13 12:47:58.845
+53	useronfe33aa2aa@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$7F3bGrd61fJE3LSt0hkjkg$Pvrn+EtCu8YN7c+EKXg25S0dDhZAOxkkP+OgevhYYPg	active	2026-03-13 12:51:16.389
+54	useronfe33aa2aa@11gmail.com	$argon2id$v=19$m=65536,t=3,p=4$94ln7d5mNd8CMH1jqV27JA$yS5qDPl1GFasrzAwDjwrYZ7DVSxpnE6gxucf9b67cLw	active	2026-03-13 12:54:46.847
+55	useronfe33aa2faa@11gmail.com	$argon2id$v=19$m=65536,t=3,p=4$Zqv/+CGvw3iIW0B/svnzLA$92BiVxubCL5jq2sqqH8OqS/lUkWZeYSd/uiZiirZ0wc	active	2026-03-13 12:57:16.516
+56	useronfe33aa2faaff@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$3bMYTquQ7/WUDCISEjr6sg$zd6CkGdPoX/gKTxMwJ6SaGfnC8QJc4pastoe5I1Y1cg	active	2026-03-13 12:59:14.438
+57	useronfe3d3aa2faaff@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$2mDxneUwW7XKTmoCRcodrA$DCtePLr6nEiFSXBr57aR2FY1IQhqeS9IXbvE5sF6YXs	active	2026-03-13 13:02:00.358
+58	ghost11@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$1pDRU6YdW1f6vG1dFAFYjA$IuBFNXRxht40Nj6KIwDxzEXBYFM8kW/D8kq+KplbPMw	active	2026-03-14 10:55:28.81
+59	alem@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$ER3dWWH0x2TA2gr0Hi4dNg$ED7QFIg9WzokjSC/zmPTbjD9sctFtw+igF/XoVVGKg0	active	2026-03-14 10:57:55.83
+60	ghost111@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$OwZ6Oj7Ws2y+R0r5rsdI2g$DjIG5RlmZiVuAOSw2VdwdgqqEjRj6cQD99OZnz9w9pI	active	2026-03-14 11:10:41.019
+61	ghost1111@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$IbRDmRGoPNPZKfSdg6jUgA$MPfbon+cXEeevS7b2YPxjnTVwG16CQ25vCjYO86f8Lg	active	2026-03-14 11:16:07.934
+62	ghost11111œ@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$xj833Zi15Hy2zosfL6kKrg$O3rNSc6QpYuvY2ZuwSBvnyf6bEGmE5UHk4iFMGbohfk	active	2026-03-14 11:41:08.663
+63	alem123@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$GQuHyLvDnxsaa1KclFCTEA$Y5xJ5GfqUUOffOwXSf/0XXPIxhHgc4/7FGyVbVXueB0	active	2026-03-14 11:41:49.888
+64	alem123a@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$T8BixkLA4LdlAPb5ROtGiA$WPPEioFNV+1wdu+04yB3lxk2kDRZlw2JCIuUoOxwKJU	active	2026-03-14 11:42:18.342
+65	ahmed14a@gmail.com	$argon2id$v=19$m=65536,t=3,p=4$KXU5litJvOapJvKV/e4T8w$PUfkEIAJ3taJAX6QknWXY02w0dyvenCQ8uW8kZtcVmI	active	2026-03-14 11:42:58.676
 \.
 
 
@@ -842,6 +941,8 @@ COPY public.users (user_id, email, password_hash, status, created_at) FROM stdin
 --
 
 COPY public.workshop (workshop_id, name, created_at, leader_user_id) FROM stdin;
+1	Networks & CS	2026-03-12 23:24:42.254256	41
+2	UI/UX	2026-03-13 00:06:18.647	42
 \.
 
 
@@ -856,28 +957,28 @@ SELECT pg_catalog.setval('public.class_class_id_seq', 1, false);
 -- Name: degree_level_degree_level_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Fredrick_Miller
 --
 
-SELECT pg_catalog.setval('public.degree_level_degree_level_id_seq', 1, false);
+SELECT pg_catalog.setval('public.degree_level_degree_level_id_seq', 2, true);
 
 
 --
 -- Name: level_level_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Fredrick_Miller
 --
 
-SELECT pg_catalog.setval('public.level_level_id_seq', 1, false);
+SELECT pg_catalog.setval('public.level_level_id_seq', 5, true);
 
 
 --
 -- Name: login_history_login_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Fredrick_Miller
 --
 
-SELECT pg_catalog.setval('public.login_history_login_history_id_seq', 87, true);
+SELECT pg_catalog.setval('public.login_history_login_history_id_seq', 300, true);
 
 
 --
 -- Name: permission_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Fredrick_Miller
 --
 
-SELECT pg_catalog.setval('public.permission_permission_id_seq', 18, true);
+SELECT pg_catalog.setval('public.permission_permission_id_seq', 38, true);
 
 
 --
@@ -898,7 +999,7 @@ SELECT pg_catalog.setval('public.role_role_id_seq', 4, true);
 -- Name: specialization_specialization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Fredrick_Miller
 --
 
-SELECT pg_catalog.setval('public.specialization_specialization_id_seq', 1, false);
+SELECT pg_catalog.setval('public.specialization_specialization_id_seq', 6, true);
 
 
 --
@@ -912,14 +1013,14 @@ SELECT pg_catalog.setval('public.user_class_user_class_id_seq', 1, false);
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Fredrick_Miller
 --
 
-SELECT pg_catalog.setval('public.users_user_id_seq', 2, true);
+SELECT pg_catalog.setval('public.users_user_id_seq', 65, true);
 
 
 --
 -- Name: workshop_workshop_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Fredrick_Miller
 --
 
-SELECT pg_catalog.setval('public.workshop_workshop_id_seq', 1, false);
+SELECT pg_catalog.setval('public.workshop_workshop_id_seq', 2, true);
 
 
 --
@@ -1290,5 +1391,5 @@ ALTER TABLE ONLY public.workshop
 -- PostgreSQL database dump complete
 --
 
-\unrestrict o5DtgmVKoFBE3YqlrWcyWeWRs4XIFBunGFF7GcvVJ8f6ud99h4vD7X95EvD0NIw
+\unrestrict y4td0Gu8YJokvrZ0lU7WJa5UzPHM1drxnBuLKengDOqKZgxAShCc7hxfWfHCnOZ
 

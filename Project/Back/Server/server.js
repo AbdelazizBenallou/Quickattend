@@ -19,18 +19,19 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./src/config/swagger');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-// Route Definitions - These will use the middlewares defined above
 const authRoutes = require("./src/modules/auth/auth.routes");
 const userRoutes = require("./src/modules/users/users.routes");
+const degreeRoutes = require("./src/modules/program/degree_level/degree.route")
 // ... import other route modules as needed
 
-app.use("/v1/auth", authRoutes); // Middleware must run before this
+app.use("/v1/auth", authRoutes); 
 app.use("/v1/users", userRoutes);
-// ... add other route groups
+app.use("/v1/degree", degreeRoutes);
 
-// Error handling middleware (typically goes last)
+
+
 const errorHandler = require('./src/middleware/errorHandler');
-app.use(errorHandler); // Uncomment this if you have error handling
+app.use(errorHandler); 
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT} `);
