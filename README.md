@@ -142,15 +142,16 @@ npx prisma studio
 # Run the Server
 
 Start the backend server:
+just run the docker compose file on Project folder
 
 ```
-npm start
+docker compose up -d --build
 ```
 
-or
+and check with 
 
 ```
-node server.js
+docker ps
 ```
 
 The API will run on:
